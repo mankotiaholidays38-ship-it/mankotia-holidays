@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { MapPin, Check, ArrowRight, Compass } from 'lucide-react';
+import { MapPin, Check, ArrowRight, Compass, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
 import { YATRA_TIMELINE } from '../data/packagesData';
 
 export default function YatraSpecial({ onOpenInquiry }) {
   const [activeTab, setActiveTab] = useState('chardham');
+  const [showRouteItinerary, setShowRouteItinerary] = useState(false);
 
   const yatraPackages = {
     chardham: {
@@ -331,64 +332,102 @@ export default function YatraSpecial({ onOpenInquiry }) {
 
         </div>
 
-        {/* Sacred Route Timeline Section */}
-        <div style={{ marginTop: '50px' }}>
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <span className="badge-cyan">
-              <Compass size={14} /> Sacred Circuit Map
-            </span>
-            <h3 style={{ fontSize: '1.8rem', fontWeight: 700, marginTop: '10px', color: '#FFFFFF' }}>
-              The 4 Holy Dhams Route & Elevation
-            </h3>
-            <p style={{ color: '#94A3B8', fontSize: '0.95rem' }}>
-              The traditional clockwise parikrama from West to East as prescribed by Adi Shankaracharya
-            </p>
-          </div>
-
+        {/* Sacred Route Timeline Section (Collapsible on Click) */}
+        <div style={{ marginTop: '45px' }}>
+          
+          {/* Header & Toggle Bar */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            background: 'rgba(15, 23, 42, 0.75)',
+            border: '1px solid rgba(245, 158, 11, 0.25)',
+            borderRadius: '16px',
+            padding: '20px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
             gap: '16px'
           }}>
-            {YATRA_TIMELINE.map((item, idx) => (
-              <div key={idx} className="glass-card" style={{
-                padding: '24px 20px',
-                position: 'relative',
-                borderTop: '3px solid #F59E0B'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '12px'
-                }}>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    background: 'rgba(245, 158, 11, 0.15)',
-                    color: '#F59E0B',
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-full)'
-                  }}>
-                    {item.step}
-                  </span>
-                  <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                    {item.elevation}
-                  </span>
-                </div>
-
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '6px' }}>
-                  {item.dham}
-                </h4>
-                <div style={{ fontSize: '0.8rem', color: '#06B6D4', fontWeight: 600, marginBottom: '10px' }}>
-                  {item.river}
-                </div>
-                <p style={{ fontSize: '0.82rem', color: '#94A3B8', lineHeight: 1.5 }}>
-                  {item.ritual}
-                </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span className="badge-cyan" style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                  <Compass size={13} /> Sacred Circuit Map
+                </span>
+                <span style={{ fontSize: '0.74rem', background: 'rgba(245, 158, 11, 0.15)', color: '#FCD34D', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                  5 Stages • 11 Days
+                </span>
               </div>
-            ))}
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
+                The 4 Holy Dhams Route & Elevation
+              </h3>
+              <p style={{ color: '#94A3B8', fontSize: '0.82rem', margin: '4px 0 0' }}>
+                The traditional clockwise parikrama from West to East as prescribed by Adi Shankaracharya
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowRouteItinerary(!showRouteItinerary)}
+              className="btn btn-primary-gold btn-sm"
+              style={{ padding: '8px 18px', fontSize: '0.84rem', fontWeight: 700, borderRadius: '10px' }}
+            >
+              <Calendar size={15} />
+              <span>{showRouteItinerary ? '▲ Hide Route Itinerary' : '👁️ View Sacred Route & Elevation Itinerary'}</span>
+              {showRouteItinerary ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+            </button>
           </div>
+
+          {/* Collapsible Content */}
+          {showRouteItinerary && (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+              gap: '16px',
+              marginTop: '20px',
+              animation: 'fadeIn 0.25s ease-out'
+            }}>
+              {YATRA_TIMELINE.map((item, idx) => (
+                <div key={idx} className="glass-card" style={{
+                  padding: '20px 18px',
+                  position: 'relative',
+                  borderTop: '3px solid #F59E0B',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(180deg, rgba(17, 26, 46, 0.95) 0%, rgba(15, 23, 42, 0.85) 100%)'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '10px'
+                  }}>
+                    <span style={{
+                      fontSize: '0.74rem',
+                      fontWeight: 700,
+                      background: 'rgba(245, 158, 11, 0.15)',
+                      color: '#F59E0B',
+                      padding: '3px 9px',
+                      borderRadius: 'var(--radius-full)'
+                    }}>
+                      {item.step}
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: '#38BDF8', fontWeight: 700, background: 'rgba(6, 182, 212, 0.12)', padding: '2px 8px', borderRadius: '6px' }}>
+                      {item.elevation}
+                    </span>
+                  </div>
+
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '4px' }}>
+                    {item.dham}
+                  </h4>
+                  <div style={{ fontSize: '0.78rem', color: '#06B6D4', fontWeight: 600, marginBottom: '8px' }}>
+                    {item.river}
+                  </div>
+                  <p style={{ fontSize: '0.8rem', color: '#CBD5E1', lineHeight: 1.5, margin: 0 }}>
+                    {item.ritual}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
 
       </div>
