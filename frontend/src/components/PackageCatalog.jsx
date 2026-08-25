@@ -157,7 +157,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
           <div style={{ padding: '16px 16px 10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
               <span style={{ fontSize: '0.76rem', color: '#38BDF8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <MapPin size={12} flexShrink={0} /> {pkg.destination}
+                <MapPin size={12} style={{ flexShrink: 0 }} /> {pkg.destination}
               </span>
               <span style={{ fontSize: '0.76rem', color: '#FCD34D', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
                 <Star size={12} fill="#FCD34D" color="#FCD34D" /> {pkg.rating} ({pkg.reviews_count})

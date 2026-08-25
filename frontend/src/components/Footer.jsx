@@ -1,7 +1,7 @@
 import React from 'react';
 import { Phone, Mail, MessageCircle, Heart, Shield } from 'lucide-react';
 
-export default function Footer({ onOpenInquiry, onOpenAdmin }) {
+export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
   const scrollTo = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
