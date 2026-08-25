@@ -1462,67 +1462,84 @@ export const PACKAGES = [
 
 export const UTTARAKHAND_DESTINATIONS = [
   {
-    name: "Char Dham Yatra",
+    name: "Sacred Char Dham Yatra",
     badge: "Most Sacred",
-    tagline: "Yamunotri, Gangotri, Kedarnath, Badrinath",
+    tagline: "Yamunotri • Gangotri • Kedarnath • Badrinath",
     image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=600&q=80",
     altitude: "10,000 - 12,000 ft",
-    ideal_duration: "10-12 Days",
-    description: "The supreme Hindu pilgrimage nestled in the Garhwal Himalayas for spiritual liberation and divine grace."
+    ideal_duration: "10-11 Days",
+    price_inr: 34999,
+    description: "The supreme Hindu pilgrimage nestled in the Garhwal Himalayas for spiritual liberation and divine grace with VIP Darshan."
   },
   {
     name: "Do Dham (Kedarnath & Badrinath)",
     badge: "Spiritual Express",
-    tagline: "Lord Shiva & Lord Vishnu's Abode",
+    tagline: "Lord Shiva Jyotirlinga & Lord Badrinath Ji",
     image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&q=80",
     altitude: "11,750 ft",
     ideal_duration: "5-6 Days",
-    description: "The two most revered shrines of Uttarakhand with helicopter & road express packages."
+    price_inr: 22500,
+    description: "The two most revered shrines of Uttarakhand with helicopter & private mountain vehicle express packages."
   },
   {
-    name: "Nainital Lake District",
+    name: "Nainital Emerald Lake District",
     badge: "Scenic Lakes",
     tagline: "Emerald Naini Lake, Bhimtal & Sattal",
     image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=600&q=80",
     altitude: "6,837 ft",
     ideal_duration: "3-4 Days",
-    description: "Romantic hill station famed for emerald boating lakes, Naina Devi Temple, and pine-clad hills."
+    price_inr: 12500,
+    description: "Romantic hill station famed for emerald boating lakes, Naina Devi Temple, cable car snow view, and pine-clad hills."
   },
   {
-    name: "Mussoorie Queen of Hills",
+    name: "Mussoorie Queen of Hills & Kanatal",
     badge: "Heritage Hill Station",
-    tagline: "Kempty Falls, Gun Hill & Landour",
+    tagline: "Kempty Falls, Gun Hill & George Everest",
     image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
     altitude: "6,580 ft",
-    ideal_duration: "2-3 Days",
-    description: "Colonial charm, panoramic Doon valley views, cascading waterfalls, and cozy cafes in Landour."
+    ideal_duration: "3-4 Days",
+    price_inr: 12500,
+    description: "Colonial charm, panoramic Doon valley views, cascading waterfalls, Dhanaulti eco-parks, and Swiss tent glamping."
   },
   {
-    name: "Jim Corbett National Park",
+    name: "Jim Corbett Tiger Reserve",
     badge: "Wildlife Safari",
-    tagline: "Royal Bengal Tiger Reserve",
+    tagline: "Royal Bengal Tiger Reserve & Jungle Lodges",
     image: "https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=600&q=80",
     altitude: "1,300 ft",
     ideal_duration: "2-3 Days",
-    description: "India's oldest national park with open jeep jungle safaris, wild elephant herds, and luxury forest lodges."
+    price_inr: 9999,
+    description: "India's oldest national park with 4x4 open gypsy jungle safaris, wild elephant herds, and riverside luxury lodges."
   },
   {
-    name: "Auli & Chopta-Tungnath",
+    name: "Auli Ski Slopes & Chopta Tungnath",
     badge: "Snow & Alpine Trek",
     tagline: "Mini Switzerland & Highest Shiva Temple",
     image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
-    altitude: "9,200 - 13,000 ft",
+    altitude: "9,200 - 12,100 ft",
     ideal_duration: "4-5 Days",
-    description: "Skiing slopes of Auli, lush meadows of Chopta, and the world's highest Shiva shrine at Tungnath."
+    price_inr: 15999,
+    description: "Skiing slopes of Auli, lush meadows of Chopta, Chandrashila summit, and the world's highest Shiva shrine at Tungnath."
   },
   {
-    name: "Rishikesh & Haridwar",
+    name: "Rishikesh Rafting & Glamping",
     badge: "Yoga & Holy Ganga",
-    tagline: "World Capital of Yoga & Ganga Aarti",
+    tagline: "16KM River Rafting & Evening Ganga Aarti",
     image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=600&q=80",
     altitude: "1,200 ft",
     ideal_duration: "2-3 Days",
-    description: "Ganga Maha Aarti at Triveni Ghat & Har Ki Pauri, river rafting, Ayurvedic wellness, and meditation ashrams."
+    price_inr: 7499,
+    description: "Ganga Maha Aarti at Triveni Ghat, white-water river rafting, luxury riverside dome camping, and Beatles Ashram."
+  },
+  {
+    name: "Kumaon Highlands: Kausani & Ranikhet",
+    badge: "Tranquil Himalayas",
+    tagline: "300KM Himalayan Sunrise & Pine Forests",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    altitude: "6,200 ft",
+    ideal_duration: "4-5 Days",
+    price_inr: 14500,
+    description: "Panoramic views of Trishul & Nanda Devi snow peaks, Kausani tea estates, Ranikhet golf course, and Mukteshwar orchards."
   }
 ];
 
@@ -1596,6 +1613,42 @@ export const TESTIMONIALS = [
     date: "Oct 2025",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
     review: "We spotted a Royal Bengal tiger in Jim Corbett on the morning safari organized by Mankotia Holidays! The resorts in Nainital and Mussoorie were 4-star luxury with great valley views. 10/10 service and transparent pricing."
+  },
+  {
+    name: "Smt. Meenakshi Sundaram",
+    location: "Chennai, Tamil Nadu",
+    tour: "Divine Do Dham: Kedarnath & Badrinath",
+    rating: 5,
+    date: "Sep 2025",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+    review: "As a senior citizen traveling from South India, language and food were my worries. Mankotia Holidays arranged pure South Indian Satvik food and our tour coordinator supported us through every darshan queue. Unforgettable pilgrimage!"
+  },
+  {
+    name: "Sneha & Kunal Kapoor",
+    location: "Mumbai, Maharashtra",
+    tour: "Royal Kashmir Luxury Honeymoon",
+    rating: 5,
+    date: "Dec 2025",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+    review: "The Dal Lake luxury cedarwood houseboat and candle-light dinner exceeded our expectations. Gondola phase 2 snow in Gulmarg was breathtaking. The driver was polite and knew all the best scenic photo spots!"
+  },
+  {
+    name: "Col. Arvind Rathore",
+    location: "Jaipur, Rajasthan",
+    tour: "Spiti Valley & Manali 4x4 Expedition",
+    rating: 5,
+    date: "July 2025",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80",
+    review: "Top-notch 4x4 Innova and expert mountain pilot for our Spiti circuit. Camping at Chandratal under the stars was pure magic. Clean homestays, emergency oxygen kit, and 100% punctuality. Mankotia Holidays is unmatched in the Himalayas!"
+  },
+  {
+    name: "Adv. Ramesh & Priya Kulkarni",
+    location: "Pune, Maharashtra",
+    tour: "Grand Royal Rajasthan Heritage Circuit",
+    rating: 5,
+    date: "Nov 2025",
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80",
+    review: "From palace heritage havelis in Jaipur and Udaipur to sunset camel safaris in Jaisalmer Sam dunes, every arrangement was royal. Transparent pricing with zero hidden costs. Mankotia Holidays is our permanent travel partner!"
   }
 ];
 
