@@ -11,12 +11,15 @@ import WhyChooseUs from './components/WhyChooseUs';
 import InquiryModal from './components/InquiryModal';
 import AdminPortal from './components/AdminPortal';
 import AiConcierge from './components/AiConcierge';
+import PolicyModal from './components/PolicyModal';
 import Footer from './components/Footer';
 
 export default function App() {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [inquiryData, setInquiryData] = useState({});
   const [adminPortalOpen, setAdminPortalOpen] = useState(false);
+  const [policyModalOpen, setPolicyModalOpen] = useState(false);
+  const [policyInitialTab, setPolicyInitialTab] = useState('cancellation');
 
   const handleOpenInquiry = (data = {}) => {
     setInquiryData(data);
@@ -36,12 +39,22 @@ export default function App() {
     setAdminPortalOpen(false);
   };
 
+  const handleOpenPolicy = (tab = 'cancellation') => {
+    setPolicyInitialTab(tab);
+    setPolicyModalOpen(true);
+  };
+
+  const handleClosePolicy = () => {
+    setPolicyModalOpen(false);
+  };
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0B1120' }}>
       {/* Navigation Header */}
       <Navbar 
         onOpenInquiry={handleOpenInquiry}
         onOpenAdmin={handleOpenAdmin}
+        onOpenPolicy={handleOpenPolicy}
       />
 
       {/* Main Content */}
@@ -75,6 +88,7 @@ export default function App() {
       <Footer 
         onOpenInquiry={handleOpenInquiry} 
         onOpenAdmin={handleOpenAdmin}
+        onOpenPolicy={handleOpenPolicy}
       />
 
       {/* Floating 24/7 AI Concierge (Aria) */}
@@ -85,6 +99,13 @@ export default function App() {
         isOpen={inquiryModalOpen}
         onClose={handleCloseInquiry}
         initialData={inquiryData}
+      />
+
+      {/* Trust, Cancellation & Legal Policies Modal */}
+      <PolicyModal
+        isOpen={policyModalOpen}
+        onClose={handleClosePolicy}
+        initialTab={policyInitialTab}
       />
 
       {/* Admin Leads & Management Portal */}

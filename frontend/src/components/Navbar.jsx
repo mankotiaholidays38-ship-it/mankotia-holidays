@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Menu, Sparkles, X, Shield } from 'lucide-react';
 
-export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
+export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
@@ -157,13 +157,21 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
               </button>
               {moreMenuOpen && (
                 <div style={{ position: 'absolute', top: '44px', right: 0, minWidth: '200px', padding: '8px', background: '#111A2E', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', boxShadow: '0 16px 30px rgba(0,0,0,0.35)', zIndex: 100 }}>
-                  <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Uttarakhand Explorer</a>
-                  <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Yatra Guide & Passes</a>
-                  <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Pilgrim Reviews</a>
+                  <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ display: 'block', padding: '9px 12px', color: '#E2E8F0', fontSize: '0.86rem' }}>Uttarakhand Explorer</a>
+                  <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ display: 'block', padding: '9px 12px', color: '#E2E8F0', fontSize: '0.86rem' }}>Yatra Guide & Passes</a>
+                  <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ display: 'block', padding: '9px 12px', color: '#E2E8F0', fontSize: '0.86rem' }}>Pilgrim Reviews</a>
+                  {onOpenPolicy && (
+                    <button
+                      onClick={() => { setMoreMenuOpen(false); onOpenPolicy('cancellation'); }}
+                      style={{ width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '9px 12px', color: '#94A3B8', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <span>Cancellation & Policies</span>
+                    </button>
+                  )}
                   {onOpenAdmin && (
                     <button 
                       onClick={() => { setMoreMenuOpen(false); onOpenAdmin(); }} 
-                      style={{ width: '100%', textAlign: 'left', background: 'rgba(245, 158, 11, 0.08)', border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '4px', padding: '10px 12px', color: '#FCD34D', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', borderRadius: '0 0 6px 6px' }}
+                      style={{ width: '100%', textAlign: 'left', background: 'rgba(245, 158, 11, 0.08)', border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '4px', padding: '9px 12px', color: '#FCD34D', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', borderRadius: '0 0 6px 6px' }}
                     >
                       <Shield size={14} color="#F59E0B" /> Admin Portal
                     </button>
@@ -174,8 +182,11 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
           </li>
         </ul>
 
-        {/* Primary action */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Primary action & Language */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Google Translate Mount Point */}
+          <div id="google_translate_element" style={{ display: 'inline-block', maxHeight: '34px', overflow: 'hidden' }}></div>
+
           <button 
             onClick={() => onOpenInquiry({})}
             className="btn btn-primary-gold btn-sm nav-cta"

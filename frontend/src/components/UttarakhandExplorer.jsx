@@ -144,6 +144,8 @@ export default function UttarakhandExplorer({ onOpenInquiry }) {
                   <img 
                     src={dest.image} 
                     alt={dest.name}
+                    loading="lazy"
+                    decoding="async"
                     style={{
                       width: '100%',
                       height: '100%',

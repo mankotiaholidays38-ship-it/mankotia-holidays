@@ -192,6 +192,8 @@ export default function Testimonials() {
                 <img 
                   src={t.avatar} 
                   alt={t.name}
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     width: '44px',
                     height: '44px',

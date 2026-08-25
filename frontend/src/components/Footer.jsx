@@ -272,33 +272,67 @@ export default function Footer({ onOpenInquiry, onOpenAdmin }) {
             © {new Date().getFullYear()} <strong>Mankotia Holidays</strong>. All rights reserved. Devoted to spiritual and domestic journeys across Incredible India.
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            {onOpenAdmin && (
-              <button
-                onClick={onOpenAdmin}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#64748B',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  padding: 0,
-                  transition: 'color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#F59E0B'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#64748B'}
-                title="Management Portal"
-              >
-                <Shield size={13} /> Admin Portal
-              </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            {onOpenPolicy && (
+              <>
+                <button
+                  onClick={() => onOpenPolicy('cancellation')}
+                  style={{ background: 'transparent', border: 'none', color: '#94A3B8', fontSize: '0.78rem', cursor: 'pointer', padding: 0 }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#F59E0B'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}
+                >
+                  Cancellation & Refund
+                </button>
+                <span style={{ color: '#334155' }}>•</span>
+                <button
+                  onClick={() => onOpenPolicy('terms')}
+                  style={{ background: 'transparent', border: 'none', color: '#94A3B8', fontSize: '0.78rem', cursor: 'pointer', padding: 0 }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#F59E0B'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}
+                >
+                  Terms & Conditions
+                </button>
+                <span style={{ color: '#334155' }}>•</span>
+                <button
+                  onClick={() => onOpenPolicy('privacy')}
+                  style={{ background: 'transparent', border: 'none', color: '#94A3B8', fontSize: '0.78rem', cursor: 'pointer', padding: 0 }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#F59E0B'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#94A3B8'}
+                >
+                  Privacy Policy
+                </button>
+              </>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748B' }}>
-              <span>Built with precision & devotion</span>
-              <Heart size={14} color="#EF4444" fill="#EF4444" />
+            {onOpenAdmin && (
+              <>
+                <span style={{ color: '#334155' }}>•</span>
+                <button
+                  onClick={onOpenAdmin}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#64748B',
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: 0,
+                    transition: 'color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#F59E0B'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#64748B'}
+                  title="Management Portal"
+                >
+                  <Shield size={12} /> Admin Portal
+                </button>
+              </>
+            )}
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#64748B', fontSize: '0.78rem' }}>
+              <span>Devoted Pilgrimages</span>
+              <Heart size={12} color="#EF4444" fill="#EF4444" />
             </div>
           </div>
         </div>

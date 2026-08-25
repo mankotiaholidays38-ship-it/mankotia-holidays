@@ -119,6 +119,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
               src={pkg.image} 
               alt={pkg.title}
               loading="lazy"
+              decoding="async"
               style={{
                 width: '100%',
                 height: '100%',

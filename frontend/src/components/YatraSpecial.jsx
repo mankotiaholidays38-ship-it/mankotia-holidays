@@ -190,6 +190,8 @@ export default function YatraSpecial({ onOpenInquiry }) {
               <img 
                 src={currentPkg.image} 
                 alt={currentPkg.title}
+                loading="lazy"
+                decoding="async"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
               <div style={{

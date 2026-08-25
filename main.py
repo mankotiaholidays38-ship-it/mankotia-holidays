@@ -1077,6 +1077,18 @@ def download_admin_hotel_plan(filename: str, request: Request, token: Optional[s
         raise HTTPException(status_code=404, detail="Hotel plan not found.")
     return FileResponse(path=path, filename=safe_filename, media_type="application/pdf")
 
+# Health & Keep-Alive Monitoring Routes
+@app.get("/api/health")
+@app.get("/api/ping")
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "Mankotia Holidays API",
+        "version": "1.0.0",
+        "timestamp": datetime.now().isoformat(),
+        "keep_alive": True
+    }
+
 # API Routes
 @app.get("/api/config")
 def get_config():
