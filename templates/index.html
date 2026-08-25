@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mankotia Holidays - AI Powered Tour & Travel | Customized Holiday Packages</title>
+  <meta name="description" content="Plan your dream holidays with Mankotia Holidays using generative AI. Instant custom itineraries for Himachal, Kashmir, Goa, Rajasthan, Dubai, and beyond with instant WhatsApp & call booking.">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <script>
+    window.AGENCY_CONFIG = {
+      name: "{{ agency_name }}",
+      phone: "{{ agency_phone }}",
+      whatsapp: "{{ agency_whatsapp }}",
+      email: "{{ agency_email }}"
+    };
+  </script>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-plane-departure"></i>
+        </div>
+        <span>{{ agency_name }}</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#ai-planner" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles text-purple"></i> AI Planner</a></li>
+        <li><a href="#packages" class="nav-link">Tour Packages</a></li>
+        <li><a href="#why-us" class="nav-link">Why Choose Us</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="tel:{{ agency_phone }}" class="btn btn-call">
+          <i class="fa-solid fa-phone"></i>
+          <span>Call Now</span>
+        </a>
+        <a href="https://wa.me/{{ agency_whatsapp }}?text=Hi%20{{ agency_name }}!%20I%20would%20like%20to%20plan%20a%20vacation." target="_blank" class="btn btn-whatsapp">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-sparkles"></i> Next-Gen AI Travel Platform
+    </div>
+    <h1>Explore The World With <br><span class="hero-highlight">AI-Crafted Holidays</span></h1>
+    <p class="hero-subtitle">
+      Personalized day-by-day itineraries, unbeatable luxury packages, instant WhatsApp quotes, and 24/7 travel assistance with Mankotia Holidays.
+    </p>
+
+    <!-- Quick Inquiry / Lead Bar (Saves to Excel) -->
+    <div class="quick-inquiry-bar">
+      <div class="input-group">
+        <label><i class="fa-solid fa-user"></i> Your Name</label>
+        <input type="text" id="hero-name" placeholder="e.g. Rahul Sharma" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+        <input type="tel" id="hero-phone" placeholder="e.g. +91 9876543210" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fa-solid fa-envelope"></i> Email ID</label>
+        <input type="email" id="hero-email" placeholder="e.g. rahul@gmail.com" required>
+      </div>
+      <div class="input-group">
+        <label><i class="fa-solid fa-location-dot"></i> Destination</label>
+        <input type="text" id="hero-dest" placeholder="e.g. Manali, Kashmir, Goa">
+      </div>
+      <button class="btn btn-primary" style="height: 44px; margin-top: auto;" onclick="submitHeroInquiry()">
+        <i class="fa-solid fa-paper-plane"></i> Get Free Quote
+      </button>
+    </div>
+  </section>
+
+  <!-- AI Smart Itinerary Planner Section -->
+  <section id="ai-planner" class="planner-section">
+    <div class="section-header">
+      <div class="hero-badge" style="background: rgba(168, 85, 247, 0.1); color: #8B5CF6; border-color: rgba(168, 85, 247, 0.2);">
+        <i class="fa-solid fa-robot"></i> Generative AI Studio
+      </div>
+      <h2>AI Travel Itinerary Generator</h2>
+      <p>Tell us your dream destination, duration & budget. Our AI will craft an hour-by-hour tailored itinerary in seconds.</p>
+    </div>
+
+    <div class="planner-card">
+      <div class="planner-form-grid">
+        <div class="input-group">
+          <label><i class="fa-solid fa-map-pin"></i> Where do you want to go?</label>
+          <input type="text" id="plan-destination" placeholder="e.g. Manali, Kashmir, Goa, Dubai, Kerala" value="Manali">
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-calendar-days"></i> Number of Days</label>
+          <select id="plan-days">
+            <option value="3">3 Days (Weekend Getaway)</option>
+            <option value="4" selected>4 Days (Standard Trip)</option>
+            <option value="5">5 Days (Relaxed Vacation)</option>
+            <option value="6">6 Days (Comprehensive)</option>
+            <option value="7">7 Days (Grand Tour)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-wallet"></i> Budget Preference</label>
+          <select id="plan-budget">
+            <option value="Budget-Friendly">Budget-Friendly (Affordable & Cozy)</option>
+            <option value="Standard" selected>Standard (3★/4★ Balanced)</option>
+            <option value="Luxury 5-Star">Luxury (5-Star & Premium Stays)</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fa-solid fa-users"></i> Travel Style</label>
+          <select id="plan-style">
+            <option value="Family / Leisure" selected>Family & Leisure</option>
+            <option value="Honeymoon / Couple">Honeymoon & Romance</option>
+            <option value="Friends & Adventure">Friends & Adventure Sports</option>
+            <option value="Solo Explorer">Solo Explorer & Culture</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="preset-tags">
+          <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">Quick Ideas:</span>
+          <span class="preset-tag" onclick="quickFillPlan('Manali', 4, 'Standard', 'Friends & Adventure')">🏔️ Manali Adventure</span>
+          <span class="preset-tag" onclick="quickFillPlan('Kashmir', 5, 'Luxury 5-Star', 'Honeymoon / Couple')">🌸 Kashmir Paradise</span>
+          <span class="preset-tag" onclick="quickFillPlan('Goa', 3, 'Budget-Friendly', 'Friends & Adventure')">🏖️ Tropical Goa</span>
+          <span class="preset-tag" onclick="quickFillPlan('Dubai', 5, 'Luxury 5-Star', 'Family / Leisure')">🏙️ Dubai Safari</span>
+        </div>
+
+        <button id="btn-generate-plan" class="btn btn-ai" onclick="generateItinerary()">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Itinerary
+        </button>
+      </div>
+
+      <!-- Itinerary Loading Skeleton -->
+      <div id="planner-loading" style="display: none; text-align: center; padding: 3rem 0;">
+        <div class="spinner" style="width: 42px; height: 42px; border-width: 4px; border-top-color: var(--primary); border-color: rgba(37,99,235,0.15);"></div>
+        <h4 style="margin-top: 1.25rem; font-size: 1.2rem; color: #1E293B;">Crafting your customized itinerary with AI...</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Checking optimal routes, luxury stays, weather, and signature local food spots.</p>
+      </div>
+
+      <!-- Rendered Itinerary Container -->
+      <div id="itinerary-result" class="itinerary-container">
+        <!-- Header Banner -->
+        <div class="itinerary-header-box">
+          <div>
+            <h3 id="itinerary-title" style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">Trip Title</h3>
+            <p id="itinerary-subtitle" style="opacity: 0.9;">Destination & Duration</p>
+            <div class="itinerary-meta">
+              <span class="meta-pill"><i class="fa-solid fa-indian-rupee-sign"></i> <span id="meta-cost">Est. Cost</span></span>
+              <span class="meta-pill"><i class="fa-solid fa-sun"></i> <span id="meta-season">Best Season</span></span>
+            </div>
+          </div>
+          <div class="itinerary-actions">
+            <button class="btn btn-whatsapp" onclick="bookItineraryViaWhatsApp()">
+              <i class="fa-brands fa-whatsapp"></i> Book via WhatsApp
+            </button>
+            <button class="btn btn-outline" style="background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.3);" onclick="openInquiryModalWithPlan()">
+              <i class="fa-solid fa-bookmark"></i> Save & Get Quote
+            </button>
+          </div>
+        </div>
+
+        <!-- Packing & Highlights -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="background: #F8FAFC; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-light);">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--primary);"><i class="fa-solid fa-star"></i> Trip Highlights</h4>
+            <ul id="itinerary-highlights" style="list-style: none; font-size: 0.88rem; display: flex; flex-direction: column; gap: 0.4rem;"></ul>
+          </div>
+          <div style="background: #F8FAFC; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-light);">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: #10B981;"><i class="fa-solid fa-suitcase"></i> Packing Essentials</h4>
+            <ul id="itinerary-packing" style="list-style: none; font-size: 0.88rem; display: flex; flex-direction: column; gap: 0.4rem;"></ul>
+          </div>
+        </div>
+
+        <!-- Day by Day Timeline -->
+        <h3 style="font-size: 1.35rem; margin-bottom: 1.5rem; color: #0F172A;"><i class="fa-solid fa-route"></i> Day-by-Day Schedule</h3>
+        <div id="timeline-container" class="timeline"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Holiday Packages Section -->
+  <section id="packages" class="packages-section">
+    <div class="section-header">
+      <div class="hero-badge">
+        <i class="fa-solid fa-crown"></i> Handcrafted Deals
+      </div>
+      <h2>Featured Holiday Packages</h2>
+      <p>All-inclusive packages with luxury stays, private sightseeing, delicious meals, and round-the-clock support.</p>
+    </div>
+
+    <div class="packages-grid">
+      {% for pkg in packages %}
+      <div class="package-card">
+        <div class="package-image-wrap">
+          <img src="{{ pkg.image }}" alt="{{ pkg.title }}" class="package-img">
+          <div class="package-badge">{{ pkg.badge }}</div>
+          <div class="package-duration"><i class="fa-solid fa-clock"></i> {{ pkg.duration }}</div>
+        </div>
+        <div class="package-body">
+          <span class="package-destination">{{ pkg.destination }}</span>
+          <h3 class="package-title">{{ pkg.title }}</h3>
+          
+          <ul class="package-highlights">
+            {% for hl in pkg.highlights[:4] %}
+            <li><i class="fa-solid fa-check" style="color: #10B981;"></i> {{ hl }}</li>
+            {% endfor %}
+          </ul>
+
+          <div class="package-pricing">
+            <div class="price-box">
+              <span class="price-strike">₹{{ '{:,}'.format(pkg.original_price_inr) }}</span>
+              <span class="price-main">₹{{ '{:,}'.format(pkg.price_inr) }}</span>
+              <span class="price-sub">per person</span>
+            </div>
+            <div class="package-btn-group">
+              <a href="tel:{{ agency_phone }}" class="btn btn-call" style="padding: 0.55rem 0.85rem;" title="Call to Inquire">
+                <i class="fa-solid fa-phone"></i>
+              </a>
+              <button class="btn btn-whatsapp" style="padding: 0.55rem 1rem;" onclick="bookPackageWhatsApp('{{ pkg.title }}', '{{ pkg.price_inr }}')">
+                <i class="fa-brands fa-whatsapp"></i> Book
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section id="why-us" style="background: white; padding: 5rem 1.5rem; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <div class="section-header">
+        <h2>Why Travel With Mankotia Holidays?</h2>
+        <p>We blend high-tech AI personalization with warm, personalized hospitality.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+        <div style="padding: 2rem; background: #F8FAFC; border-radius: 16px; border: 1px solid #F1F5F9; text-align: center;">
+          <div style="width: 60px; height: 60px; background: rgba(37,99,235,0.1); color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">AI Smart Customization</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Get optimized travel routes, custom timing, and local recommendations created uniquely for your budget.</p>
+        </div>
+
+        <div style="padding: 2rem; background: #F8FAFC; border-radius: 16px; border: 1px solid #F1F5F9; text-align: center;">
+          <div style="width: 60px; height: 60px; background: rgba(16,185,129,0.1); color: #10B981; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Instant WhatsApp & Call</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Direct one-click connection with dedicated travel planners for custom bookings and live assistance.</p>
+        </div>
+
+        <div style="padding: 2rem; background: #F8FAFC; border-radius: 16px; border: 1px solid #F1F5F9; text-align: center;">
+          <div style="width: 60px; height: 60px; background: rgba(245,158,11,0.1); color: var(--accent); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Verified Luxury Stays</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Carefully audited mountain chalets, private houseboats, beach villas, and 4★/5★ premium hotels.</p>
+        </div>
+
+        <div style="padding: 2rem; background: #F8FAFC; border-radius: 16px; border: 1px solid #F1F5F9; text-align: center;">
+          <div style="width: 60px; height: 60px; background: rgba(139,92,246,0.1); color: #8B5CF6; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+            <i class="fa-solid fa-file-excel"></i>
+          </div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Automated Excel CRM</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">All inquiries (Name, Phone, Email) are safely cataloged into Excel spreadsheet database for zero lead loss.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking & Lead Capture Modal -->
+  <div id="inquiry-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeInquiryModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.45rem; color: #0F172A; margin-bottom: 0.25rem;">Plan Your Custom Tour</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Fill in your details below. Our team will prepare a custom quote and save your request.</p>
+      </div>
+
+      <form id="inquiry-form" onsubmit="handleInquirySubmit(event)">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="input-group">
+            <label><i class="fa-solid fa-user"></i> Full Name *</label>
+            <input type="text" id="modal-name" required placeholder="e.g. Anjali Sharma">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="input-group">
+              <label><i class="fa-solid fa-phone"></i> Phone Number *</label>
+              <input type="tel" id="modal-phone" required placeholder="e.g. +91 9876543210">
+            </div>
+            <div class="input-group">
+              <label><i class="fa-solid fa-envelope"></i> Email Address *</label>
+              <input type="email" id="modal-email" required placeholder="e.g. anjali@gmail.com">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="input-group">
+              <label><i class="fa-solid fa-location-dot"></i> Destination</label>
+              <input type="text" id="modal-dest" placeholder="e.g. Manali, Kashmir, Goa">
+            </div>
+            <div class="input-group">
+              <label><i class="fa-solid fa-users"></i> Number of Travelers</label>
+              <input type="text" id="modal-travelers" placeholder="e.g. 2 Adults, 1 Child">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="input-group">
+              <label><i class="fa-solid fa-calendar"></i> Travel Date</label>
+              <input type="text" id="modal-date" placeholder="e.g. Next Month / 15 Oct">
+            </div>
+            <div class="input-group">
+              <label><i class="fa-solid fa-wallet"></i> Budget Range</label>
+              <input type="text" id="modal-budget" placeholder="e.g. ₹20,000 - ₹30,000">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label><i class="fa-solid fa-comment-dots"></i> Special Requirements / Requests</label>
+            <textarea id="modal-notes" rows="2" style="border: 1px solid var(--border-light); padding: 0.65rem; border-radius: 10px; font-family: inherit; font-size: 0.92rem; outline: none; background: #FAFAFA;" placeholder="e.g. Need river-facing hotel room, candlelight dinner, private cab..."></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-inquiry" class="btn btn-primary" style="height: 46px; margin-top: 0.5rem; font-size: 1rem;">
+            <i class="fa-solid fa-check"></i> Submit Inquiry & Save to Excel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Confirmation Modal with Direct WhatsApp & Call buttons -->
+  <div id="success-modal" class="modal-overlay">
+    <div class="modal-content" style="text-align: center;">
+      <button class="modal-close" onclick="closeSuccessModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div style="width: 64px; height: 64px; background: #DCFCE7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 style="font-size: 1.5rem; color: #0F172A; margin-bottom: 0.5rem;">Inquiry Recorded Successfully!</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.75rem;">
+        Your details have been saved in our Excel database. Connect instantly on WhatsApp or call our senior holiday manager:
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <a id="success-wa-link" href="#" target="_blank" class="btn btn-whatsapp" style="height: 48px; font-size: 1rem;">
+          <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> Continue on WhatsApp Now
+        </a>
+        <a href="tel:{{ agency_phone }}" class="btn btn-call" style="height: 48px; font-size: 1rem;">
+          <i class="fa-solid fa-phone"></i> Call Holiday Manager Directly
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Floating Contact & Concierge Dock -->
+  <div class="floating-dock">
+    <!-- AI Concierge Float Button -->
+    <button class="float-btn float-ai" onclick="toggleChatDrawer()" title="AI Concierge">
+      <i class="fa-solid fa-headset"></i>
+      <span class="float-tooltip">Chat with AI Concierge</span>
+    </button>
+
+    <!-- Direct Call Float Button -->
+    <a href="tel:{{ agency_phone }}" class="float-btn float-call" title="Direct Phone Call">
+      <i class="fa-solid fa-phone"></i>
+      <span class="float-tooltip">Call {{ agency_phone }}</span>
+    </a>
+
+    <!-- Direct WhatsApp Float Button -->
+    <a href="https://wa.me/{{ agency_whatsapp }}?text=Hi%20{{ agency_name }}!%20I%20want%20to%20inquire%20about%20travel%20packages." target="_blank" class="float-btn float-whatsapp" title="WhatsApp Chat">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span class="float-tooltip">Chat on WhatsApp</span>
+    </a>
+  </div>
+
+  <!-- AI Concierge Live Chat Drawer -->
+  <div id="chat-drawer" class="chat-drawer">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <h4 style="font-size: 0.95rem; font-weight: 700;">Aria • AI Concierge</h4>
+          <span style="font-size: 0.75rem; opacity: 0.9;">Online • Mankotia Holidays</span>
+        </div>
+      </div>
+      <button onclick="toggleChatDrawer()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div id="chat-body" class="chat-body">
+      <div class="chat-bubble bubble-bot">
+        👋 Hi! I'm <strong>Aria</strong>, your AI Travel Concierge. Ask me about weather, packing, best places to visit, or package prices!
+      </div>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Type your travel question..." onkeypress="handleChatKeyPress(event)">
+      <button onclick="sendChatMessage()" class="btn btn-ai" style="padding: 0.5rem 0.9rem; border-radius: 50%;">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>{{ agency_name }}</h3>
+        <p style="font-size: 0.9rem; margin-bottom: 1.25rem;">
+          Your trusted partner for personalized domestic and international holiday experiences powered by generative AI.
+        </p>
+        <div style="display: flex; gap: 0.75rem;">
+          <a href="tel:{{ agency_phone }}" class="btn btn-call" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-solid fa-phone"></i> {{ agency_phone }}</a>
+          <a href="https://wa.me/{{ agency_whatsapp }}" target="_blank" class="btn btn-whatsapp" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Top Destinations</h4>
+        <ul class="footer-links">
+          <li><a href="javascript:void(0)" onclick="quickFillPlan('Manali', 4, 'Standard', 'Friends & Adventure')">Himachal (Manali & Shimla)</a></li>
+          <li><a href="javascript:void(0)" onclick="quickFillPlan('Kashmir', 5, 'Luxury 5-Star', 'Honeymoon / Couple')">Kashmir & Gulmarg</a></li>
+          <li><a href="javascript:void(0)" onclick="quickFillPlan('Goa', 3, 'Budget-Friendly', 'Friends & Adventure')">Goa Beaches & Cruises</a></li>
+          <li><a href="javascript:void(0)" onclick="quickFillPlan('Rajasthan', 6, 'Standard', 'Family / Leisure')">Royal Rajasthan Tour</a></li>
+          <li><a href="javascript:void(0)" onclick="quickFillPlan('Dubai', 5, 'Luxury 5-Star', 'Family / Leisure')">Dubai Desert & City</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact & Address</h4>
+        <ul class="footer-links">
+          <li>
+            <a href="mailto:{{ agency_email }}" style="color: inherit; text-decoration: none;">
+              <i class="fa-solid fa-envelope" style="color: var(--primary);"></i> {{ agency_email }}
+            </a>
+          </li>
+          <li><i class="fa-solid fa-phone" style="color: #0284C7;"></i> {{ agency_phone }}</li>
+          <li><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> +{{ agency_whatsapp }}</li>
+          <li><i class="fa-solid fa-clock" style="color: var(--accent);"></i> 24/7 AI Assistance & Support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 {{ agency_name }}. All Rights Reserved.</p>
+      <p>Powered by FastAPI & Google Gemini AI</p>
+    </div>
+  </footer>
+
+  <!-- Custom JavaScript Logic -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

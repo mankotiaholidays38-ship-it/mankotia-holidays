@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal • Private Leads Management | Mankotia Holidays</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .admin-body {
+      background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 35%), #0B1120;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      color: #E2E8F0;
+    }
+    .admin-container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .admin-card {
+      background: rgba(17, 26, 46, 0.9);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      margin-bottom: 2rem;
+    }
+    .login-box {
+      max-width: 420px;
+      margin: 6rem auto;
+      background: rgba(17, 26, 46, 0.94);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      text-align: center;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .stat-card {
+      background: rgba(17, 26, 46, 0.82);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .search-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .search-bar input {
+      flex-grow: 1;
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: #111A2E;
+      color: #F8FAFC;
+      outline: none;
+      font-family: inherit;
+    }
+    #login-view h2, #dashboard-view h1, #dashboard-view h2, #dashboard-view h3,
+    #dashboard-view strong, #dashboard-view td {
+      color: #F8FAFC !important;
+    }
+    #login-view p, #dashboard-view .stat-card div, #dashboard-view td a {
+      color: #CBD5E1 !important;
+    }
+    #login-view input, #dashboard-view input {
+      background: #0F172A !important;
+      color: #F8FAFC !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
+    }
+    .leads-table td {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    .leads-table tr:hover td {
+      background: rgba(245, 158, 11, 0.08);
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- 1. LOGIN SCREEN -->
+  <div id="login-view" class="login-box">
+    <div style="width: 56px; height: 56px; background: rgba(37,99,235,0.1); color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem;">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #0F172A;">Admin Security Login</h2>
+    <p style="color: #64748B; font-size: 0.88rem; margin-bottom: 1.5rem;">Enter your admin password to view private customer leads & export Excel database.</p>
+    
+    <form onsubmit="handleAdminLogin(event)" autocomplete="off">
+      <div class="input-group" style="margin-bottom: 1.25rem; text-align: left;">
+        <label>Admin Password</label>
+        <div style="position: relative;">
+          <input type="password" id="admin-pass-input" placeholder="Enter password" required autofocus autocomplete="new-password" style="padding-right: 44px;">
+          <button type="button" id="toggle-password" onclick="togglePasswordVisibility()" title="Show password" aria-label="Show password" style="position: absolute; right: 10px; top: 8px; border: 0; background: transparent; color: #64748B; cursor: pointer; font-size: 1rem;">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login to Dashboard
+      </button>
+    </form>
+    <div id="login-error" style="color: #EF4444; font-size: 0.85rem; margin-top: 1rem; display: none;">
+      Incorrect password. Please try again.
+    </div>
+  </div>
+
+  <!-- 2. DASHBOARD VIEW (Only visible after login) -->
+  <div id="dashboard-view" class="admin-container" style="display: none;">
+    <!-- Top Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="background: #DCFCE7; color: #166534; padding: 3px 8px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;">🔒 Private Owner Portal</span>
+        </div>
+        <h1 style="font-size: 1.85rem; color: #0F172A; margin-top: 0.25rem;">{{ agency_name }} • Customer Leads CRM</h1>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <a id="btn-download-xlsx" href="#" class="btn btn-primary" style="background: #107C41;">
+          <i class="fa-solid fa-file-excel"></i> Download Excel (.xlsx)
+        </a>
+        <button onclick="adminLogout()" class="btn btn-outline" style="color: #EF4444; border-color: #FECACA;">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #EFF6FF; color: #2563EB;">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+          <div style="font-size: 0.82rem; color: #64748B; font-weight: 600;">TOTAL INQUIRIES</div>
+          <div id="stat-total" style="font-size: 1.5rem; font-weight: 800; color: #0F172A;">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #DCFCE7; color: #166534;">
+          <i class="fa-solid fa-file-excel"></i>
+        </div>
+        <div>
+          <div style="font-size: 0.82rem; color: #64748B; font-weight: 600;">EXCEL STORAGE</div>
+          <div style="font-size: 1rem; font-weight: 700; color: #166534;">Auto-Synced (.xlsx)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #FAF5FF; color: #8B5CF6;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <div style="font-size: 0.82rem; color: #64748B; font-weight: 600;">PRIVACY STATUS</div>
+          <div style="font-size: 1rem; font-weight: 700; color: #8B5CF6;">100% Confidential</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leads Table Card -->
+    <div class="admin-card">
+      <div class="search-bar">
+        <input type="text" id="leads-search" placeholder="🔍 Search leads by name, phone, email, or destination..." oninput="filterLeadsTable()">
+      </div>
+
+      <div class="leads-table-wrap">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Customer Name</th>
+              <th>Phone Number</th>
+              <th>Email Address</th>
+              <th>Destination</th>
+              <th>Travelers</th>
+              <th>Date</th>
+              <th>Budget</th>
+              <th>Notes</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body">
+            <tr>
+              <td colspan="10" style="text-align: center; padding: 2rem; color: #64748B;">Loading customer inquiries...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allLeads = [];
+    let currentToken = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      sessionStorage.removeItem("mankotia_admin_token");
+      localStorage.removeItem("mankotia_admin_token");
+      document.getElementById("login-view").style.display = "block";
+      document.getElementById("dashboard-view").style.display = "none";
+    });
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const password = document.getElementById("admin-pass-input").value;
+      const errorElem = document.getElementById("login-error");
+      errorElem.style.display = "none";
+
+      try {
+        const res = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          currentToken = data.token;
+          loadDashboard(currentToken);
+        } else {
+          errorElem.textContent = data.detail || "Incorrect password.";
+          errorElem.style.display = "block";
+        }
+      } catch (err) {
+        errorElem.textContent = "Server error verifying password.";
+        errorElem.style.display = "block";
+      }
+    }
+
+    async function loadDashboard(token) {
+      document.getElementById("login-view").style.display = "none";
+      document.getElementById("dashboard-view").style.display = "block";
+      document.getElementById("btn-download-xlsx").href = `/api/admin/download-leads?token=${encodeURIComponent(token)}`;
+
+      try {
+        const res = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}`);
+        if (res.status === 401) {
+          adminLogout();
+          return;
+        }
+        const data = await res.json();
+        if (data.success) {
+          allLeads = data.leads || [];
+          document.getElementById("stat-total").textContent = allLeads.length;
+          renderTable(allLeads);
+        }
+      } catch (err) {
+        console.error("Error loading leads:", err);
+      }
+    }
+
+    function renderTable(leads) {
+      const tbody = document.getElementById("admin-table-body");
+      if (leads.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 2rem; color: #64748B;">No customer inquiries recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = "";
+      leads.forEach(lead => {
+        const tr = document.createElement("tr");
+        const cleanPhone = (lead.phone || '').replace(/[^0-9]/g, '');
+        const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${lead.name}, thank you for inquiring with Mankotia Holidays regarding your trip to ${lead.destination}!`)}`;
+        
+        tr.innerHTML = `
+          <td><strong>${lead.timestamp}</strong></td>
+          <td><strong style="color: #0F172A;">${lead.name}</strong></td>
+          <td><a href="tel:${lead.phone}" style="color: #0284C7; font-weight: 600;"><i class="fa-solid fa-phone"></i> ${lead.phone}</a></td>
+          <td><a href="mailto:${lead.email}" style="color: #2563EB;"><i class="fa-solid fa-envelope"></i> ${lead.email}</a></td>
+          <td><span style="background: #EFF6FF; color: #1D4ED8; padding: 2px 6px; border-radius: 4px; font-weight: 600;">${lead.destination}</span></td>
+          <td>${lead.travelers}</td>
+          <td>${lead.travel_date}</td>
+          <td>${lead.budget}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${lead.notes}">${lead.notes}</td>
+          <td>
+            <div style="display: flex; gap: 0.4rem;">
+              <a href="${waLink}" target="_blank" class="btn btn-whatsapp" style="padding: 0.35rem 0.65rem; font-size: 0.78rem;" title="Chat with customer on WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i> Chat
+              </a>
+              <a href="tel:${lead.phone}" class="btn btn-call" style="padding: 0.35rem 0.65rem; font-size: 0.78rem;" title="Call customer">
+                <i class="fa-solid fa-phone"></i> Call
+              </a>
+              <a href="/api/admin/hotel-plan/hotels-${encodeURIComponent(lead.lead_id).replace(/%23/g, '').replace(/%2D/g, '_')}.pdf?token=${encodeURIComponent(currentToken)}" class="btn btn-call" style="padding: 0.35rem 0.65rem; font-size: 0.78rem;" title="Download private hotel plan PDF">
+                <i class="fa-solid fa-hotel"></i> Hotels PDF
+              </a>
+              <button onclick="deleteLead('${encodeURIComponent(lead.lead_id)}', '${escapeHtml(lead.name)}')" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.78rem; color: #DC2626; border-color: #FECACA;" title="Delete inquiry">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterLeadsTable() {
+      const q = document.getElementById("leads-search").value.toLowerCase();
+      const filtered = allLeads.filter(l => 
+        (l.name && l.name.toLowerCase().includes(q)) ||
+        (l.phone && l.phone.toLowerCase().includes(q)) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
+        (l.destination && l.destination.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById("admin-pass-input");
+      const button = document.getElementById("toggle-password");
+      const visible = input.type === "text";
+      input.type = visible ? "password" : "text";
+      button.title = visible ? "Show password" : "Hide password";
+      button.setAttribute("aria-label", button.title);
+      button.innerHTML = `<i class="fa-solid fa-eye${visible ? '' : '-slash'}"></i>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+    }
+
+    async function deleteLead(encodedLeadId, customerName) {
+      if (!confirm(`Delete the inquiry from ${customerName}? This cannot be undone.`)) return;
+      try {
+        const res = await fetch(`/api/admin/leads/${encodedLeadId}?token=${encodeURIComponent(currentToken)}`, { method: "DELETE" });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.detail || "Could not delete inquiry.");
+        allLeads = allLeads.filter(lead => encodeURIComponent(lead.lead_id) !== encodedLeadId);
+        document.getElementById("stat-total").textContent = allLeads.length;
+        filterLeadsTable();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function adminLogout() {
+      sessionStorage.removeItem("mankotia_admin_token");
+      location.reload();
+    }
+  </script>
+</body>
+</html>
