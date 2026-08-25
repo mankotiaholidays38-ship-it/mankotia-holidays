@@ -182,10 +182,8 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
           </li>
         </ul>
 
-        {/* Primary action & Language */}
+        {/* Primary action */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Google Translate Mount Point */}
-          <div id="google_translate_element" style={{ display: 'inline-block', maxHeight: '34px', overflow: 'hidden' }}></div>
 
           <button 
             onClick={() => onOpenInquiry({})}
