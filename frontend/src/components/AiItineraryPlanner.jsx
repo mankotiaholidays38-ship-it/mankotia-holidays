@@ -30,10 +30,6 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [pickupLocation, setPickupLocation] = useState('Haridwar Railway Station / Dehradun Airport');
   const [dropLocation, setDropLocation] = useState('Haridwar Railway Station / Dehradun Airport');
   const [sameAsPickup, setSameAsPickup] = useState(true);
-  const [activeTransitTarget, setActiveTransitTarget] = useState('pickup'); // 'pickup' | 'drop'
-
-  const pickupInputRef = useRef(null);
-  const dropInputRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
   const [itinerary, setItinerary] = useState(null);
@@ -124,17 +120,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
     }
   ];
 
-  const transitHubs = [
-    { label: "🚉 Haridwar Rly Stn", value: "Haridwar Railway Station" },
-    { label: "✈️ Dehradun Airport", value: "Dehradun Jolly Grant Airport (DED)" },
-    { label: "✈️ Delhi IGI Airport", value: "Delhi IGI Airport (DEL)" },
-    { label: "✈️ Chandigarh Airport", value: "Chandigarh International Airport (IXC)" },
-    { label: "✈️ Srinagar Airport", value: "Srinagar International Airport (SXR)" },
-    { label: "✈️ Jaipur Airport", value: "Jaipur International Airport (JAI)" },
-    { label: "✈️ Goa Airport", value: "Goa Dabolim (GOI) / Mopa (GOX) Airport" },
-    { label: "✈️ Cochin Airport", value: "Cochin International Airport (COK)" },
-    { label: "🚉 Kathgodam Station", value: "Kathgodam Railway Station" }
-  ];
+
 
   const handleGenerate = async (e) => {
     if (e) e.preventDefault();
@@ -229,15 +215,15 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
         {/* Section Header */}
         <div className="section-header">
           <div className="badge-wrap">
-            <span className="badge-cyan" style={{ borderColor: 'rgba(139, 92, 246, 0.3)', color: '#C084FC', background: 'rgba(139, 92, 246, 0.15)' }}>
-              <Sparkles size={14} /> Generative AI Trip Studio & Google Maps Routing
+            <span className="badge-gold">
+              <Sparkles size={14} /> AI Powered Travel Planner
             </span>
           </div>
           <h2>
             AI Smart <span className="text-gradient-gold">Itinerary Generator</span>
           </h2>
           <p>
-            Plan your custom tour starting exactly from your <strong>Pickup Hub</strong> and ending at your <strong>Drop Location</strong> with real-time Google Maps route guidance.
+            Create your custom holiday plan tailored by destination, duration, budget, and pickup location instantly.
           </p>
         </div>
 
@@ -253,7 +239,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           {/* Quick Presets Chips */}
           <div style={{ marginBottom: '24px' }}>
             <div style={{ fontSize: '0.85rem', color: '#94A3B8', fontWeight: 600, marginBottom: '10px' }}>
-              ⚡ Quick Select Destinations & Curated Transit:
+              ⚡ Quick Select Popular Tours:
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {quickPresets.map((preset, i) => {
@@ -401,432 +387,63 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
             </div>
 
-            {/* Google Maps Identified Pickup & Drop Routing Inputs */}
+            {/* Single Clear Pickup & Drop Location Row */}
             <div style={{
-              position: 'relative',
-              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 69, 0.6) 100%)',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '24px',
-              boxShadow: '0 12px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
-              overflow: 'hidden'
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '18px',
+              marginBottom: '20px'
             }}>
-              {/* Decorative background glow */}
-              <div style={{
-                position: 'absolute',
-                top: '-40px',
-                right: '-40px',
-                width: '180px',
-                height: '180px',
-                background: 'radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
-
-              {/* Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '34px',
-                    height: '34px',
-                    borderRadius: '10px',
-                    background: 'rgba(56, 189, 248, 0.18)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#38BDF8',
-                    border: '1px solid rgba(56, 189, 248, 0.35)'
-                  }}>
-                    <Navigation size={18} />
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#F8FAFC', margin: 0, letterSpacing: '-0.2px' }}>
-                      Google Maps Transit & Route Hubs
-                    </h4>
-                    <span style={{ fontSize: '0.76rem', color: '#94A3B8' }}>
-                      Smart Chauffeur Logistics • Auto-advancing Route Builder
-                    </span>
-                  </div>
-                </div>
-
-                {/* Live Google Maps Preview Link */}
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(pickupLocation)}&destination=${encodeURIComponent(sameAsPickup ? pickupLocation : dropLocation)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.78rem',
-                    color: '#38BDF8',
-                    background: 'rgba(56, 189, 248, 0.1)',
-                    border: '1px solid rgba(56, 189, 248, 0.25)',
-                    padding: '4px 10px',
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  <span>Preview Route on Maps</span>
-                  <ExternalLink size={13} />
-                </a>
+              {/* Pickup Location */}
+              <div className="form-input-group" style={{ marginBottom: 0 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#CBD5E1', marginBottom: '6px', fontWeight: 600 }}>
+                  <Car size={15} color="#10B981" />
+                  <span>Pickup Location / Arrival Hub</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. Haridwar Railway Station / Dehradun Airport / Delhi"
+                  value={pickupLocation}
+                  onChange={(e) => setPickupLocation(e.target.value)}
+                  required
+                />
               </div>
 
-              {/* Attractive Connected Route Stepper */}
-              <div style={{
-                background: 'rgba(11, 17, 32, 0.75)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '12px',
-                padding: '12px 16px',
-                marginBottom: '18px'
-              }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: '12px' }}>
-                  
-                  {/* Step 1 Pill (Pickup) */}
-                  <div 
-                    onClick={() => {
-                      setActiveTransitTarget('pickup');
-                      pickupInputRef.current?.focus();
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '8px 12px',
-                      borderRadius: '10px',
-                      background: activeTransitTarget === 'pickup' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                      border: activeTransitTarget === 'pickup' ? '1.5px solid #34D399' : '1px solid rgba(255, 255, 255, 0.06)',
-                      boxShadow: activeTransitTarget === 'pickup' ? '0 0 12px rgba(52, 211, 153, 0.25)' : 'none',
-                      cursor: 'pointer',
-                      transition: 'all 0.25s ease'
-                    }}
-                  >
-                    <div style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: activeTransitTarget === 'pickup' ? '#10B981' : 'rgba(52, 211, 153, 0.2)',
-                      color: '#FFFFFF',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 800,
-                      fontSize: '0.75rem',
-                      flexShrink: 0
-                    }}>
-                      1
-                    </div>
-                    <div style={{ overflow: 'hidden' }}>
-                      <div style={{ fontSize: '0.7rem', color: activeTransitTarget === 'pickup' ? '#6EE7B7' : '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        Pickup Origin {activeTransitTarget === 'pickup' ? '• Selecting' : '• Ready'}
-                      </div>
-                      <div style={{ fontSize: '0.82rem', color: '#F1F5F9', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {pickupLocation ? pickupLocation.split('/')[0].trim() : 'Choose Hub'}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Route Transition Visual Arrow */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      background: 'rgba(245, 158, 11, 0.12)',
-                      border: '1px solid rgba(245, 158, 11, 0.25)',
-                      padding: '3px 8px',
-                      borderRadius: '20px',
-                      fontSize: '0.72rem',
-                      color: '#FCD34D',
-                      fontWeight: 700
-                    }}>
-                      <Car size={13} />
-                      <span>Transit</span>
-                      <ArrowRight size={12} />
-                    </div>
-                  </div>
-
-                  {/* Step 2 Pill (Drop) */}
-                  <div 
-                    onClick={() => {
-                      setActiveTransitTarget('drop');
-                      setSameAsPickup(false);
-                      dropInputRef.current?.focus();
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '8px 12px',
-                      borderRadius: '10px',
-                      background: activeTransitTarget === 'drop' ? 'rgba(244, 63, 94, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                      border: activeTransitTarget === 'drop' ? '1.5px solid #F43F5E' : '1px solid rgba(255, 255, 255, 0.06)',
-                      boxShadow: activeTransitTarget === 'drop' ? '0 0 12px rgba(244, 63, 94, 0.25)' : 'none',
-                      cursor: 'pointer',
-                      transition: 'all 0.25s ease'
-                    }}
-                  >
-                    <div style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      background: activeTransitTarget === 'drop' ? '#F43F5E' : 'rgba(244, 63, 94, 0.2)',
-                      color: '#FFFFFF',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 800,
-                      fontSize: '0.75rem',
-                      flexShrink: 0
-                    }}>
-                      2
-                    </div>
-                    <div style={{ overflow: 'hidden' }}>
-                      <div style={{ fontSize: '0.7rem', color: activeTransitTarget === 'drop' ? '#FDA4AF' : '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        Drop Return {activeTransitTarget === 'drop' ? '• Selecting' : (sameAsPickup ? '• (Same as Pickup)' : '• Set')}
-                      </div>
-                      <div style={{ fontSize: '0.82rem', color: '#F1F5F9', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {sameAsPickup ? `${pickupLocation.split('/')[0].trim()} (Roundtrip)` : (dropLocation ? dropLocation.split('/')[0].trim() : 'Choose Hub')}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Auto-Advance Dynamic Help Banner */}
-                <div style={{
-                  marginTop: '10px',
-                  paddingTop: '8px',
-                  borderTop: '1px dashed rgba(255, 255, 255, 0.08)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '8px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: activeTransitTarget === 'pickup' ? '#6EE7B7' : '#FDA4AF', fontWeight: 600 }}>
-                    <Sparkles size={14} />
-                    <span>
-                      {activeTransitTarget === 'pickup'
-                        ? 'Step 1: Pick or type your Pickup point. Selection will automatically advance to Drop location.'
-                        : 'Step 2: Pickup confirmed! Now select or type your final Drop/Departure hub.'}
-                    </span>
-                  </div>
-                  {activeTransitTarget === 'drop' && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSameAsPickup(true);
-                        setDropLocation(pickupLocation);
-                      }}
-                      style={{
-                        background: sameAsPickup ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.06)',
-                        border: sameAsPickup ? '1px solid #38BDF8' : '1px solid rgba(255, 255, 255, 0.12)',
-                        color: sameAsPickup ? '#38BDF8' : '#CBD5E1',
-                        fontSize: '0.74rem',
-                        fontWeight: 600,
-                        padding: '3px 8px',
-                        borderRadius: '6px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {sameAsPickup ? '✓ Roundtrip (Same Drop)' : 'Reset to Same as Pickup'}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Quick Transit Hub Selector Chips */}
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ fontSize: '0.78rem', color: '#94A3B8', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span>
-                    ⚡ Quick Transit Hubs ({activeTransitTarget === 'pickup' ? 'Assigning Pickup' : 'Assigning Drop'}):
-                  </span>
-                  <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                    Click any hub below
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {transitHubs.map((hub, hIdx) => {
-                    const isCurrentPickup = pickupLocation === hub.value;
-                    const isCurrentDrop = dropLocation === hub.value;
-                    const isHighlighted = activeTransitTarget === 'pickup' ? isCurrentPickup : (!sameAsPickup && isCurrentDrop);
-
-                    return (
-                      <button
-                        key={hIdx}
-                        type="button"
-                        onClick={() => {
-                          if (activeTransitTarget === 'pickup') {
-                            setPickupLocation(hub.value);
-                            // Auto advance to drop point smoothly
-                            setActiveTransitTarget('drop');
-                            setSameAsPickup(false);
-                            setTimeout(() => {
-                              dropInputRef.current?.focus();
-                              dropInputRef.current?.select();
-                            }, 60);
-                          } else {
-                            setDropLocation(hub.value);
-                            setSameAsPickup(false);
-                          }
-                        }}
-                        style={{
-                          background: isHighlighted 
-                            ? (activeTransitTarget === 'pickup' ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2))' : 'linear-gradient(135deg, rgba(244, 63, 94, 0.3), rgba(225, 29, 72, 0.2))')
-                            : 'rgba(255, 255, 255, 0.04)',
-                          border: isHighlighted
-                            ? (activeTransitTarget === 'pickup' ? '1.5px solid #34D399' : '1.5px solid #F43F5E')
-                            : '1px solid rgba(255, 255, 255, 0.08)',
-                          color: isHighlighted 
-                            ? (activeTransitTarget === 'pickup' ? '#6EE7B7' : '#FDA4AF')
-                            : '#CBD5E1',
-                          boxShadow: isHighlighted 
-                            ? (activeTransitTarget === 'pickup' ? '0 0 10px rgba(52, 211, 153, 0.25)' : '0 0 10px rgba(244, 63, 94, 0.25)')
-                            : 'none',
-                          padding: '6px 12px',
-                          borderRadius: '8px',
-                          fontSize: '0.78rem',
-                          fontWeight: isHighlighted ? 700 : 500,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          transition: 'all 0.2s ease',
-                          transform: isHighlighted ? 'scale(1.02)' : 'scale(1)'
-                        }}
-                      >
-                        <span>{hub.label}</span>
-                        {isHighlighted && (
-                          <span style={{ fontSize: '0.68rem', background: 'rgba(0, 0, 0, 0.35)', padding: '1px 5px', borderRadius: '4px' }}>
-                            {activeTransitTarget === 'pickup' ? 'Pickup' : 'Drop'}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 2 Form Input Boxes for Custom / Manual Entry */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-                {/* Pickup Location Input */}
-                <div 
-                  className="form-input-group" 
-                  style={{ 
-                    marginBottom: 0,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    background: activeTransitTarget === 'pickup' ? 'rgba(52, 211, 153, 0.06)' : 'transparent',
-                    border: activeTransitTarget === 'pickup' ? '1px solid rgba(52, 211, 153, 0.3)' : '1px solid transparent',
-                    transition: 'all 0.25s ease'
-                  }}
-                >
-                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#34D399', marginBottom: '6px' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
-                      <Car size={15} />
-                      <span>1. Pickup Location</span>
-                    </span>
-                    {activeTransitTarget === 'pickup' && (
-                      <span style={{ fontSize: '0.7rem', background: 'rgba(52, 211, 153, 0.2)', color: '#6EE7B7', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-                        Active Step
-                      </span>
-                    )}
+              {/* Drop Location */}
+              <div className="form-input-group" style={{ marginBottom: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#CBD5E1', margin: 0, fontWeight: 600 }}>
+                    <MapPin size={15} color="#06B6D4" />
+                    <span>Drop Location / Departure Hub</span>
                   </label>
-                  <input
-                    ref={pickupInputRef}
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. Haridwar Railway Station / Dehradun Airport / Delhi Airport"
-                    value={pickupLocation}
-                    onChange={(e) => setPickupLocation(e.target.value)}
-                    onFocus={() => setActiveTransitTarget('pickup')}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        setActiveTransitTarget('drop');
-                        setSameAsPickup(false);
-                        dropInputRef.current?.focus();
-                        dropInputRef.current?.select();
-                      }
-                    }}
-                    style={{
-                      border: activeTransitTarget === 'pickup' ? '2px solid #34D399' : undefined,
-                      boxShadow: activeTransitTarget === 'pickup' ? '0 0 14px rgba(52, 211, 153, 0.25)' : undefined,
-                      background: '#0B1120'
-                    }}
-                    required
-                  />
-                  <div style={{ fontSize: '0.74rem', color: '#64748B', marginTop: '5px' }}>
-                    Press <strong>Enter ↵</strong> or pick a hub above to auto-advance to Drop.
-                  </div>
+                  <label style={{ fontSize: '0.76rem', color: '#38BDF8', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', margin: 0, fontWeight: 500 }}>
+                    <input 
+                      type="checkbox"
+                      checked={sameAsPickup}
+                      onChange={(e) => {
+                        setSameAsPickup(e.target.checked);
+                        if (e.target.checked) {
+                          setDropLocation(pickupLocation);
+                        }
+                      }}
+                      style={{ accentColor: '#38BDF8', cursor: 'pointer' }}
+                    />
+                    Same as Pickup
+                  </label>
                 </div>
-
-                {/* Drop Location Input */}
-                <div 
-                  className="form-input-group" 
-                  style={{ 
-                    marginBottom: 0,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    background: activeTransitTarget === 'drop' ? 'rgba(244, 63, 94, 0.06)' : 'transparent',
-                    border: activeTransitTarget === 'drop' ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid transparent',
-                    transition: 'all 0.25s ease'
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. Haridwar Railway Station / Dehradun Airport"
+                  value={sameAsPickup ? pickupLocation : dropLocation}
+                  onChange={(e) => {
+                    setDropLocation(e.target.value);
+                    setSameAsPickup(false);
                   }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#F43F5E', margin: 0, fontWeight: 700 }}>
-                      <MapPin size={15} />
-                      <span>2. Drop Location</span>
-                      {activeTransitTarget === 'drop' && (
-                        <span style={{ fontSize: '0.7rem', background: 'rgba(244, 63, 94, 0.2)', color: '#FDA4AF', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-                          Active Step
-                        </span>
-                      )}
-                    </label>
-                    <label style={{ fontSize: '0.75rem', color: '#38BDF8', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', margin: 0 }}>
-                      <input 
-                        type="checkbox"
-                        checked={sameAsPickup}
-                        onChange={(e) => {
-                          setSameAsPickup(e.target.checked);
-                          if (e.target.checked) {
-                            setDropLocation(pickupLocation);
-                          }
-                        }}
-                        style={{ accentColor: '#38BDF8' }}
-                      />
-                      Same as Pickup
-                    </label>
-                  </div>
-                  <input
-                    ref={dropInputRef}
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. Haridwar Railway Station / Dehradun Airport"
-                    value={sameAsPickup ? pickupLocation : dropLocation}
-                    onChange={(e) => {
-                      setDropLocation(e.target.value);
-                      setSameAsPickup(false);
-                    }}
-                    onFocus={() => {
-                      setActiveTransitTarget('drop');
-                    }}
-                    style={{
-                      border: activeTransitTarget === 'drop' ? '2px solid #F43F5E' : undefined,
-                      boxShadow: activeTransitTarget === 'drop' ? '0 0 14px rgba(244, 63, 94, 0.25)' : undefined,
-                      background: '#0B1120'
-                    }}
-                    disabled={sameAsPickup}
-                    required
-                  />
-                  <div style={{ fontSize: '0.74rem', color: '#64748B', marginTop: '5px' }}>
-                    Final day itinerary concludes at this selected transit terminal.
-                  </div>
-                </div>
+                  disabled={sameAsPickup}
+                  required
+                />
               </div>
             </div>
 
