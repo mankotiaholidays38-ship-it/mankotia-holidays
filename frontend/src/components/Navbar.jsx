@@ -5,10 +5,13 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const [packagesMenuOpen, setPackagesMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
+      setPackagesMenuOpen(false);
+      setMoreMenuOpen(false);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -17,6 +20,7 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
   const scrollTo = (id) => {
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
+    setPackagesMenuOpen(false);
     if (id === 'top') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -71,17 +75,67 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
         </a>
 
         {/* Core desktop navigation */}
-        <ul style={{ display: 'none', alignItems: 'center', gap: '24px', listStyle: 'none', marginLeft: 'auto', marginRight: '32px' }} className="desktop-nav">
+        <ul style={{ display: 'none', alignItems: 'center', gap: '20px', listStyle: 'none', marginLeft: 'auto', marginRight: '24px' }} className="desktop-nav">
           <li>
             <a href="#" onClick={(e) => { e.preventDefault(); scrollTo('top'); }} style={{ fontSize: '0.9rem', fontWeight: 600, color: '#F8FAFC' }}>
               Home
             </a>
           </li>
-          <li>
-            <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ fontSize: '0.9rem', fontWeight: 600, color: '#E2E8F0' }}>
-              Tour Packages
-            </a>
+
+          {/* All Packages Dropdown */}
+          <li style={{ position: 'relative' }}>
+            <button
+              onClick={() => { setPackagesMenuOpen(!packagesMenuOpen); setMoreMenuOpen(false); }}
+              aria-expanded={packagesMenuOpen}
+              style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', border: 'none', color: '#E2E8F0', font: 'inherit', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', padding: '8px 0' }}
+            >
+              <span>All Packages</span>
+              <ChevronDown size={15} style={{ transform: packagesMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+            </button>
+            {packagesMenuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '44px',
+                left: '-20px',
+                minWidth: '240px',
+                padding: '10px',
+                background: '#111A2E',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                borderRadius: '12px',
+                boxShadow: '0 16px 36px rgba(0,0,0,0.5)',
+                zIndex: 200,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}>
+                <div style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 700, padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Tour Categories
+                </div>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#F8FAFC', fontSize: '0.86rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>
+                  <span>🌟</span> All Tour Sliders
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🕉️</span> Char Dham & Pilgrimages
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🏔️</span> Uttarakhand Specials
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🌲</span> Himachal Pradesh
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🌸</span> Kashmir Paradise
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🏰</span> Royal Rajasthan
+                </a>
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
+                  <span>🏖️</span> Goa & Kerala
+                </a>
+              </div>
+            )}
           </li>
+
           <li>
             <a href="#char-dham" onClick={(e) => { e.preventDefault(); scrollTo('char-dham'); }} style={{ fontSize: '0.9rem', fontWeight: 600, color: '#E2E8F0' }}>
               Sacred Yatra
@@ -95,17 +149,17 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
           <li>
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                onClick={() => { setMoreMenuOpen(!moreMenuOpen); setPackagesMenuOpen(false); }}
                 aria-expanded={moreMenuOpen}
                 style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', border: 'none', color: '#E2E8F0', font: 'inherit', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', padding: '8px 0' }}
               >
-                More <ChevronDown size={15} />
+                More <ChevronDown size={15} style={{ transform: moreMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
               </button>
               {moreMenuOpen && (
-                <div style={{ position: 'absolute', top: '42px', right: 0, minWidth: '200px', padding: '8px', background: '#111A2E', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', boxShadow: '0 16px 30px rgba(0,0,0,0.35)', zIndex: 100 }}>
-                  <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Uttarakhand</a>
-                  <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Yatra Guide</a>
-                  <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Reviews</a>
+                <div style={{ position: 'absolute', top: '44px', right: 0, minWidth: '200px', padding: '8px', background: '#111A2E', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', boxShadow: '0 16px 30px rgba(0,0,0,0.35)', zIndex: 100 }}>
+                  <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Uttarakhand Explorer</a>
+                  <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Yatra Guide & Passes</a>
+                  <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ display: 'block', padding: '10px 12px', color: '#E2E8F0', fontSize: '0.88rem' }}>Pilgrim Reviews</a>
                   {onOpenAdmin && (
                     <button 
                       onClick={() => { setMoreMenuOpen(false); onOpenAdmin(); }} 
@@ -142,6 +196,7 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
               padding: '6px'
             }}
             className="mobile-toggle"
+            aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -157,37 +212,69 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
           padding: '20px 24px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
-          animation: 'fadeIn 0.2s ease-out'
+          gap: '14px',
+          animation: 'fadeIn 0.2s ease-out',
+          maxHeight: '85vh',
+          overflowY: 'auto'
         }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); scrollTo('top'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); scrollTo('top'); }} style={{ color: '#F8FAFC', fontWeight: 700, fontSize: '1.05rem' }}>
             Home
           </a>
-          <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>
-            Tour Packages
-          </a>
+
+          {/* Mobile All Packages Category Section */}
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            borderRadius: '10px',
+            padding: '12px',
+            border: '1px solid rgba(255, 255, 255, 0.06)'
+          }}>
+            <div style={{ color: '#F59E0B', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
+              📦 Explore All Tour Packages
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🕉️ Char Dham
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🏔️ Uttarakhand
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🌲 Himachal
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🌸 Kashmir
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🏰 Rajasthan
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🏖️ Goa & Kerala
+              </a>
+            </div>
+          </div>
+
           <a href="#char-dham" onClick={(e) => { e.preventDefault(); scrollTo('char-dham'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>
-            Sacred Yatra
+            Sacred Char Dham Yatra
           </a>
           <a href="#ai-planner" onClick={(e) => { e.preventDefault(); scrollTo('ai-planner'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} color="#F59E0B" /> Trip Planner
+            <Sparkles size={18} color="#F59E0B" /> AI Trip Planner
           </a>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <span style={{ color: '#94A3B8', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Explore More</span>
-            <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>Uttarakhand</a>
-            <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>Yatra Guide</a>
-            <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ color: '#F8FAFC', fontWeight: 600, fontSize: '1rem' }}>Reviews</a>
+
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <a href="#uttarakhand" onClick={(e) => { e.preventDefault(); scrollTo('uttarakhand'); }} style={{ color: '#CBD5E1', fontSize: '0.92rem' }}>Uttarakhand Explorer</a>
+            <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ color: '#CBD5E1', fontSize: '0.92rem' }}>Yatra Guidelines & Registration</a>
+            <a href="#testimonials" onClick={(e) => { e.preventDefault(); scrollTo('testimonials'); }} style={{ color: '#CBD5E1', fontSize: '0.92rem' }}>Reviews & Testimonials</a>
             {onOpenAdmin && (
               <button 
                 onClick={() => { setMobileMenuOpen(false); onOpenAdmin(); }} 
-                style={{ textAlign: 'left', background: 'transparent', border: 'none', color: '#FCD34D', fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0' }}
+                style={{ textAlign: 'left', background: 'transparent', border: 'none', color: '#FCD34D', fontSize: '0.92rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0' }}
               >
                 <Shield size={16} color="#F59E0B" /> Admin Leads Portal
               </button>
             )}
           </div>
           
-          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
             <button 
               onClick={() => { setMobileMenuOpen(false); onOpenInquiry({}); }} 
               className="btn btn-primary-gold" 

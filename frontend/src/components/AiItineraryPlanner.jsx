@@ -37,6 +37,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
   const [loading, setLoading] = useState(false);
   const [itinerary, setItinerary] = useState(null);
+  const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
   const [expandedDay, setExpandedDay] = useState(1);
   const [copied, setCopied] = useState(false);
 
@@ -1044,146 +1045,209 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
               </div>
             </div>
 
-            {/* Day-by-Day Timeline Accordion */}
-            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '16px' }}>
-              📅 Day-by-Day Detailed Schedule:
-            </h4>
+            {/* Collapsible Day-by-Day Schedule Header Toggle */}
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.8)',
+              border: '1px solid rgba(245, 158, 11, 0.25)',
+              borderRadius: '12px',
+              padding: '16px 20px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}>
+              <div>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Calendar size={18} color="#F59E0B" />
+                  <span>Day-by-Day Tour Roadmap ({itinerary.days?.length || days} Days)</span>
+                </h4>
+                <div style={{ fontSize: '0.78rem', color: '#94A3B8', marginTop: '3px' }}>
+                  {showDetailedSchedule ? 'Click hide to minimize space' : 'Click to expand morning, afternoon, evening & hotel plan'}
+                </div>
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {itinerary.days?.map((day, idx) => {
-                const isExpanded = expandedDay === day.day_number;
-                const isFirstDay = idx === 0;
-                const isLastDay = idx === itinerary.days.length - 1;
+              <button
+                type="button"
+                onClick={() => setShowDetailedSchedule(!showDetailedSchedule)}
+                className="btn btn-primary-gold btn-sm"
+                style={{ fontSize: '0.8rem', padding: '8px 16px' }}
+              >
+                <span>{showDetailedSchedule ? '▲ Hide Detailed Schedule' : '📅 Show Full Day-by-Day Itinerary'}</span>
+                {showDetailedSchedule ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+              </button>
+            </div>
 
-                return (
-                  <div
-                    key={day.day_number}
-                    className="glass-card"
-                    style={{
-                      overflow: 'hidden',
-                      border: isExpanded ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid var(--border-light)',
-                      borderRadius: '12px',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    {/* Accordion Header */}
+            {/* When collapsed: Sleek Compact Preview */}
+            {!showDetailedSchedule && (
+              <div style={{
+                background: 'rgba(11, 17, 32, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
+                padding: '14px 18px',
+                marginBottom: '24px',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '0.76rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>
+                  Route Summary:
+                </span>
+                {itinerary.days?.map((day) => (
+                  <span key={day.day_number} style={{
+                    fontSize: '0.76rem',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    color: '#CBD5E1',
+                    padding: '3px 8px',
+                    borderRadius: '6px'
+                  }}>
+                    <strong style={{ color: '#FCD34D' }}>D{day.day_number}:</strong> {day.theme ? day.theme.split('&')[0].trim() : `Day ${day.day_number}`}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* When expanded: Full Detailed Day-by-Day Timeline Accordion */}
+            {showDetailedSchedule && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '28px', animation: 'fadeIn 0.25s ease-out' }}>
+                {itinerary.days?.map((day, idx) => {
+                  const isExpanded = expandedDay === day.day_number;
+                  const isFirstDay = idx === 0;
+                  const isLastDay = idx === itinerary.days.length - 1;
+
+                  return (
                     <div
-                      onClick={() => setExpandedDay(isExpanded ? null : day.day_number)}
+                      key={day.day_number}
+                      className="glass-card"
                       style={{
-                        padding: '16px 20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        cursor: 'pointer',
-                        background: isExpanded ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
-                        gap: '12px'
+                        overflow: 'hidden',
+                        border: isExpanded ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid var(--border-light)',
+                        borderRadius: '12px',
+                        transition: 'all 0.2s ease'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                        <span style={{
-                          background: isExpanded ? '#F59E0B' : 'rgba(255, 255, 255, 0.08)',
-                          color: isExpanded ? '#0F172A' : '#FFFFFF',
-                          fontWeight: 800,
-                          fontSize: '0.85rem',
-                          padding: '4px 12px',
-                          borderRadius: 'var(--radius-full)'
-                        }}>
-                          Day {day.day_number}
-                        </span>
-
-                        {isFirstDay && (
-                          <span style={{
-                            background: 'rgba(52, 211, 153, 0.15)',
-                            color: '#34D399',
-                            border: '1px solid rgba(52, 211, 153, 0.3)',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            padding: '2px 8px',
-                            borderRadius: '4px'
-                          }}>
-                            🚀 Tour Starts (Pickup)
-                          </span>
-                        )}
-
-                        {isLastDay && (
-                          <span style={{
-                            background: 'rgba(244, 63, 94, 0.15)',
-                            color: '#F43F5E',
-                            border: '1px solid rgba(244, 63, 94, 0.3)',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            padding: '2px 8px',
-                            borderRadius: '4px'
-                          }}>
-                            🏁 Tour Concludes (Drop)
-                          </span>
-                        )}
-
-                        <span style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF' }}>
-                          {day.theme}
-                        </span>
-                      </div>
-
-                      <div style={{ color: '#94A3B8' }}>
-                        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                      </div>
-                    </div>
-
-                    {/* Accordion Expanded Content */}
-                    {isExpanded && (
-                      <div style={{ padding: '20px', borderTop: '1px solid var(--border-light)', background: 'rgba(10, 15, 29, 0.4)' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-                          
-                          <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#F59E0B', fontWeight: 700, marginBottom: '4px' }}>
-                              🌅 Morning:
-                            </div>
-                            <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                              {day.morning}
-                            </div>
-                          </div>
-
-                          <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#06B6D4', fontWeight: 700, marginBottom: '4px' }}>
-                              ☀️ Afternoon:
-                            </div>
-                            <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                              {day.afternoon}
-                            </div>
-                          </div>
-
-                          <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 700, marginBottom: '4px' }}>
-                              🌙 Evening & Night:
-                            </div>
-                            <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                              {day.evening}
-                            </div>
-                          </div>
-
-                        </div>
-
-                        {/* Extra Details Row */}
-                        <div style={{
+                      {/* Accordion Header */}
+                      <div
+                        onClick={() => setExpandedDay(isExpanded ? null : day.day_number)}
+                        style={{
+                          padding: '16px 20px',
                           display: 'flex',
-                          flexWrap: 'wrap',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          gap: '16px',
-                          paddingTop: '12px',
-                          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-                          fontSize: '0.82rem',
-                          color: '#94A3B8'
-                        }}>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
-                            {day.meal_recommendation && (
-                              <div>🍽️ <strong>Meal:</strong> {day.meal_recommendation}</div>
-                            )}
-                            {day.stay_suggestion && (
-                              <div>🏨 <strong>Stay:</strong> {day.stay_suggestion}</div>
-                            )}
+                          cursor: 'pointer',
+                          background: isExpanded ? 'rgba(245, 158, 11, 0.08)' : 'transparent',
+                          gap: '12px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                          <span style={{
+                            background: isExpanded ? '#F59E0B' : 'rgba(255, 255, 255, 0.08)',
+                            color: isExpanded ? '#0F172A' : '#FFFFFF',
+                            fontWeight: 800,
+                            fontSize: '0.85rem',
+                            padding: '4px 12px',
+                            borderRadius: 'var(--radius-full)'
+                          }}>
+                            Day {day.day_number}
+                          </span>
+
+                          {isFirstDay && (
+                            <span style={{
+                              background: 'rgba(52, 211, 153, 0.15)',
+                              color: '#34D399',
+                              border: '1px solid rgba(52, 211, 153, 0.3)',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: '4px'
+                            }}>
+                              🚀 Tour Starts (Pickup)
+                            </span>
+                          )}
+
+                          {isLastDay && (
+                            <span style={{
+                              background: 'rgba(244, 63, 94, 0.15)',
+                              color: '#F43F5E',
+                              border: '1px solid rgba(244, 63, 94, 0.3)',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: '4px'
+                            }}>
+                              🏁 Tour Concludes (Drop)
+                            </span>
+                          )}
+
+                          <span style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
+                            {day.theme}
+                          </span>
+                        </div>
+
+                        <div style={{ color: '#94A3B8' }}>
+                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        </div>
+                      </div>
+
+                      {/* Accordion Expanded Content */}
+                      {isExpanded && (
+                        <div style={{ padding: '20px', borderTop: '1px solid var(--border-light)', background: 'rgba(10, 15, 29, 0.4)' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                            
+                            <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
+                              <div style={{ fontSize: '0.8rem', color: '#F59E0B', fontWeight: 700, marginBottom: '4px' }}>
+                                🌅 Morning:
+                              </div>
+                              <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
+                                {day.morning}
+                              </div>
+                            </div>
+
+                            <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
+                              <div style={{ fontSize: '0.8rem', color: '#06B6D4', fontWeight: 700, marginBottom: '4px' }}>
+                                ☀️ Afternoon:
+                              </div>
+                              <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
+                                {day.afternoon}
+                              </div>
+                            </div>
+
+                            <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
+                              <div style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 700, marginBottom: '4px' }}>
+                                🌙 Evening & Night:
+                              </div>
+                              <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
+                                {day.evening}
+                              </div>
+                            </div>
+
+                          </div>
+
+                          {/* Extra Details Row */}
+                          <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '16px',
+                            paddingTop: '12px',
+                            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+                            fontSize: '0.82rem',
+                            color: '#94A3B8'
+                          }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
+                              {day.meal_recommendation && (
+                                <div>🍽️ <strong>Meal:</strong> {day.meal_recommendation}</div>
+                              )}
+                              {day.stay_suggestion && (
+                                <div>🏨 <strong>Stay:</strong> {day.stay_suggestion}</div>
+                              )}
+                            </div>
                             {day.pro_tip && (
-                              <div>💡 <strong>Pro Tip:</strong> {day.pro_tip}</div>
+                              <div style={{ color: '#FCD34D' }}>💡 <strong>Pro Tip:</strong> {day.pro_tip}</div>
                             )}
                           </div>
 
@@ -1198,7 +1262,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                               color: '#38BDF8',
                               textDecoration: 'none',
                               fontSize: '0.78rem',
-                              fontWeight: 600
+                              fontWeight: 600,
+                              marginTop: '8px'
                             }}
                           >
                             <MapPin size={12} />
@@ -1206,14 +1271,12 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                             <ExternalLink size={10} />
                           </a>
                         </div>
-
-                      </div>
-                    )}
-
-                  </div>
-                );
-              })}
-            </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
           </div>
         )}

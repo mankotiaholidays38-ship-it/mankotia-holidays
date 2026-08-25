@@ -28,6 +28,19 @@ export const PACKAGES = [
       "Experienced Mountain Chauffeur & Yatra Coordinator",
       "Yatra Biometric Registration & Medical First-Aid Kit",
       "Toll, Parking, Green Tax & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Pickup from Haridwar/Dehradun & Drive to Barkot", desc: "Chauffeur pickup, scenic drive along Yamuna valley, check-in at Barkot resort." },
+      { day: 2, title: "Yamunotri Dham Darshan & Holy Surya Kund Dip", desc: "Trek to Yamunotri Temple from Janki Chatti, holy dip, darshan & return to Barkot." },
+      { day: 3, title: "Barkot to Uttarkashi & Kashi Vishwanath Temple", desc: "Scenic mountain drive to Uttarkashi, evening Aarti at ancient Kashi Vishwanath Temple." },
+      { day: 4, title: "Gangotri Dham Darshan & Harsil Apple Valley", desc: "Holy bath in Bhagirathi river, Gangotri Puja & scenic drive through Harsil valley." },
+      { day: 5, title: "Uttarkashi to Guptkashi / Sitapur Base", desc: "Drive along Mandakini river to Kedarnath base, biometric pass verification." },
+      { day: 6, title: "Ascent to Sacred Kedarnath Dham & Evening Aarti", desc: "Heli-shuttle or trek to Kedarnath, check-in near temple & witness divine Maha Aarti." },
+      { day: 7, title: "Morning Kedarnath Darshan & Descent to Guptkashi", desc: "Early morning Abhishek darshan, descent to base & relax at Guptkashi resort." },
+      { day: 8, title: "Guptkashi to Badrinath Dham via Joshimath", desc: "Drive along Alaknanda river to Badrinath, check-in & evening temple Darshan." },
+      { day: 9, title: "Badrinath Darshan, Mana Village & Rudraprayag", desc: "Holy bath in Tapt Kund, visit Mana (First Indian Village) & drive to Rudraprayag." },
+      { day: 10, title: "Rudraprayag to Rishikesh Ganga Aarti", desc: "Visit Devprayag river confluence, drive to Rishikesh & witness Triveni Ghat Aarti." },
+      { day: 11, title: "Rishikesh Sightseeing & Return Drop", desc: "Visit Ram Jhula, Lakshman Jhula & drop at Haridwar/Dehradun for onward journey." }
     ]
   },
   {
@@ -56,6 +69,14 @@ export const PACKAGES = [
       "Private Sanitized Mountain Vehicle (Innova / Ertiga / Tempo)",
       "Yatra Registration & Toll/Parking Included",
       "24/7 On-Trip Assistance by Mankotia Holidays"
+    ],
+    days: [
+      { day: 1, title: "Haridwar/Dehradun Pickup to Guptkashi", desc: "Chauffeur pickup, scenic drive via Devprayag & Rudraprayag confluences to Guptkashi." },
+      { day: 2, title: "Guptkashi to Kedarnath Dham (Heli / Trek)", desc: "Transfer to Helipad or Sonprayag, ascent to Kedarnath & evening Temple Aarti." },
+      { day: 3, title: "Kedarnath Morning Darshan to Pipalkoti", desc: "Early morning temple darshan, descent to base & scenic drive to Pipalkoti." },
+      { day: 4, title: "Pipalkoti to Badrinath Ji & Mana Village", desc: "Drive to Badrinath Dham, Tapt Kund holy bath, Darshan & Mana village tour." },
+      { day: 5, title: "Badrinath to Rishikesh via Joshimath", desc: "Morning Darshan, visit Narsingh Temple in Joshimath & drive to Rishikesh." },
+      { day: 6, title: "Rishikesh Sightseeing & Return Drop", desc: "Ram Jhula, Triveni Ghat visit & on-time drop at Haridwar/Dehradun." }
     ]
   },
   {
@@ -84,6 +105,44 @@ export const PACKAGES = [
       "Helicopter Boarding Assistance & Slot Management",
       "Private AC Cab for Ground Transfers",
       "Emergency Oxygen & First-Aid Support"
+    ],
+    days: [
+      { day: 1, title: "Pickup from Haridwar/Dehradun to Helipad Resort", desc: "Chauffeur pickup, drive to Phata/Guptkashi resort & heli briefing session." },
+      { day: 2, title: "Helicopter Flight to Kedarnath, VIP Darshan & Stay", desc: "10-minute helicopter flight to Kedarnath Top, VIP Darshan, Aarti & stay near temple." },
+      { day: 3, title: "Return Heli Flight & Drop-off at Haridwar/Dehradun", desc: "Morning Abhishek, return flight to base helipad & chauffeur transfer to airport/station." }
+    ]
+  },
+  {
+    id: "pkg-haridwar-rishikesh-spiritual",
+    title: "Haridwar, Rishikesh & Devprayag Spiritual Escape",
+    destination: "Haridwar • Rishikesh • Devprayag • Neelkanth",
+    category: "Pilgrimage",
+    duration: "4 Days / 3 Nights",
+    price_inr: 11999,
+    original_price_inr: 16000,
+    badge: "Spiritual Weekend",
+    rating: 4.8,
+    reviews_count: 85,
+    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=800&q=80",
+    description: "Immerse yourself in divine Ganga Aarti at Har Ki Pauri, visit ancient temples, witness the holy Alaknanda-Bhagirathi confluence at Devprayag, and explore yoga ashrams in Rishikesh.",
+    highlights: [
+      "Har Ki Pauri World-Famous Grand Ganga Aarti",
+      "Rishikesh Triveni Ghat Aarti, Ram Jhula & Parmarth Niketan",
+      "Devprayag Sacred Confluence of Bhagirathi & Alaknanda",
+      "Neelkanth Mahadev Ancient Forest Temple Excursion",
+      "Mansa Devi & Chandi Devi Cable Car Darshan"
+    ],
+    inclusions: [
+      "3 Nights Riverside 3★/4★ Hotel Stay",
+      "Daily Satvik Buffet Breakfast & Dinner",
+      "Private AC Sedan for all Sightseeing & Transfers",
+      "Ganga Aarti Special VIP Ghat Pass Assistance"
+    ],
+    days: [
+      { day: 1, title: "Pickup at Haridwar & Har Ki Pauri Evening Aarti", desc: "Chauffeur pickup, check-in, Mansa Devi temple & evening Har Ki Pauri Ganga Aarti." },
+      { day: 2, title: "Haridwar to Rishikesh Ashrams & Beatles Ashram", desc: "Drive to Rishikesh, visit Ram Jhula, Swarg Ashram & evening Parmarth Niketan Aarti." },
+      { day: 3, title: "Day Trip to Devprayag Confluence & Neelkanth Mahadev", desc: "Scenic mountain drive to Devprayag confluence & holy Neelkanth temple." },
+      { day: 4, title: "Morning Ganga Ghat Stroll, Shopping & Drop", desc: "Ayurvedic souvenir shopping, local cafe brunch & drop at Haridwar/Dehradun." }
     ]
   },
   {
@@ -112,6 +171,14 @@ export const PACKAGES = [
       "1 Open Jeep Safari in Corbett Tiger Reserve",
       "Private AC Sedan/SUV for all Sightseeing & Transfers",
       "All Tolls, Parking & Driver Night Charges"
+    ],
+    days: [
+      { day: 1, title: "Delhi/Kathgodam Pickup to Nainital Lakes", desc: "Chauffeur pickup, scenic drive to Nainital, check-in, Naini lake boat ride & Mall Road." },
+      { day: 2, title: "Nainital Lake Tour & Viewpoints Excursion", desc: "Bhimtal, Sattal, Naukuchiatal lake tour, Snow View Point & Naina Devi Temple." },
+      { day: 3, title: "Nainital to Jim Corbett Jungle Resort", desc: "Drive to Corbett National Park, check-in at jungle resort, Garjiya Devi Temple visit." },
+      { day: 4, title: "Corbett Morning Jeep Safari & Drive to Mussoorie", desc: "Early morning 4x4 open jeep tiger safari, breakfast & scenic drive to Mussoorie." },
+      { day: 5, title: "Mussoorie Sightseeing: Kempty Falls & Mall Road", desc: "Kempty Falls, Gun Hill cable car, Company Garden & evening walk on Mall Road." },
+      { day: 6, title: "Mussoorie to Rishikesh & Return Drop", desc: "Drive via Rishikesh Ram Jhula, Triveni Ghat & on-time drop at Dehradun/Delhi." }
     ]
   },
   {
@@ -140,6 +207,47 @@ export const PACKAGES = [
       "Certified Mountain Trek Guide & Forest Permits",
       "Private Mountain Vehicle Transfers",
       "Campfire Evenings & Stargazing Sessions"
+    ],
+    days: [
+      { day: 1, title: "Haridwar/Rishikesh Pickup to Chopta Bugyal", desc: "Chauffeur pickup, scenic drive via Devprayag & Rudraprayag to Chopta alpine camp." },
+      { day: 2, title: "Chopta to Tungnath Temple & Chandrashila Summit Trek", desc: "Scenic trek through rhododendron forests to Tungnath & Chandrashila 360° summit." },
+      { day: 3, title: "Chopta to Auli Ski Resort via Joshimath", desc: "Scenic drive to Joshimath, board Auli cable car with snow peak views & resort check-in." },
+      { day: 4, title: "Auli Meadows, Gorson Bugyal & Artificial Lake", desc: "Explore Auli ski slopes, Gorson Bugyal trek & sunset over Nanda Devi peak." },
+      { day: 5, title: "Auli to Rishikesh & Return Drop", desc: "Descent from Auli, scenic drive along Alaknanda valley & drop at Haridwar/Dehradun." }
+    ]
+  },
+  {
+    id: "pkg-kumaon-hidden-gems",
+    title: "Kumaon Tranquility: Kausani, Ranikhet & Mukteshwar",
+    destination: "Kausani • Ranikhet • Mukteshwar • Almora",
+    category: "Uttarakhand",
+    duration: "5 Days / 4 Nights",
+    price_inr: 14500,
+    original_price_inr: 19999,
+    badge: "Serene & Scenic",
+    rating: 4.8,
+    reviews_count: 94,
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    description: "Breathtaking panoramic views of Trishul & Nanda Devi peaks from Kausani, lush pine forests of Ranikhet, and apple orchards of Mukteshwar.",
+    highlights: [
+      "Kausani 300 km Panoramic Himalayan Sunrise",
+      "Ranikhet Chaubatia Apple Orchards & Golf Course",
+      "Mukteshwar Chauli ki Jali Cliff & Ancient Shiva Temple",
+      "Almora Bright End Corner & Kasar Devi Hippie Hill",
+      "Peaceful Countryside Homestays & Organic Pahadi Food"
+    ],
+    inclusions: [
+      "4 Nights Deluxe Boutique Mountain Resort Stay",
+      "Daily Buffet Breakfast & Authentic Kumaoni Dinner",
+      "Private AC Sedan/SUV for full tour",
+      "All Sightseeing, Toll & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Kathgodam/Delhi Pickup to Mukteshwar", desc: "Chauffeur pickup, drive past mountain lakes to Mukteshwar orchard resort." },
+      { day: 2, title: "Mukteshwar to Almora & Kausani Sunset", desc: "Visit Chauli ki Jali, Kasar Devi temple, Almora heritage & sunset in Kausani." },
+      { day: 3, title: "Kausani Sunrise, Tea Gardens & Drive to Ranikhet", desc: "Panoramic sunrise, visit Kausani tea factory & drive to Ranikhet pine forests." },
+      { day: 4, title: "Ranikhet Golf Course, Orchards & Temples", desc: "Visit Chaubatia gardens, Jhula Devi temple & Asia's highest 9-hole golf course." },
+      { day: 5, title: "Ranikhet to Kathgodam/Delhi Return Drop", desc: "Scenic mountain descent, souvenir shopping & on-time return drop." }
     ]
   },
   {
@@ -168,12 +276,85 @@ export const PACKAGES = [
       "Private Sightseeing Cab / Volvo Coach",
       "Bonfire Night with Live Music",
       "All Sightseeing & Mountain Transfers"
+    ],
+    days: [
+      { day: 1, title: "Chandigarh/Delhi Pickup & Drive to Manali", desc: "Chauffeur pickup, scenic drive along Beas river, check-in & evening Mall Road stroll." },
+      { day: 2, title: "Solang Valley Snow Point, Atal Tunnel & Sissu", desc: "Adventure activities in Solang, pass through 9km Atal Tunnel to Sissu waterfall." },
+      { day: 3, title: "Hadimba Temple, Vashisht Springs & Old Manali", desc: "Visit Hadimba Devi temple, Manu temple, Vashisht hot water bath & cafe hopping." },
+      { day: 4, title: "Kullu Shawl Weaving, Rafting & Return Drop", desc: "Visit Kullu river rafting point, Vaishno Devi temple & drop at Chandigarh/Delhi." }
+    ]
+  },
+  {
+    id: "pkg-shimla-kufri-royal",
+    title: "Royal Shimla, Kufri & Chail Heritage Retreat",
+    destination: "Shimla • Kufri • Chail • Mashobra",
+    category: "Himachal",
+    duration: "4 Days / 3 Nights",
+    price_inr: 11500,
+    original_price_inr: 15999,
+    badge: "Queen of Hills",
+    rating: 4.8,
+    reviews_count: 195,
+    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    description: "Colonial charm on Shimla Ridge & Mall Road, snow adventures in Kufri, and the world's highest cricket ground at Chail Palace.",
+    highlights: [
+      "Historic Shimla Ridge, Mall Road & Christ Church",
+      "Kufri Snow Fun World & Himalayan Wildlife Zoo",
+      "Chail Royal Maharaja Palace & Highest Cricket Ground",
+      "Jakhu Temple Giant Hanuman Statue Cable Car",
+      "Mashobra Pine Forests & Apple Orchards"
+    ],
+    inclusions: [
+      "3 Nights Deluxe Heritage / Hill Resort Stay",
+      "Daily Buffet Breakfast & Dinner",
+      "Private AC Sedan for all Sightseeing & Transfers",
+      "All Tolls, Parking & Driver Charges"
+    ],
+    days: [
+      { day: 1, title: "Chandigarh/Delhi Pickup to Shimla", desc: "Chauffeur pickup, scenic Himalayan Expressway drive to Shimla, Mall Road & Ridge." },
+      { day: 2, title: "Kufri Adventure Valley & Jakhu Temple", desc: "Excursion to Kufri snow viewpoint, pony rides, Himalayan zoo & Jakhu cable car." },
+      { day: 3, title: "Day Excursion to Chail Palace & Mashobra", desc: "Visit Chail Maharaja Palace, highest cricket ground, Kali Tibba & Mashobra valley." },
+      { day: 4, title: "Viceregal Lodge Tour & Return Drop", desc: "Tour historic Indian Institute of Advanced Study & return drop at Chandigarh/Delhi." }
+    ]
+  },
+  {
+    id: "pkg-dharamshala-dalhousie",
+    title: "Dharamshala, McLeodGanj & Dalhousie Mini Switzerland",
+    destination: "Dharamshala • McLeodGanj • Dalhousie • Khajjiar",
+    category: "Himachal",
+    duration: "5 Days / 4 Nights",
+    price_inr: 16500,
+    original_price_inr: 22000,
+    badge: "Tibetan & Alpine Charm",
+    rating: 4.9,
+    reviews_count: 160,
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    description: "Spiritual residence of Dalai Lama in McLeodGanj, picturesque tea gardens in Dharamshala, colonial Dalhousie, and the green alpine meadows of Khajjiar.",
+    highlights: [
+      "Dalai Lama Main Temple Complex & Namgyal Monastery",
+      "Bhagsunag Waterfall & Cafe Stroll in McLeodGanj",
+      "Khajjiar (Mini Switzerland of India) Alpine Meadow",
+      "Dharamshala International Cricket Stadium (HPCA)",
+      "Colonial St. John in the Wilderness Church"
+    ],
+    inclusions: [
+      "4 Nights 3★/4★ Mountain Resort Accommodation",
+      "Daily Buffet Breakfast & Dinner",
+      "Private Mountain Sedan/SUV for full tour",
+      "All Sightseeing & Forest Green Taxes"
+    ],
+    days: [
+      { day: 1, title: "Pathankot/Chandigarh Pickup to Dharamshala", desc: "Chauffeur pickup, scenic drive to Dharamshala, check-in & visit HPCA cricket stadium." },
+      { day: 2, title: "McLeodGanj Monastery, Bhagsunag & Naddi Viewpoint", desc: "Dalai Lama temple, Bhagsunag waterfall, Tibetan market & sunset from Naddi." },
+      { day: 3, title: "Dharamshala to Dalhousie Colonial Town", desc: "Scenic drive via Dhauladhar range to Dalhousie, check-in & Gandhi Chowk walk." },
+      { day: 4, title: "Full Day Khajjiar Mini Switzerland & Kalatop Sanctuary", desc: "Explore emerald Khajjiar lake, horse riding, zorbing & Kalatop pine sanctuary." },
+      { day: 5, title: "Dalhousie Church, Panchpula & Return Drop", desc: "Visit St. John Church, Panchpula springs & return drop at Pathankot/Chandigarh." }
     ]
   },
   {
     id: "pkg-kashmir-paradise",
     title: "Kashmir: Heaven on Earth Luxury Tour",
-    destination: "Srinagar • Gulmarg • Pahalgam",
+    destination: "Srinagar • Gulmarg • Pahalgam • Sonmarg",
     category: "Kashmir",
     duration: "5 Days / 4 Nights",
     price_inr: 21999,
@@ -196,6 +377,13 @@ export const PACKAGES = [
       "Private AC Sedan/SUV with Local Driver",
       "1-Hour Complimentary Shikara Ride on Dal Lake",
       "Airport Pick-up & Drop at Srinagar"
+    ],
+    days: [
+      { day: 1, title: "Srinagar Airport Pickup, Mughal Gardens & Shikara Ride", desc: "Chauffeur pickup, Shalimar & Nishat Bagh, romantic Dal Lake sunset Shikara ride & houseboat check-in." },
+      { day: 2, title: "Srinagar to Gulmarg Gondola Cable Car Adventure", desc: "Scenic drive to Gulmarg, ride Asia's highest cable car to snow peaks & alpine hotel check-in." },
+      { day: 3, title: "Gulmarg to Pahalgam Valley of Shepherds", desc: "Drive past saffron fields of Pampore to Pahalgam along the roaring Lidder river." },
+      { day: 4, title: "Pahalgam Betaab Valley, Aru Valley & Baisaran", desc: "Explore Betaab valley film shooting spots, Aru pine valleys & horse ride to Baisaran meadow." },
+      { day: 5, title: "Srinagar Old City Heritage & Airport Return Drop", desc: "Visit Jamia Masjid, Shankaracharya temple, dry fruit shopping & Srinagar airport drop." }
     ]
   },
   {
@@ -223,6 +411,14 @@ export const PACKAGES = [
       "Daily Royal Breakfast & Traditional Dinners",
       "Private AC Sedan Cab with English/Hindi Speaking Driver",
       "Palace Tour Guide Assistance & Entry Support"
+    ],
+    days: [
+      { day: 1, title: "Jaipur Airport/Railway Pickup & City Palace", desc: "Chauffeur pickup, check-in, visit City Palace, Jantar Mantar & Hawa Mahal." },
+      { day: 2, title: "Amber Fort, Nahargarh & Chokhi Dhani Dinner", desc: "Amber Fort jeep ascent, Jal Mahal photo stop, Nahargarh sunset & cultural dinner." },
+      { day: 3, title: "Jaipur to Jodhpur Blue City via Ajmer/Pushkar", desc: "Drive via holy Brahma Temple in Pushkar, arrive in Jodhpur & explore Clock Tower market." },
+      { day: 4, title: "Mehrangarh Fort, Jaswant Thada & Drive to Udaipur", desc: "Explore grand Mehrangarh Fort, marble cenotaph Jaswant Thada & drive to Udaipur." },
+      { day: 5, title: "Udaipur City Palace & Lake Pichola Sunset Cruise", desc: "Visit massive City Palace Udaipur, Saheliyon ki Bari & romantic boat ride on Lake Pichola." },
+      { day: 6, title: "Sajjangarh Monsoon Palace & Return Drop", desc: "Visit Monsoon Palace overlooking city lakes & return drop at Udaipur/Jaipur airport." }
     ]
   },
   {
@@ -248,35 +444,48 @@ export const PACKAGES = [
     inclusions: [
       "3 Nights Beach Resort Stay with Swimming Pool",
       "Daily Buffet Breakfast",
-      "Airport / Thivim Railway Station Transfers",
-      "Sunset Cruise Tickets Included"
+      "All Sightseeing in Private AC Cab",
+      "Airport / Railway Station Transfers in Goa"
+    ],
+    days: [
+      { day: 1, title: "Goa Airport Pickup & North Goa Beach Shacks", desc: "Chauffeur pickup, resort check-in, relax at Calangute/Baga beach & lively beach shacks." },
+      { day: 2, title: "Fort Aguada, Chapora & Water Sports Combo", desc: "Visit 17th-century Fort Aguada, Chapora fort & enjoy parasailing and jet ski at Anjuna." },
+      { day: 3, title: "Old Goa Heritage Churches & Mandovi Sunset Cruise", desc: "Basilica of Bom Jesus, Se Cathedral, Fontainhas colorful quarter & Mandovi river cruise." },
+      { day: 4, title: "Souvenir Shopping & Airport Return Drop", desc: "Panaji cashew and feni shopping & on-time transfer to Goa Dabolim/Mopa airport." }
     ]
   },
   {
     id: "pkg-kerala-backwaters",
-    title: "Kerala God's Own Country & Houseboat",
-    destination: "Munnar • Thekkady • Alleppey",
+    title: "God's Own Country: Munnar, Thekkady & Alleppey",
+    destination: "Munnar • Thekkady • Alleppey Backwaters",
     category: "Goa & Kerala",
     duration: "5 Days / 4 Nights",
-    price_inr: 18500,
-    original_price_inr: 25000,
+    price_inr: 18999,
+    original_price_inr: 25500,
     badge: "Honeymoon Special",
     rating: 4.9,
-    reviews_count: 195,
+    reviews_count: 172,
     image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
-    description: "Immerse in lush emerald tea gardens of Munnar, spice plantations & wildlife sanctuary in Thekkady, and overnight backwater cruise in an Alleppey private houseboat.",
+    description: "Endless rolling tea estates in Munnar, spice plantations & boat safaris in Thekkady, and private luxury houseboat cruise on Alleppey backwaters.",
     highlights: [
+      "Private Air-Conditioned Houseboat Cruise in Alleppey",
       "Munnar Tea Plantations, Mattupetty Dam & Echo Point",
-      "Alleppey Backwaters Private Luxury Houseboat Cruise",
-      "Periyar Wildlife Sanctuary Boating in Thekkady",
-      "Cheeyappara & Valara Mountain Waterfalls",
-      "Authentic Kerala Ayurvedic Massage & Kathakali Show"
+      "Periyar National Park Lake Boat Safari & Spice Walk",
+      "Authentic Kerala Ayurvedic Rejuvenation Experience",
+      "Fort Kochi Chinese Fishing Nets & Heritage Walk"
     ],
     inclusions: [
-      "1 Night Private Houseboat + 3 Nights Deluxe Hill Resorts",
-      "All Meals on Houseboat (Authentic Kerala Sadhya)",
-      "Daily Breakfast & Dinner at Resorts",
-      "Private AC Cab for all Transfers & Sightseeing"
+      "1 Night Luxury AC Houseboat + 3 Nights 4★ Resort",
+      "All Meals on Houseboat + Daily Breakfast at Resorts",
+      "Dedicated Private AC Sedan/Innova for full tour",
+      "Cochin Airport Pickup and Drop"
+    ],
+    days: [
+      { day: 1, title: "Cochin Pickup & Scenic Drive to Munnar Tea Hills", desc: "Chauffeur pickup, Cheeyappara & Valara waterfalls, arrive in Munnar & tea plantation stroll." },
+      { day: 2, title: "Munnar Full Day Sightseeing: Eravikulam & Mattupetty", desc: "Visit Eravikulam National Park (Nilgiri Tahr), Mattupetty Dam, Echo Point & Tea Museum." },
+      { day: 3, title: "Munnar to Thekkady Spice Plantations & Periyar Safari", desc: "Scenic mountain drive to Thekkady, spice garden guided tour & Periyar boat safari." },
+      { day: 4, title: "Thekkady to Alleppey Luxury Private Houseboat Cruise", desc: "12:30 PM check-in to private Kettuvallam houseboat, cruise tranquil backwaters & feast on Kerala meals." },
+      { day: 5, title: "Alleppey to Fort Kochi Heritage & Airport Drop", desc: "Morning backwater sunrise, visit Fort Kochi Chinese fishing nets & Cochin airport drop." }
     ]
   }
 ];
