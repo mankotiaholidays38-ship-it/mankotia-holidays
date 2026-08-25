@@ -122,9 +122,7 @@ export default function YatraGuide({ onOpenInquiry }) {
   return (
     <section id="yatra-guide" className="section-padding" style={{
       background: 'linear-gradient(180deg, #111A2E 0%, #0B1120 100%)',
-      position: 'relative',
-      paddingTop: '60px',
-      paddingBottom: '70px'
+      position: 'relative'
     }}>
       <div className="container">
         
@@ -134,8 +132,8 @@ export default function YatraGuide({ onOpenInquiry }) {
           alignItems: 'flex-end',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px',
-          marginBottom: '28px'
+          gap: '14px',
+          marginBottom: '20px'
         }}>
           <div>
             <div className="badge-wrap">
@@ -298,19 +296,19 @@ export default function YatraGuide({ onOpenInquiry }) {
         </div>
 
         {/* Mobile Swipe Hint */}
-        <div style={{ textAlign: 'center', marginBottom: '36px', color: '#64748B', fontSize: '0.75rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '22px', color: '#64748B', fontSize: '0.75rem' }}>
           <span>👈 Swipe or click arrows to view all 8 mandatory preparation guides (loops continuously) 👉</span>
         </div>
 
         {/* Packing Checklist Box */}
         <div className="glass-panel" style={{
-          padding: '28px 32px',
+          padding: '22px 24px',
           border: '1px solid rgba(245, 158, 11, 0.25)',
           maxWidth: '1000px',
           margin: '0 auto',
           borderRadius: '16px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
             <div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#FFFFFF', margin: 0 }}>
                 🎒 High Altitude Himalayan Packing Checklist

@@ -95,31 +95,31 @@ export default function YatraSpecial({ onOpenInquiry }) {
         </div>
 
         {/* Tab Selector */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '36px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '22px' }}>
           <div style={{
             display: 'inline-flex',
             background: 'rgba(255, 255, 255, 0.04)',
-            padding: '6px',
+            padding: '4px',
             borderRadius: 'var(--radius-full)',
             border: '1px solid var(--border-light)',
-            gap: '6px',
+            gap: '4px',
             flexWrap: 'wrap'
           }}>
             <button
               onClick={() => setActiveTab('chardham')}
               style={{
-                padding: '10px 22px',
+                padding: '8px 18px',
                 borderRadius: 'var(--radius-full)',
                 background: activeTab === 'chardham' ? 'var(--primary-gold)' : 'transparent',
                 color: activeTab === 'chardham' ? '#0F172A' : '#CBD5E1',
                 border: 'none',
                 fontWeight: 700,
-                fontSize: '0.92rem',
+                fontSize: '0.86rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
               }}
             >
               <i className="fa-solid fa-kaaba"></i> Char Dham (10N/11D)
@@ -128,38 +128,38 @@ export default function YatraSpecial({ onOpenInquiry }) {
             <button
               onClick={() => setActiveTab('dodham')}
               style={{
-                padding: '10px 22px',
+                padding: '8px 18px',
                 borderRadius: 'var(--radius-full)',
                 background: activeTab === 'dodham' ? 'var(--primary-gold)' : 'transparent',
                 color: activeTab === 'dodham' ? '#0F172A' : '#CBD5E1',
                 border: 'none',
                 fontWeight: 700,
-                fontSize: '0.92rem',
+                fontSize: '0.86rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
               }}
             >
-              <i className="fa-solid fa-mountain"></i> Do Dham: Kedar-Badri (5N/6D)
+              <i className="fa-solid fa-mountain"></i> Do Dham (5N/6D)
             </button>
 
             <button
               onClick={() => setActiveTab('heli')}
               style={{
-                padding: '10px 22px',
+                padding: '8px 18px',
                 borderRadius: 'var(--radius-full)',
                 background: activeTab === 'heli' ? 'var(--primary-gold)' : 'transparent',
                 color: activeTab === 'heli' ? '#0F172A' : '#CBD5E1',
                 border: 'none',
                 fontWeight: 700,
-                fontSize: '0.92rem',
+                fontSize: '0.86rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
               }}
             >
               <i className="fa-solid fa-helicopter"></i> Kedarnath Heli (3D/2N)
@@ -333,19 +333,19 @@ export default function YatraSpecial({ onOpenInquiry }) {
         </div>
 
         {/* Sacred Route Timeline Section (Collapsible on Click) */}
-        <div style={{ marginTop: '45px' }}>
+        <div style={{ marginTop: '28px' }}>
           
           {/* Header & Toggle Bar */}
           <div style={{
             background: 'rgba(15, 23, 42, 0.75)',
             border: '1px solid rgba(245, 158, 11, 0.25)',
             borderRadius: '16px',
-            padding: '20px 24px',
+            padding: '16px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '16px'
+            gap: '14px'
           }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>

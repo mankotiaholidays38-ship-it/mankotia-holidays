@@ -61,11 +61,11 @@ export default function Hero({ onOpenInquiry }) {
   return (
     <section style={{
       position: 'relative',
-      minHeight: '100vh',
+      minHeight: 'auto',
       display: 'flex',
       alignItems: 'center',
-      paddingTop: '120px',
-      paddingBottom: '80px',
+      paddingTop: 'clamp(80px, 11vh, 98px)',
+      paddingBottom: '32px',
       background: 'radial-gradient(ellipse at 50% 20%, rgba(30, 41, 69, 0.9) 0%, #0B1120 70%)',
       overflow: 'hidden'
     }}>
@@ -86,7 +86,7 @@ export default function Hero({ onOpenInquiry }) {
         bottom: 0,
         left: 0,
         right: 0,
-        height: '200px',
+        height: '140px',
         background: 'linear-gradient(to top, #0B1120, transparent)',
         pointerEvents: 'none'
       }} />
@@ -94,68 +94,70 @@ export default function Hero({ onOpenInquiry }) {
       <div className="container" style={{ position: 'relative', zIndex: 10 }}>
         
         {/* Top Badges */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '14px' }}>
           <div className="badge-saffron" style={{ animation: 'slideUp 0.4s ease-out' }}>
             <span className="pulse-dot"></span>
             <span>Char Dham Yatra 2026 Bookings Open</span>
-            <span style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>
+            <span style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '2px 8px', borderRadius: '10px', fontSize: '0.72rem', fontWeight: 700 }}>
               VIP Pass & Heli Slots
             </span>
           </div>
         </div>
 
         {/* Hero Main Heading */}
-        <div style={{ textAlign: 'center', maxWidth: '920px', margin: '0 auto 36px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto 24px' }}>
           <h1 style={{
-            fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+            fontSize: 'clamp(2.1rem, 4.8vw, 3.6rem)',
             fontWeight: 900,
             lineHeight: 1.15,
-            letterSpacing: '-1px',
-            marginBottom: '20px'
+            letterSpacing: '-0.8px',
+            marginBottom: '12px'
           }}>
             Sacred Pilgrimages & <br />
             <span className="text-gradient-gold">Divine Holidays In India</span>
           </h1>
           <p style={{
-            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+            fontSize: 'clamp(0.92rem, 1.6vw, 1.1rem)',
             color: '#CBD5E1',
-            maxWidth: '780px',
-            margin: '0 auto 24px',
-            lineHeight: 1.6
+            maxWidth: '740px',
+            margin: '0 auto 18px',
+            lineHeight: 1.55
           }}>
             Experience life-transforming spiritual journeys with <strong>Char Dham Yatra</strong>, <strong>Do Dham Yatra</strong>, <strong>Kedarnath Helicopter Express</strong>, and breathtaking <strong>Uttarakhand & Himachal holidays</strong> with Mankotia Holidays.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button
               onClick={() => onOpenInquiry({ destination: 'Char Dham Yatra Deluxe' })}
-              className="btn btn-primary-gold btn-lg"
+              className="btn btn-primary-gold"
+              style={{ padding: '12px 26px', fontSize: '0.95rem' }}
             >
               <span>Book Your Sacred Yatra</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={17} />
             </button>
             <a
               href="#ai-planner"
-              className="btn btn-outline-gold btn-lg"
+              className="btn btn-outline-gold"
+              style={{ padding: '12px 24px', fontSize: '0.95rem' }}
             >
               <span>Custom AI Trip Planner</span>
             </a>
           </div>
         </div>
 
-        {/* Rotating Tour Showcase */}
-        <div
-          className="tour-slider"
+        {/* Dynamic Interactive Tour Carousel Card */}
+        <div 
           onMouseEnter={() => setSliderPaused(true)}
           onMouseLeave={() => setSliderPaused(false)}
+          className="glass-panel"
           style={{
-            maxWidth: '1080px',
-            minHeight: '260px',
-            margin: '0 auto 50px',
             position: 'relative',
+            maxWidth: '1000px',
+            margin: '0 auto 24px',
+            minHeight: '260px',
+            borderRadius: '16px',
             overflow: 'hidden',
-            borderRadius: '20px',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)'
+            border: '1px solid rgba(245, 158, 11, 0.25)',
+            boxShadow: '0 14px 36px rgba(0, 0, 0, 0.45)'
           }}
         >
           {tourSlides.map((slide, index) => (

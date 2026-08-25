@@ -300,12 +300,10 @@ export default function PackageCatalog({ onOpenInquiry }) {
   return (
     <section id="packages" className="section-padding" style={{
       background: 'linear-gradient(180deg, #0B1120 0%, #111A2E 100%)',
-      position: 'relative',
-      paddingTop: '60px',
-      paddingBottom: '80px'
+      position: 'relative'
     }}>
       <div className="container">
-        <div className="section-header" style={{ marginBottom: '24px' }}>
+        <div className="section-header" style={{ marginBottom: '20px' }}>
           <div className="badge-wrap">
             <span className="badge-gold">
               <Tag size={14} /> Curated Domestic Holidays
@@ -322,14 +320,14 @@ export default function PackageCatalog({ onOpenInquiry }) {
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '12px',
+          gap: '10px',
           alignItems: 'center',
           justifyContent: 'space-between',
           maxWidth: '1100px',
-          margin: '0 auto 20px',
+          margin: '0 auto 14px',
           background: 'rgba(17, 26, 46, 0.75)',
           backdropFilter: 'blur(12px)',
-          padding: '10px 16px',
+          padding: '8px 14px',
           borderRadius: '12px',
           border: '1px solid rgba(255, 255, 255, 0.08)'
         }}>
@@ -342,7 +340,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
               placeholder="Search destination (e.g. Manali, Kedarnath, Shimla, Nainital)..."
               style={{
                 width: '100%',
-                padding: '8px 34px 8px 36px',
+                padding: '7px 32px 7px 34px',
                 background: '#0B1120',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 borderRadius: '20px',
@@ -373,7 +371,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 borderRadius: '8px',
                 color: '#F8FAFC',
-                padding: '6px 10px',
+                padding: '5px 8px',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 outline: 'none'
@@ -391,8 +389,8 @@ export default function PackageCatalog({ onOpenInquiry }) {
           display: 'flex',
           gap: '8px',
           overflowX: 'auto',
-          paddingBottom: '12px',
-          marginBottom: '28px',
+          paddingBottom: '8px',
+          marginBottom: '20px',
           justifyContent: 'flex-start',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none'

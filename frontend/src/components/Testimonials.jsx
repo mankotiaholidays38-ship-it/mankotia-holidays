@@ -30,9 +30,7 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="section-padding" style={{
       background: 'radial-gradient(ellipse at 50% 50%, rgba(17, 26, 46, 0.9) 0%, #0B1120 100%)',
-      position: 'relative',
-      paddingTop: '60px',
-      paddingBottom: '70px'
+      position: 'relative'
     }}>
       <div className="container">
         
@@ -42,8 +40,8 @@ export default function Testimonials() {
           alignItems: 'flex-end',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px',
-          marginBottom: '28px'
+          gap: '14px',
+          marginBottom: '20px'
         }}>
           <div>
             <div className="badge-wrap">

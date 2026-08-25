@@ -30,9 +30,7 @@ export default function UttarakhandExplorer({ onOpenInquiry }) {
   return (
     <section id="uttarakhand" className="section-padding" style={{
       background: 'radial-gradient(ellipse at 50% 50%, rgba(17, 26, 46, 0.85) 0%, #0B1120 100%)',
-      position: 'relative',
-      paddingTop: '60px',
-      paddingBottom: '70px'
+      position: 'relative'
     }}>
       <div className="container">
         

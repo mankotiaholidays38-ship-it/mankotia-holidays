@@ -92,9 +92,7 @@ export default function WhyChooseUs() {
   return (
     <section id="why-us" className="section-padding" style={{
       background: 'linear-gradient(180deg, #0B1120 0%, #111A2E 100%)',
-      position: 'relative',
-      paddingTop: '60px',
-      paddingBottom: '70px'
+      position: 'relative'
     }}>
       <div className="container">
         
@@ -104,8 +102,8 @@ export default function WhyChooseUs() {
           alignItems: 'flex-end',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px',
-          marginBottom: '28px'
+          gap: '14px',
+          marginBottom: '20px'
         }}>
           <div>
             <div className="badge-wrap">

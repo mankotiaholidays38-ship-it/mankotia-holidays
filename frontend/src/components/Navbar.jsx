@@ -45,13 +45,13 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
       borderBottom: isScrolled ? '1px solid rgba(245, 158, 11, 0.2)' : '1px solid rgba(255, 255, 255, 0.06)',
       boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.5)' : 'none'
     }}>
-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '76px', fontFamily: 'var(--font-body)' }}>
+      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px', fontFamily: 'var(--font-body)' }}>
         
         {/* Brand Logo */}
-        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
-            width: '82px',
-            height: '56px',
+            width: '68px',
+            height: '46px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -61,14 +61,14 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
                 src="/images/logo.jpg"
                 alt="Mankotia Holidays"
                 onError={(e) => { e.currentTarget.src = '/static/images/logo.jpg'; }}
-                style={{ width: '82px', height: '56px', objectFit: 'contain' }}
+                style={{ width: '68px', height: '46px', objectFit: 'contain' }}
             />
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', letterSpacing: '-0.5px', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.4px', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '5px' }}>
               Mankotia <span className="text-gradient-gold">Holidays</span>
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.68rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' }}>
               Pilgrimage & Domestic Specialist
             </div>
           </div>

@@ -11,8 +11,8 @@ export default function Footer({ onOpenInquiry, onOpenAdmin }) {
     <footer style={{
       background: '#070B14',
       borderTop: '1px solid rgba(245, 158, 11, 0.2)',
-      paddingTop: '70px',
-      paddingBottom: '40px',
+      paddingTop: '46px',
+      paddingBottom: '28px',
       color: '#94A3B8'
     }}>
       <div className="container">
@@ -20,9 +20,9 @@ export default function Footer({ onOpenInquiry, onOpenAdmin }) {
         {/* Main Footer Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '40px',
-          marginBottom: '50px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '28px',
+          marginBottom: '32px'
         }}>
           
           {/* Col 1: Brand Info */}

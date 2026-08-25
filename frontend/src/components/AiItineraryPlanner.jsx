@@ -229,16 +229,16 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
         {/* Studio Form & Quick Presets */}
         <div className="glass-panel" style={{
-          maxWidth: '1050px',
-          margin: '0 auto 40px',
-          padding: '32px',
+          maxWidth: '1020px',
+          margin: '0 auto 24px',
+          padding: '24px 26px',
           border: '1px solid rgba(139, 92, 246, 0.25)',
           borderRadius: '16px'
         }}>
           
           {/* Quick Presets Chips */}
-          <div style={{ marginBottom: '24px' }}>
-            <div style={{ fontSize: '0.85rem', color: '#94A3B8', fontWeight: 600, marginBottom: '10px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '0.82rem', color: '#94A3B8', fontWeight: 600, marginBottom: '8px' }}>
               ⚡ Quick Select Popular Tours:
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
