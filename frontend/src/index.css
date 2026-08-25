@@ -559,3 +559,34 @@ a {
   }
 }
 
+/* Single-Line Stats Auto-Fit Across All Devices */
+.hero-stats-single-line {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  .hero-stats-single-line {
+    gap: 5px !important;
+    padding: 0 2px !important;
+  }
+  .stat-item-card {
+    padding: 8px 3px !important;
+    border-radius: 8px !important;
+  }
+  .stat-item-card .stat-subtext {
+    display: none; /* Hide 3rd line on small mobile screens to keep card compact and elegant */
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .hero-stats-single-line {
+    gap: 8px !important;
+  }
+  .stat-item-card {
+    padding: 10px 6px !important;
+  }
+}
+
+

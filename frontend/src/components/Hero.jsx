@@ -217,60 +217,64 @@ export default function Hero({ onOpenInquiry }) {
           </div>
         </div>
 
-        {/* Trust Badges & Stats Bar */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '20px',
-          maxWidth: '1080px',
-          margin: '0 auto'
-        }}>
-          
-          <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#F59E0B', fontFamily: 'var(--font-heading)' }}>
+        {/* Single-Line Trust Badges & Stats Bar (Auto-fit for all devices) */}
+        <div 
+          className="hero-stats-single-line"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+            gap: 'clamp(4px, 1.2vw, 16px)',
+            width: '100%',
+            maxWidth: '1100px',
+            margin: '0 auto',
+            padding: '0 4px'
+          }}
+        >
+          <div className="glass-card stat-item-card" style={{ padding: 'clamp(8px, 1.4vw, 18px) clamp(3px, 0.8vw, 10px)', textAlign: 'center', minWidth: 0, overflow: 'hidden', borderRadius: 'clamp(8px, 1.2vw, 14px)' }}>
+            <div style={{ fontSize: 'clamp(0.95rem, 2.8vw, 1.85rem)', fontWeight: 800, color: '#F59E0B', fontFamily: 'var(--font-heading)', lineHeight: 1.1 }}>
               10,000+
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#CBD5E1', fontWeight: 600 }}>
+            <div style={{ fontSize: 'clamp(0.62rem, 1.15vw, 0.88rem)', color: '#F1F5F9', fontWeight: 700, marginTop: '3px', lineHeight: 1.2, wordBreak: 'normal' }}>
               Blessed Pilgrims Guided
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
+            <div className="stat-subtext" style={{ fontSize: 'clamp(0.5rem, 0.9vw, 0.74rem)', color: '#94A3B8', marginTop: '2px', lineHeight: 1.15 }}>
               Char Dham & Himalayan Tours
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#06B6D4', fontFamily: 'var(--font-heading)' }}>
+          <div className="glass-card stat-item-card" style={{ padding: 'clamp(8px, 1.4vw, 18px) clamp(3px, 0.8vw, 10px)', textAlign: 'center', minWidth: 0, overflow: 'hidden', borderRadius: 'clamp(8px, 1.2vw, 14px)' }}>
+            <div style={{ fontSize: 'clamp(0.95rem, 2.8vw, 1.85rem)', fontWeight: 800, color: '#06B6D4', fontFamily: 'var(--font-heading)', lineHeight: 1.1 }}>
               100%
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#CBD5E1', fontWeight: 600 }}>
+            <div style={{ fontSize: 'clamp(0.62rem, 1.15vw, 0.88rem)', color: '#F1F5F9', fontWeight: 700, marginTop: '3px', lineHeight: 1.2, wordBreak: 'normal' }}>
               Verified Mountain Drivers
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-              Sanitized Cabs & Tempo Travellers
+            <div className="stat-subtext" style={{ fontSize: 'clamp(0.5rem, 0.9vw, 0.74rem)', color: '#94A3B8', marginTop: '2px', lineHeight: 1.15 }}>
+              Sanitized Cabs & Tempo
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#10B981', fontFamily: 'var(--font-heading)' }}>
+          <div className="glass-card stat-item-card" style={{ padding: 'clamp(8px, 1.4vw, 18px) clamp(3px, 0.8vw, 10px)', textAlign: 'center', minWidth: 0, overflow: 'hidden', borderRadius: 'clamp(8px, 1.2vw, 14px)' }}>
+            <div style={{ fontSize: 'clamp(0.95rem, 2.8vw, 1.85rem)', fontWeight: 800, color: '#10B981', fontFamily: 'var(--font-heading)', lineHeight: 1.1 }}>
               24 / 7
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#CBD5E1', fontWeight: 600 }}>
+            <div style={{ fontSize: 'clamp(0.62rem, 1.15vw, 0.88rem)', color: '#F1F5F9', fontWeight: 700, marginTop: '3px', lineHeight: 1.2, wordBreak: 'normal' }}>
               On-Ground Yatra Support
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-              Helicopter, Medical & VIP Darshan
+            <div className="stat-subtext" style={{ fontSize: 'clamp(0.5rem, 0.9vw, 0.74rem)', color: '#94A3B8', marginTop: '2px', lineHeight: 1.15 }}>
+              Helicopter & VIP Darshan
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#A78BFA', fontFamily: 'var(--font-heading)' }}>
+          <div className="glass-card stat-item-card" style={{ padding: 'clamp(8px, 1.4vw, 18px) clamp(3px, 0.8vw, 10px)', textAlign: 'center', minWidth: 0, overflow: 'hidden', borderRadius: 'clamp(8px, 1.2vw, 14px)' }}>
+            <div style={{ fontSize: 'clamp(0.95rem, 2.8vw, 1.85rem)', fontWeight: 800, color: '#A78BFA', fontFamily: 'var(--font-heading)', lineHeight: 1.1 }}>
               4.9 ★
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#CBD5E1', fontWeight: 600 }}>
+            <div style={{ fontSize: 'clamp(0.62rem, 1.15vw, 0.88rem)', color: '#F1F5F9', fontWeight: 700, marginTop: '3px', lineHeight: 1.2, wordBreak: 'normal' }}>
               Top Rated Travel Agency
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-              500+ Verified Google Reviews
+            <div className="stat-subtext" style={{ fontSize: 'clamp(0.5rem, 0.9vw, 0.74rem)', color: '#94A3B8', marginTop: '2px', lineHeight: 1.15 }}>
+              500+ Verified Reviews
             </div>
           </div>
 
