@@ -1,12 +1,33 @@
+# Environment variables & secrets
+.env
+.env.*
+*.env
+
+# Python & Virtual Env
 __pycache__/
 *.py[cod]
 *$py.class
-.env
 .venv/
+venv/
+ENV/
+
+# Customer data & generated files
+data/
+*.xlsx
+*.pdf
+static/inquiry-documents/
+*.docx
+
+# Test scripts with sensitive keys
+test_keys_live.py
+*test_keys*
+
+# IDE & OS
 .vscode/
-data/mankotia_leads.xlsx
-data/backups/
-data/generated_documents/
-data/private_hotel_plans/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Frontend dependencies
 frontend/node_modules/
 
