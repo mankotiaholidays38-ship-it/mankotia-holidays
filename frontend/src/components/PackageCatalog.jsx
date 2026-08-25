@@ -40,8 +40,24 @@ export default function PackageCatalog({ onOpenInquiry }) {
   const scrollSlider = (catId, direction) => {
     const el = sliderRefs.current[catId];
     if (el) {
-      const scrollAmount = direction === 'left' ? -340 : 340;
-      el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollStep = 340;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+
+      if (direction === 'right') {
+        // If at or near the end, loop smoothly back to the beginning!
+        if (el.scrollLeft >= maxScroll - 20) {
+          el.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          el.scrollBy({ left: scrollStep, behavior: 'smooth' });
+        }
+      } else {
+        // If at or near the beginning, loop smoothly around to the end!
+        if (el.scrollLeft <= 20) {
+          el.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        } else {
+          el.scrollBy({ left: -scrollStep, behavior: 'smooth' });
+        }
+      }
     }
   };
 
@@ -296,10 +312,10 @@ export default function PackageCatalog({ onOpenInquiry }) {
             </span>
           </div>
           <h2>
-            Explore <span className="text-gradient-gold">All Tour Packages & Sliders</span>
+            Explore <span className="text-gradient-gold">All Tour Packages</span>
           </h2>
           <p>
-            Browse curated itineraries across Char Dham, Uttarakhand, Himachal, Kashmir, Rajasthan, Goa & Kerala. Slide through multiple options below!
+            Browse 40+ handcrafted holiday itineraries across Char Dham, Uttarakhand, Himachal, Kashmir, Rajasthan, Goa & Kerala. Slide through multiple options below!
           </p>
         </div>
 

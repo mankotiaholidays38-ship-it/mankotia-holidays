@@ -112,7 +112,7 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin }) {
                   Tour Categories
                 </div>
                 <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#F8FAFC', fontSize: '0.86rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>
-                  <span>🌟</span> All Tour Sliders
+                  <span>🌟</span> All Tour Packages
                 </a>
                 <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', color: '#CBD5E1', fontSize: '0.86rem', borderRadius: '6px', textDecoration: 'none' }}>
                   <span>🕉️</span> Char Dham & Pilgrimages
