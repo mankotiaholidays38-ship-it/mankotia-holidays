@@ -32,8 +32,8 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
     name: '',
     phone: '',
     email: '',
-    destination: initialData.destination || VISUAL_DESTINATIONS[0].title,
-    travelers: '2-4 Travelers',
+    destination: initialData.destination || '',
+    travelers: '2 Adults (Couple)',
     number_of_persons: 2,
     children: 0,
     child_ages: [],
@@ -259,18 +259,18 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
                 {(() => {
                   const currentMeta = VISUAL_DESTINATIONS.find(d => 
                     d.title === formData.destination || 
-                    formData.destination.includes(d.title) || 
-                    d.subtitle.includes(formData.destination) ||
-                    (d.title.includes('Char Dham') && formData.destination.includes('Char Dham')) ||
-                    (d.title.includes('Do Dham') && formData.destination.includes('Do Dham')) ||
-                    (d.title.includes('Kedarnath') && formData.destination.includes('Kedarnath')) ||
-                    (d.title.includes('Manali') && formData.destination.includes('Manali')) ||
-                    (d.title.includes('Kashmir') && formData.destination.includes('Kashmir'))
+                    (formData.destination && formData.destination.includes(d.title)) || 
+                    (formData.destination && d.subtitle.includes(formData.destination)) ||
+                    (d.title.includes('Char Dham') && formData.destination && formData.destination.includes('Char Dham')) ||
+                    (d.title.includes('Do Dham') && formData.destination && formData.destination.includes('Do Dham')) ||
+                    (d.title.includes('Kedarnath') && formData.destination && formData.destination.includes('Kedarnath')) ||
+                    (d.title.includes('Manali') && formData.destination && formData.destination.includes('Manali')) ||
+                    (d.title.includes('Kashmir') && formData.destination && formData.destination.includes('Kashmir'))
                   ) || {
-                    icon: '📍',
-                    title: formData.destination || 'Custom Tour Selection',
-                    subtitle: 'Personalized Himalayan holiday crafted by Mankotia Holidays',
-                    badge: 'Custom Tour',
+                    icon: formData.destination ? '📍' : '🗺️',
+                    title: formData.destination || 'Click to Select Destination / Tour *',
+                    subtitle: formData.destination ? 'Personalized Himalayan holiday crafted by Mankotia Holidays' : 'Tap here to browse all 18 curated tours or type custom destination',
+                    badge: formData.destination ? 'Selected' : 'Choose Destination',
                     days: formData.days || 4
                   };
 
@@ -700,11 +700,11 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                 <div className="form-input-group">
                   <label>Pickup *</label>
-                  <input type="text" className="form-control" placeholder="City / airport" value={formData.pickup} onChange={(e) => setFormData({ ...formData, pickup: e.target.value })} required />
+                  <input type="text" className="form-control" placeholder="e.g. Haridwar / Delhi / Airport" value={formData.pickup} onChange={(e) => setFormData({ ...formData, pickup: e.target.value })} required />
                 </div>
                 <div className="form-input-group">
                   <label>Drop *</label>
-                  <input type="text" className="form-control" placeholder="City / airport" value={formData.drop} onChange={(e) => setFormData({ ...formData, drop: e.target.value })} required />
+                  <input type="text" className="form-control" placeholder="e.g. Dehradun / Haridwar / Delhi" value={formData.drop} onChange={(e) => setFormData({ ...formData, drop: e.target.value })} required />
                 </div>
                 <div className="form-input-group">
                   <label>Tour Days *</label>

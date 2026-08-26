@@ -21,14 +21,14 @@ import confetti from 'canvas-confetti';
 import { ALL_DESTINATION_CATEGORIES } from '../data/packagesData';
 
 export default function AiItineraryPlanner({ onOpenInquiry }) {
-  const [destination, setDestination] = useState('Char Dham Yatra (Yamunotri • Gangotri • Kedarnath • Badrinath)');
-  const [days, setDays] = useState(11);
-  const [budget, setBudget] = useState('Standard');
-  const [travelStyle, setTravelStyle] = useState('Pilgrimage & Spiritual');
-  const [travelers, setTravelers] = useState('2 Adults');
+  const [destination, setDestination] = useState('');
+  const [days, setDays] = useState(5);
+  const [budget, setBudget] = useState('Standard / Deluxe');
+  const [travelStyle, setTravelStyle] = useState('Family & Leisure');
+  const [travelers, setTravelers] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
-  const [pickupLocation, setPickupLocation] = useState('Haridwar Railway Station / Dehradun Airport');
-  const [dropLocation, setDropLocation] = useState('Haridwar Railway Station / Dehradun Airport');
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [dropLocation, setDropLocation] = useState('');
   const [sameAsPickup, setSameAsPickup] = useState(true);
 
   const [loading, setLoading] = useState(false);

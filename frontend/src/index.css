@@ -417,8 +417,9 @@ a {
   background: rgba(10, 15, 29, 0.98);
 }
 
-.form-control::placeholder, .form-input::placeholder {
-  color: var(--text-muted);
+.form-control::placeholder, .form-input::placeholder, input::placeholder, textarea::placeholder {
+  color: #64748B !important;
+  opacity: 0.85;
 }
 
 select.form-control, select.form-input {

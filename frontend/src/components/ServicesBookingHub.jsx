@@ -57,8 +57,8 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
 
   // Transit state (Flights / Trains / Buses)
   const [transitType, setTransitType] = useState('Domestic Flight'); // 'Domestic Flight', 'Express & Tatkal Train', 'Luxury AC Volvo Bus'
-  const [transitFrom, setTransitFrom] = useState('Delhi (DEL)');
-  const [transitTo, setTransitTo] = useState('Dehradun / Jolly Grant (DED)');
+  const [transitFrom, setTransitFrom] = useState('');
+  const [transitTo, setTransitTo] = useState('');
   const [transitDate, setTransitDate] = useState('');
   const [transitClass, setTransitClass] = useState('Economy');
   const [transitPassengers, setTransitPassengers] = useState(2);
@@ -70,8 +70,8 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
   // Cab / Taxi / Volvo state
   const [cabType, setCabType] = useState('Innova Crysta (7 Seater)');
   const [cabTripType, setCabTripType] = useState('Outstation Round-Trip');
-  const [cabPickup, setCabPickup] = useState('Haridwar / Dehradun');
-  const [cabDrop, setCabDrop] = useState('Char Dham Circuit / Kedarnath');
+  const [cabPickup, setCabPickup] = useState('');
+  const [cabDrop, setCabDrop] = useState('');
   const [cabDate, setCabDate] = useState('');
   const [cabDays, setCabDays] = useState(6);
   const [cabPassengers, setCabPassengers] = useState(4);
@@ -81,7 +81,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
   const [cabSuccess, setCabSuccess] = useState(null);
 
   // Hotel & Cottage state (Directs to Get Customized Package & Best Quote modal)
-  const [hotelCity, setHotelCity] = useState('Kedarnath / Guptkashi / Phata');
+  const [hotelCity, setHotelCity] = useState('');
   const [hotelType, setHotelType] = useState('Deluxe Mountain Cottage');
   const [hotelCheckIn, setHotelCheckIn] = useState('');
   const [hotelNights, setHotelNights] = useState(3);
@@ -91,7 +91,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
 
   // Group / Honeymoon / Adventure state (Directs to Get Customized Package & Best Quote modal)
   const [tourCategory, setTourCategory] = useState('Honeymoon Special');
-  const [groupDestination, setGroupDestination] = useState('Manali & Shimla');
+  const [groupDestination, setGroupDestination] = useState('');
   const [groupMembers, setGroupMembers] = useState(2);
 
   // Transit Form Submit (Individual Ticket Query - Separate API & Excel Record)
@@ -1117,9 +1117,18 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
                   <select
                     value={hotelCity}
                     onChange={(e) => setHotelCity(e.target.value)}
+                    required
                     className="form-input"
-                    style={{ width: '100%', background: '#111A2E', borderColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF', padding: '11px 14px', borderRadius: '10px' }}
+                    style={{
+                      width: '100%',
+                      background: '#111A2E',
+                      borderColor: 'rgba(255,255,255,0.12)',
+                      color: hotelCity ? '#FFFFFF' : '#94A3B8',
+                      padding: '11px 14px',
+                      borderRadius: '10px'
+                    }}
                   >
+                    <option value="" disabled style={{ color: '#64748B' }}>-- Select Destination / City --</option>
                     <option value="Kedarnath / Guptkashi / Phata">Kedarnath / Guptkashi / Phata Base</option>
                     <option value="Badrinath / Joshimath">Badrinath / Joshimath</option>
                     <option value="Haridwar / Rishikesh">Haridwar / Rishikesh (Ganga View)</option>
