@@ -117,11 +117,106 @@ class InquiryRequest(BaseModel):
             raise ValueError("Enter a valid Indian mobile number with exactly 10 digits.")
         return normalized
 
+    @field_validator("travel_date")
+    @classmethod
+    def validate_travel_date(cls, value: str) -> str:
+        if value:
+            clean = value.strip()
+            match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", clean)
+            if match:
+                try:
+                    parsed = datetime.strptime(clean, "%Y-%m-%d").date()
+                    if parsed < datetime.now().date():
+                        raise ValueError("Selected travel date cannot be in the past. Please select a present or future date.")
+                except ValueError as e:
+                    if "cannot be in the past" in str(e):
+                        raise
+        return value
+
     @model_validator(mode="after")
     def validate_child_ages(self):
         if self.children > 0 and not self.child_ages.strip():
             raise ValueError("Child ages are required when children are included.")
         return self
+
+class TicketInquiryRequest(BaseModel):
+    name: str = Field(..., min_length=2, description="Customer full name")
+    phone: str = Field(..., description="Indian mobile number")
+    email: str = Field(..., min_length=3, description="Email address")
+    transit_type: str = Field(default="Domestic Flight")
+    origin: str = Field(..., min_length=2)
+    destination: str = Field(..., min_length=2)
+    travel_date: str = Field(..., min_length=2)
+    travel_class: str = Field(default="Economy")
+    passengers: int = Field(default=1, ge=1, le=100)
+    notes: Optional[str] = ""
+    source: Optional[str] = "Website Flight/Train/Bus Form"
+
+    @field_validator("phone")
+    @classmethod
+    def validate_indian_mobile(cls, value: str) -> str:
+        normalized = re.sub(r"[\s()-]", "", value)
+        if normalized.startswith("+91"):
+            normalized = normalized[3:]
+        if not re.fullmatch(r"[6-9]\d{9}", normalized):
+            raise ValueError("Enter a valid Indian mobile number with exactly 10 digits.")
+        return normalized
+
+    @field_validator("travel_date")
+    @classmethod
+    def validate_ticket_date(cls, value: str) -> str:
+        if value:
+            clean = value.strip()
+            match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", clean)
+            if match:
+                try:
+                    parsed = datetime.strptime(clean, "%Y-%m-%d").date()
+                    if parsed < datetime.now().date():
+                        raise ValueError("Selected journey date cannot be in the past. Please select a present or future date.")
+                except ValueError as e:
+                    if "cannot be in the past" in str(e):
+                        raise
+        return value
+
+class TransportInquiryRequest(BaseModel):
+    name: str = Field(..., min_length=2, description="Customer full name")
+    phone: str = Field(..., description="Indian mobile number")
+    email: str = Field(..., min_length=3, description="Email address")
+    vehicle_category: str = Field(default="Innova Crysta (7 Seater)")
+    rental_type: str = Field(default="Outstation Round-Trip")
+    pickup: str = Field(..., min_length=2)
+    drop: str = Field(..., min_length=2)
+    pickup_date: str = Field(..., min_length=2)
+    duration_days: int = Field(default=1, ge=1, le=60)
+    passengers: int = Field(default=2, ge=1, le=100)
+    notes: Optional[str] = ""
+    source: Optional[str] = "Website Transport & Cab Form"
+
+    @field_validator("phone")
+    @classmethod
+    def validate_indian_mobile(cls, value: str) -> str:
+        normalized = re.sub(r"[\s()-]", "", value)
+        if normalized.startswith("+91"):
+            normalized = normalized[3:]
+        if not re.fullmatch(r"[6-9]\d{9}", normalized):
+            raise ValueError("Enter a valid Indian mobile number with exactly 10 digits.")
+        return normalized
+
+    @field_validator("pickup_date")
+    @classmethod
+    def validate_pickup_date(cls, value: str) -> str:
+        if value:
+            clean = value.strip()
+            match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", clean)
+            if match:
+                try:
+                    parsed = datetime.strptime(clean, "%Y-%m-%d").date()
+                    if parsed < datetime.now().date():
+                        raise ValueError("Selected pickup date cannot be in the past. Please select a present or future date.")
+                except ValueError as e:
+                    if "cannot be in the past" in str(e):
+                        raise
+        return value
 
 class ItineraryRequest(BaseModel):
     destination: str = Field(..., min_length=2)
@@ -309,6 +404,152 @@ def create_inquiry_document(inquiry: InquiryRequest, lead_id: str) -> str:
     filename = f"inquiry-{lead_id.replace('#', '').replace('-', '_')}-{re.sub(r'[^a-zA-Z0-9]', '_', inquiry.name)}.docx"
     document.save(os.path.join(DOCUMENTS_DIR, filename))
     return filename
+
+def create_ticket_document(inquiry: TicketInquiryRequest, lead_id: str) -> str:
+    """Create a clean Word document specifically for flight/train/bus ticket queries."""
+    document = Document()
+    document.add_heading(f"{AGENCY_NAME} - Ticket Booking Query Details", 0)
+    
+    sub_p = document.add_paragraph()
+    sub_p.add_run("Ticket Query Reference ID: ").bold = True
+    sub_p.add_run(f"{lead_id}   |   ")
+    sub_p.add_run("Submission Date: ").bold = True
+    sub_p.add_run(f"{datetime.now().strftime('%d-%b-%Y %I:%M %p')}\n")
+    sub_p.add_run("Booking Mode: ").bold = True
+    sub_p.add_run(f"{inquiry.transit_type}")
+    
+    document.add_heading("1. Passenger & Journey Information", level=1)
+    details = [
+        ("Customer Full Name", inquiry.name),
+        ("Phone / WhatsApp Number", inquiry.phone),
+        ("Email Address", inquiry.email),
+        ("Transit / Booking Mode", inquiry.transit_type),
+        ("Origin (From)", inquiry.origin),
+        ("Destination (To)", inquiry.destination),
+        ("Date of Journey", inquiry.travel_date),
+        ("Travel Class / Preference", inquiry.travel_class),
+        ("Total Passengers", str(inquiry.passengers)),
+        ("Special Notes / Instructions", inquiry.notes or "None"),
+        ("Source", inquiry.source or "Website Ticket Form")
+    ]
+    
+    table = document.add_table(rows=1, cols=2)
+    table.style = "Light Shading Accent 1"
+    table.rows[0].cells[0].text = "Field Description"
+    table.rows[0].cells[1].text = "Ticket Query Details"
+    for field, value in details:
+        cells = table.add_row().cells
+        cells[0].text = field
+        cells[1].text = str(value)
+        
+    filename = f"ticket-query-{lead_id.replace('#', '').replace('-', '_')}-{re.sub(r'[^a-zA-Z0-9]', '_', inquiry.name)}.docx"
+    document.save(os.path.join(DOCUMENTS_DIR, filename))
+    return filename
+
+def create_transport_document(inquiry: TransportInquiryRequest, lead_id: str) -> str:
+    """Create a clean Word document specifically for Volvo / Car / Taxi rental queries."""
+    document = Document()
+    document.add_heading(f"{AGENCY_NAME} - Vehicle & Cab Rental Query Details", 0)
+    
+    sub_p = document.add_paragraph()
+    sub_p.add_run("Transport Query Reference ID: ").bold = True
+    sub_p.add_run(f"{lead_id}   |   ")
+    sub_p.add_run("Submission Date: ").bold = True
+    sub_p.add_run(f"{datetime.now().strftime('%d-%b-%Y %I:%M %p')}\n")
+    sub_p.add_run("Rental Mode: ").bold = True
+    sub_p.add_run(f"{inquiry.rental_type} ({inquiry.vehicle_category})")
+    
+    document.add_heading("1. Vehicle & Route Information", level=1)
+    details = [
+        ("Customer Full Name", inquiry.name),
+        ("Phone / WhatsApp Number", inquiry.phone),
+        ("Email Address", inquiry.email),
+        ("Vehicle Category", inquiry.vehicle_category),
+        ("Rental / Service Type", inquiry.rental_type),
+        ("Pickup Location", inquiry.pickup),
+        ("Drop-off / Route", inquiry.drop),
+        ("Pickup Date", inquiry.pickup_date),
+        ("Duration (Days)", str(inquiry.duration_days)),
+        ("Total Passengers", str(inquiry.passengers)),
+        ("Special Notes / Route Details", inquiry.notes or "None"),
+        ("Source", inquiry.source or "Website Transport Form")
+    ]
+    
+    table = document.add_table(rows=1, cols=2)
+    table.style = "Light Shading Accent 1"
+    table.rows[0].cells[0].text = "Field Description"
+    table.rows[0].cells[1].text = "Transport Details"
+    for field, value in details:
+        cells = table.add_row().cells
+        cells[0].text = field
+        cells[1].text = str(value)
+        
+    filename = f"transport-query-{lead_id.replace('#', '').replace('-', '_')}-{re.sub(r'[^a-zA-Z0-9]', '_', inquiry.name)}.docx"
+    document.save(os.path.join(DOCUMENTS_DIR, filename))
+    return filename
+
+def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional[str] = None) -> bool:
+    if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
+        return False
+    message = EmailMessage()
+    message["Subject"] = f"New Ticket Booking Query ({inquiry.transit_type}) - {inquiry.origin} to {inquiry.destination}"
+    message["From"] = SMTP_USERNAME
+    message["To"] = AGENCY_EMAIL
+    message.set_content(
+        f"New Ticket Booking Query received by {AGENCY_NAME}.\n\n"
+        f"CUSTOMER DETAILS\n"
+        f"Name: {inquiry.name}\nPhone: {inquiry.phone}\nEmail: {inquiry.email}\n\n"
+        f"TICKET DETAILS\n"
+        f"Mode: {inquiry.transit_type}\n"
+        f"Route: {inquiry.origin} -> {inquiry.destination}\n"
+        f"Travel Date: {inquiry.travel_date}\n"
+        f"Class: {inquiry.travel_class}\n"
+        f"Passengers: {inquiry.passengers}\n"
+        f"Notes: {inquiry.notes or 'None'}\n\n"
+        f"Ticket query Word document is attached.\n"
+    )
+    if document_filename:
+        attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
+        if os.path.exists(attachment_path):
+            with open(attachment_path, "rb") as f:
+                message.add_attachment(f.read(), maintype="application", subtype="vnd.openxmlformats-officedocument.wordprocessingml.document", filename=document_filename)
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+        smtp.starttls()
+        smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+        smtp.send_message(message)
+    return True
+
+def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Optional[str] = None) -> bool:
+    if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
+        return False
+    message = EmailMessage()
+    message["Subject"] = f"New Transport & Cab Rental Query - {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop})"
+    message["From"] = SMTP_USERNAME
+    message["To"] = AGENCY_EMAIL
+    message.set_content(
+        f"New Vehicle / Cab Rental Query received by {AGENCY_NAME}.\n\n"
+        f"CUSTOMER DETAILS\n"
+        f"Name: {inquiry.name}\nPhone: {inquiry.phone}\nEmail: {inquiry.email}\n\n"
+        f"VEHICLE / RENTAL DETAILS\n"
+        f"Vehicle: {inquiry.vehicle_category}\n"
+        f"Rental Type: {inquiry.rental_type}\n"
+        f"Pickup: {inquiry.pickup}\nDrop: {inquiry.drop}\n"
+        f"Pickup Date: {inquiry.pickup_date}\n"
+        f"Days: {inquiry.duration_days}\n"
+        f"Passengers: {inquiry.passengers}\n"
+        f"Notes: {inquiry.notes or 'None'}\n\n"
+        f"Transport query Word document is attached.\n"
+    )
+    if document_filename:
+        attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
+        if os.path.exists(attachment_path):
+            with open(attachment_path, "rb") as f:
+                message.add_attachment(f.read(), maintype="application", subtype="vnd.openxmlformats-officedocument.wordprocessingml.document", filename=document_filename)
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+        smtp.starttls()
+        smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+        smtp.send_message(message)
+    return True
 
 def send_document_to_admin_whatsapp(document_filename: str, inquiry: InquiryRequest, lead_id: str) -> bool:
     """Upload and send the private Word file through WhatsApp Cloud API."""
@@ -1253,6 +1494,120 @@ def create_inquiry(request: Request, inquiry: InquiryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to record inquiry in Excel: {str(e)}")
 
+@app.post("/api/inquiry/ticket")
+def create_ticket_inquiry(inquiry: TicketInquiryRequest):
+    try:
+        # Validate travel date is not before present date
+        if inquiry.travel_date and inquiry.travel_date not in ["Flexible / Soon", "Flexible"] and not is_valid_journey_date(inquiry.travel_date):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Please enter a valid present or future date for journey. The selected date ({inquiry.travel_date}) is before the present date."
+            )
+
+        saved_lead = excel_manager.add_ticket_query_to_excel(
+            name=inquiry.name,
+            phone=inquiry.phone,
+            email=inquiry.email,
+            transit_type=inquiry.transit_type,
+            origin=inquiry.origin,
+            destination=inquiry.destination,
+            travel_date=inquiry.travel_date,
+            travel_class=inquiry.travel_class,
+            passengers=inquiry.passengers,
+            notes=inquiry.notes or "",
+            source=inquiry.source or "Website Flight/Train/Bus Form"
+        )
+        document_filename = create_ticket_document(inquiry, saved_lead["lead_id"])
+        admin_email_sent = False
+        try:
+            admin_email_sent = send_ticket_email(inquiry, document_filename)
+        except Exception as err:
+            print(f"Ticket email notification failed: {err}")
+            
+        wa_message = (
+            f"Hi {AGENCY_NAME}! I just submitted an online ticket booking query.\n\n"
+            f"Name: {inquiry.name}\nPhone: {inquiry.phone}\nEmail: {inquiry.email}\n"
+            f"Booking Mode: {inquiry.transit_type}\n"
+            f"Route: {inquiry.origin} -> {inquiry.destination}\n"
+            f"Travel Date: {inquiry.travel_date}\n"
+            f"Class: {inquiry.travel_class}\n"
+            f"Passengers: {inquiry.passengers}\n"
+            f"Notes: {inquiry.notes or 'None'}\n\n"
+            f"Please share the available tickets and best fare quote."
+        )
+        encoded_wa_msg = urllib.parse.quote(wa_message)
+        wa_link = f"https://wa.me/{AGENCY_WHATSAPP}?text={encoded_wa_msg}"
+        
+        return {
+            "success": True,
+            "message": "Thank you! Your ticket booking query has been received.",
+            "lead_id": saved_lead["lead_id"],
+            "whatsapp_redirect_url": wa_link,
+            "admin_email_sent": admin_email_sent,
+            "call_link": f"tel:{AGENCY_PHONE}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to record ticket query: {str(e)}")
+
+@app.post("/api/inquiry/transport")
+def create_transport_inquiry(inquiry: TransportInquiryRequest):
+    try:
+        # Validate pickup date is not before present date
+        if inquiry.pickup_date and inquiry.pickup_date not in ["Immediate / Flexible", "Flexible"] and not is_valid_journey_date(inquiry.pickup_date):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Please enter a valid present or future date for pickup. The selected date ({inquiry.pickup_date}) is before the present date."
+            )
+
+        saved_lead = excel_manager.add_transport_query_to_excel(
+            name=inquiry.name,
+            phone=inquiry.phone,
+            email=inquiry.email,
+            vehicle_category=inquiry.vehicle_category,
+            rental_type=inquiry.rental_type,
+            pickup=inquiry.pickup,
+            drop=inquiry.drop,
+            pickup_date=inquiry.pickup_date,
+            duration_days=inquiry.duration_days,
+            passengers=inquiry.passengers,
+            notes=inquiry.notes or "",
+            source=inquiry.source or "Website Transport & Cab Form"
+        )
+        document_filename = create_transport_document(inquiry, saved_lead["lead_id"])
+        admin_email_sent = False
+        try:
+            admin_email_sent = send_transport_email(inquiry, document_filename)
+        except Exception as err:
+            print(f"Transport email notification failed: {err}")
+            
+        wa_message = (
+            f"Hi {AGENCY_NAME}! I just submitted a vehicle/cab rental query.\n\n"
+            f"Name: {inquiry.name}\nPhone: {inquiry.phone}\nEmail: {inquiry.email}\n"
+            f"Vehicle: {inquiry.vehicle_category}\n"
+            f"Rental Type: {inquiry.rental_type}\n"
+            f"Pickup: {inquiry.pickup}\nDrop: {inquiry.drop}\n"
+            f"Date: {inquiry.pickup_date}\n"
+            f"Duration: {inquiry.duration_days} Day(s)\n"
+            f"Passengers: {inquiry.passengers}\n"
+            f"Notes: {inquiry.notes or 'None'}\n\n"
+            f"Please share the vehicle availability and best fare quote."
+        )
+        encoded_wa_msg = urllib.parse.quote(wa_message)
+        wa_link = f"https://wa.me/{AGENCY_WHATSAPP}?text={encoded_wa_msg}"
+        
+        return {
+            "success": True,
+            "message": "Thank you! Your transport and vehicle rental query has been received.",
+            "lead_id": saved_lead["lead_id"],
+            "whatsapp_redirect_url": wa_link,
+            "admin_email_sent": admin_email_sent,
+            "call_link": f"tel:{AGENCY_PHONE}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to record transport query: {str(e)}")
+
 
 
 @app.post("/api/generate-itinerary")
@@ -1281,7 +1636,9 @@ def chat_concierge_endpoint(req: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Concierge response failed: {str(e)}")
 
 @app.get("/api/leads")
-def get_leads_endpoint():
+def get_leads_endpoint(request: Request, token: Optional[str] = None):
+    if not check_admin_authorized(request, token):
+        raise HTTPException(status_code=401, detail="Unauthorized. Admin authentication required.")
     try:
         leads = excel_manager.get_all_leads()
         return {"success": True, "leads": leads, "total_count": len(leads)}
@@ -1289,7 +1646,9 @@ def get_leads_endpoint():
         raise HTTPException(status_code=500, detail=f"Failed to fetch leads: {str(e)}")
 
 @app.delete("/api/leads/{lead_id}")
-def delete_lead_endpoint(lead_id: str):
+def delete_lead_endpoint(lead_id: str, request: Request, token: Optional[str] = None):
+    if not check_admin_authorized(request, token):
+        raise HTTPException(status_code=401, detail="Unauthorized. Admin authentication required.")
     try:
         deleted = excel_manager.delete_lead(lead_id)
         if not deleted:

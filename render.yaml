@@ -1,0 +1,19 @@
+﻿services:
+  - type: web
+    name: mankotia-holidays
+    runtime: python
+    buildCommand: pip install -r requirements.txt && cd frontend && npm install && npm run build && cd ..
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: AGENCY_NAME
+        value: Mankotia Holidays
+      - key: AGENCY_PHONE
+        value: '+919816461616'
+      - key: AGENCY_WHATSAPP
+        value: '919816461616'
+      - key: AGENCY_EMAIL
+        value: mankotiaholidays38@gmail.com
+      - key: ADMIN_PASSWORD
+        value: mankotia123

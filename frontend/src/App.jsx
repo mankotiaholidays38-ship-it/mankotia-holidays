@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import ServicesBookingHub from './components/ServicesBookingHub';
 import YatraSpecial from './components/YatraSpecial';
 import PackageCatalog from './components/PackageCatalog';
 import AiItineraryPlanner from './components/AiItineraryPlanner';
@@ -61,6 +62,9 @@ export default function App() {
       <main style={{ flex: 1 }}>
         {/* Hero & Quick Booking */}
         <Hero onOpenInquiry={handleOpenInquiry} />
+
+        {/* All Travel Services Booking Hub: Flights, Trains, Buses, Cabs, Hotels & Cottages */}
+        <ServicesBookingHub onOpenInquiry={handleOpenInquiry} />
 
         {/* Sacred Char Dham & Do Dham Special Module */}
         <YatraSpecial onOpenInquiry={handleOpenInquiry} />

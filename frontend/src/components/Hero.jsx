@@ -105,42 +105,72 @@ export default function Hero({ onOpenInquiry }) {
         </div>
 
         {/* Hero Main Heading */}
-        <div style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto 24px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '960px', margin: '0 auto 24px' }}>
           <h1 style={{
             fontSize: 'clamp(2.1rem, 4.8vw, 3.6rem)',
             fontWeight: 900,
             lineHeight: 1.15,
             letterSpacing: '-0.8px',
-            marginBottom: '12px'
+            marginBottom: '14px'
           }}>
-            Sacred Pilgrimages & <br />
-            <span className="text-gradient-gold">Divine Holidays In India</span>
+            Sacred Pilgrimages, Luxury Stays & <br />
+            <span className="text-gradient-gold">Complete Travel Solutions In India</span>
           </h1>
           <p style={{
-            fontSize: 'clamp(0.92rem, 1.6vw, 1.1rem)',
-            color: '#CBD5E1',
-            maxWidth: '740px',
-            margin: '0 auto 18px',
-            lineHeight: 1.55
+            fontSize: 'clamp(0.92rem, 1.55vw, 1.08rem)',
+            color: '#E2E8F0',
+            maxWidth: '860px',
+            margin: '0 auto 16px',
+            lineHeight: 1.6
           }}>
-            Experience life-transforming spiritual journeys with <strong>Char Dham Yatra</strong>, <strong>Do Dham Yatra</strong>, <strong>Kedarnath Helicopter Express</strong>, and breathtaking <strong>Uttarakhand & Himachal holidays</strong> with Mankotia Holidays.
+            <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay at unbeatable prices.
           </p>
+
+          {/* Quick Services Visual Badges */}
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '8px',
+            maxWidth: '880px',
+            margin: '0 auto 20px'
+          }}>
+            <span style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.35)', color: '#FCD34D', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              🚌 Volvo / Car Packages
+            </span>
+            <span style={{ background: 'rgba(236, 72, 153, 0.15)', border: '1px solid rgba(236, 72, 153, 0.35)', color: '#F472B6', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              💑 Group & Honeymoon Tours
+            </span>
+            <span style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', color: '#38BDF8', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              ✈️🚆🚌 Flights, Trains & Buses
+            </span>
+            <span style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)', color: '#6EE7B7', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              🚖 Taxi & Car Rentals
+            </span>
+            <span style={{ background: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.35)', color: '#C084FC', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              🏨🏡 Hotels & Cottages
+            </span>
+            <span style={{ background: 'rgba(249, 115, 22, 0.15)', border: '1px solid rgba(249, 115, 22, 0.35)', color: '#FDBA74', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
+              🏕️🧗 Camping & Adventure
+            </span>
+          </div>
+
           <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => onOpenInquiry({ destination: 'Char Dham Yatra Deluxe' })}
+            <a
+              href="#services"
               className="btn btn-primary-gold"
               style={{ padding: '12px 26px', fontSize: '0.95rem' }}
             >
-              <span>Book Your Sacred Yatra</span>
+              <span>Explore All Services & Bookings</span>
               <ArrowRight size={17} />
-            </button>
-            <a
-              href="#ai-planner"
+            </a>
+            <button
+              onClick={() => onOpenInquiry({ destination: 'Custom Tour & Hotel Package' })}
               className="btn btn-outline-gold"
               style={{ padding: '12px 24px', fontSize: '0.95rem' }}
             >
-              <span>Custom AI Trip Planner</span>
-            </a>
+              <span>Instant Custom Quote</span>
+            </button>
           </div>
         </div>
 

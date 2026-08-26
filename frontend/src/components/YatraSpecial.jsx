@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Check, ArrowRight, Compass, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
+import { MapPin, Check, ArrowRight, Compass, ChevronDown, ChevronUp, Calendar, Sparkles, Mountain, Plane, MessageCircle, ShieldCheck } from 'lucide-react';
 import { YATRA_TIMELINE } from '../data/packagesData';
 
 export default function YatraSpecial({ onOpenInquiry }) {
@@ -82,7 +82,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
         <div className="section-header">
           <div className="badge-wrap">
             <span className="badge-saffron">
-              <i className="fa-solid fa-om"></i> Sacred Himalayan Pilgrimages
+              <Sparkles size={14} /> Sacred Himalayan Pilgrimages
             </span>
           </div>
           <h2>
@@ -122,7 +122,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
                 gap: '6px'
               }}
             >
-              <i className="fa-solid fa-kaaba"></i> Char Dham (10N/11D)
+              <Mountain size={15} /> Char Dham (10N/11D)
             </button>
 
             <button
@@ -142,7 +142,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
                 gap: '6px'
               }}
             >
-              <i className="fa-solid fa-mountain"></i> Do Dham (5N/6D)
+              <Mountain size={15} /> Do Dham (5N/6D)
             </button>
 
             <button
@@ -162,7 +162,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
                 gap: '6px'
               }}
             >
-              <i className="fa-solid fa-helicopter"></i> Kedarnath Heli (3D/2N)
+              <Plane size={15} /> Kedarnath Heli (3D/2N)
             </button>
           </div>
         </div>
@@ -259,8 +259,9 @@ export default function YatraSpecial({ onOpenInquiry }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-whatsapp"
+                  title="Inquire on WhatsApp"
                 >
-                  <i className="fa-brands fa-whatsapp"></i>
+                  <MessageCircle size={18} />
                 </a>
               </div>
             </div>

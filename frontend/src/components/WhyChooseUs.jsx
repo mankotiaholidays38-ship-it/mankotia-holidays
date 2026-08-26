@@ -41,6 +41,18 @@ export default function WhyChooseUs() {
   const perks = [
     {
       icon: <Award size={26} color="#F59E0B" />,
+      title: "India's Largest Hotel Network & Reviews",
+      badge: "10,000+ Reviews",
+      desc: "Widest collection of verified hotels, mountain cottages, and luxury camps with authentic guest reviews so you always choose the perfect stay."
+    },
+    {
+      icon: <Compass size={26} color="#38BDF8" />,
+      title: "All-in-One Multi-Modal Travel",
+      badge: "Flights • Trains • Buses • Cabs",
+      desc: "Seamless one-stop booking for flight tickets, Tatkal train assistance, Volvo AC buses, and sanitized chauffeur-driven mountain cabs."
+    },
+    {
+      icon: <Award size={26} color="#F59E0B" />,
       title: "10+ Years Himalayan Mastery",
       badge: "Proven Heritage",
       desc: "Deep-rooted expertise in Garhwal & Kumaon terrain, real-time mountain weather monitoring, and priority slot reservations."

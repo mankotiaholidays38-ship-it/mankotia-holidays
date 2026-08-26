@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, User, Phone, Mail, MapPin, Users, Calendar, ArrowRight, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Compass, Search, Check } from 'lucide-react';
+import { X, Sparkles, User, Phone, Mail, MapPin, Users, Calendar, ArrowRight, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Compass, Search, Check, MessageCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { QUICK_DESTINATION_PILLS, VISUAL_DESTINATIONS } from '../data/packagesData';
 
@@ -66,10 +66,18 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
         days: initialData.days || prev.days,
         travelers: initialData.travelers || prev.travelers,
         budget: initialData.budget || prev.budget,
-        itinerary_text: initialData.itinerary_text || prev.itinerary_text
+        itinerary_text: initialData.itinerary_text || prev.itinerary_text,
+        travel_date: initialData.travel_date || prev.travel_date,
+        pickup: initialData.pickup || prev.pickup,
+        drop: initialData.drop || prev.drop,
+        number_of_persons: initialData.number_of_persons || prev.number_of_persons,
+        rooms_required: initialData.rooms_required || prev.rooms_required,
+        vehicle_category: initialData.vehicle_category || prev.vehicle_category,
+        hotel_category: initialData.hotel_category || prev.hotel_category,
+        meal_plan: initialData.meal_plan || prev.meal_plan
       }));
     }
-  }, [initialData.destination, initialData.notes, initialData.days, initialData.travelers, initialData.budget, initialData.itinerary_text]);
+  }, [initialData]);
 
   useEffect(() => {
     if (isOpen) setSuccess(false);
@@ -656,14 +664,7 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
 
               {/* Travel Date */}
               <div className="form-input-group" style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Calendar size={14} color="#F59E0B" /> Date of Journey *
-                  </span>
-                  <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
-                    Present / Future date required
-                  </span>
-                </label>
+                <label><Calendar size={14} color="#F59E0B" /> Date of Journey *</label>
                 <input
                   type="date"
                   min={getTodayDateString()}
@@ -724,6 +725,7 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
                     <option>Tempo Traveller</option>
                     <option>Mini Bus</option>
                     <option>Large Bus</option>
+                    <option>No Vehicle Required</option>
                   </select>
                 </div>
                 <div className="form-input-group">
@@ -842,10 +844,9 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
               <a
                 href={whatsappUrl || 'https://wa.me/919816461616'}
                 target="_blank"
-                rel="noopener noreferrer"
                 className="btn btn-whatsapp"
               >
-                <i className="fa-brands fa-whatsapp"></i>
+                <MessageCircle size={18} />
                 <span>Open WhatsApp Chat & Confirm</span>
               </a>
 

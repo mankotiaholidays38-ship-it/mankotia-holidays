@@ -137,6 +137,11 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
           </li>
 
           <li>
+            <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ fontSize: '0.9rem', fontWeight: 600, color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span>Services & Booking</span>
+            </a>
+          </li>
+          <li>
             <a href="#char-dham" onClick={(e) => { e.preventDefault(); scrollTo('char-dham'); }} style={{ fontSize: '0.9rem', fontWeight: 600, color: '#E2E8F0' }}>
               Sacred Yatra
             </a>
@@ -258,6 +263,32 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
               </a>
               <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🏖️ Goa & Kerala
+              </a>
+            </div>
+          </div>
+
+          {/* Mobile Travel Services & Booking Hub */}
+          <div style={{
+            background: 'rgba(245, 158, 11, 0.06)',
+            borderRadius: '10px',
+            padding: '12px',
+            border: '1px solid rgba(245, 158, 11, 0.2)'
+          }}>
+            <div style={{ color: '#FCD34D', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
+              ⚡ Online Services & Bookings
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#F1F5F9', fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                ✈️ Flights, Trains & Buses Booking
+              </a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#F1F5F9', fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                🚖 Volvo / Car / Taxi Rentals
+              </a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#F1F5F9', fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                🏨 Hotels & Mountain Cottages
+              </a>
+              <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#F1F5F9', fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                💑 Group, Honeymoon & Adventure
               </a>
             </div>
           </div>

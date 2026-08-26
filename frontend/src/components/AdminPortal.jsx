@@ -101,14 +101,20 @@ export default function AdminPortal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
+  const [activeCategoryTab, setActiveCategoryTab] = useState('all'); // 'all', 'package', 'ticket', 'transport'
+
   const filteredLeads = leads.filter(l => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch = (
       (l.name && l.name.toLowerCase().includes(term)) ||
       (l.phone && l.phone.toLowerCase().includes(term)) ||
       (l.email && l.email.toLowerCase().includes(term)) ||
-      (l.destination && l.destination.toLowerCase().includes(term))
+      (l.destination && l.destination.toLowerCase().includes(term)) ||
+      (l.lead_id && l.lead_id.toLowerCase().includes(term))
     );
+    if (!matchesSearch) return false;
+    if (activeCategoryTab === 'all') return true;
+    return l.category === activeCategoryTab;
   });
 
   return (
@@ -271,6 +277,74 @@ export default function AdminPortal({ isOpen, onClose }) {
                   Logout
                 </button>
               </div>
+            </div>
+
+            {/* Category Filter Tabs */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => setActiveCategoryTab('all')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: activeCategoryTab === 'all' ? '1px solid #F59E0B' : '1px solid rgba(255,255,255,0.1)',
+                  background: activeCategoryTab === 'all' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255,255,255,0.03)',
+                  color: activeCategoryTab === 'all' ? '#FCD34D' : '#94A3B8',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                All Inquiries ({leads.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCategoryTab('package')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: activeCategoryTab === 'package' ? '1px solid #F59E0B' : '1px solid rgba(255,255,255,0.1)',
+                  background: activeCategoryTab === 'package' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255,255,255,0.03)',
+                  color: activeCategoryTab === 'package' ? '#FCD34D' : '#94A3B8',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                📦 Packages & Stays ({leads.filter(l => l.category === 'package').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCategoryTab('ticket')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: activeCategoryTab === 'ticket' ? '1px solid #06B6D4' : '1px solid rgba(255,255,255,0.1)',
+                  background: activeCategoryTab === 'ticket' ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.03)',
+                  color: activeCategoryTab === 'ticket' ? '#67E8F9' : '#94A3B8',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                ✈️🚆 Ticket Queries ({leads.filter(l => l.category === 'ticket').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCategoryTab('transport')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  border: activeCategoryTab === 'transport' ? '1px solid #10B981' : '1px solid rgba(255,255,255,0.1)',
+                  background: activeCategoryTab === 'transport' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.03)',
+                  color: activeCategoryTab === 'transport' ? '#6EE7B7' : '#94A3B8',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                🚖 Transport & Cabs ({leads.filter(l => l.category === 'transport').length})
+              </button>
             </div>
 
             {/* Search Bar */}

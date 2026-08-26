@@ -1,6 +1,20 @@
 import React from 'react';
 import { Phone, Mail, MessageCircle, Heart, Shield } from 'lucide-react';
 
+const InstagramIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
+
+const FacebookIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+  </svg>
+);
+
 export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -28,28 +42,24 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
           {/* Col 1: Brand Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <div style={{
-                width: '82px',
-                height: '56px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden'
-              }}>
-                <img
-                  src="/images/logo.jpg"
-                  alt="Mankotia Holidays"
-                  onError={(e) => { e.currentTarget.src = '/static/images/logo.jpg'; }}
-                  style={{ width: '82px', height: '56px', objectFit: 'contain' }}
-                />
-              </div>
-              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.3rem', color: '#FFFFFF' }}>
-                Mankotia <span className="text-gradient-gold">Holidays</span>
+              <img 
+                src="/images/logo.jpg" 
+                alt="Mankotia Holidays Logo" 
+                onError={(e) => { e.currentTarget.src = '/static/images/logo.jpg'; }}
+                style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: '10px' }} 
+              />
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)' }}>
+                  Mankotia <span className="text-gradient-gold">Holidays</span>
+                </h3>
+                <div style={{ fontSize: '0.72rem', color: '#F59E0B', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  Pilgrimage & Domestic Specialist
+                </div>
               </div>
             </div>
 
             <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#94A3B8', marginBottom: '20px' }}>
-              Your trusted partner for Sacred Char Dham Yatra, Do Dham Yatra, Kedarnath Helicopter Packages, Uttarakhand scenic tours, and Incredible India holidays.
+              Mankotia Holidays is a leading travel platform in India featuring the largest network of hotels, genuine guest reviews, and complete travel solutions including flight/train/bus ticketing, taxi rentals, luxury cottages, and spiritual yatras.
             </p>
 
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -57,6 +67,7 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                 href="https://wa.me/919816461616" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                title="WhatsApp Chat"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -66,13 +77,14 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#22C55E',
-                  fontSize: '18px'
+                  transition: 'all 0.2s'
                 }}
               >
-                <i className="fa-brands fa-whatsapp"></i>
+                <MessageCircle size={18} />
               </a>
               <a 
                 href="tel:+919816461616"
+                title="Direct Phone Call"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -82,13 +94,14 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#06B6D4',
-                  fontSize: '16px'
+                  transition: 'all 0.2s'
                 }}
               >
-                <i className="fa-solid fa-phone"></i>
+                <Phone size={18} />
               </a>
               <a 
                 href="mailto:mankotiaholidays38@gmail.com"
+                title="Official Email"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -98,16 +111,17 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#F59E0B',
-                  fontSize: '16px'
+                  transition: 'all 0.2s'
                 }}
               >
-                <i className="fa-solid fa-envelope"></i>
+                <Mail size={18} />
               </a>
               <a
                 href="https://www.instagram.com/mankotiaholidays38/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Mankotia Holidays on Instagram"
+                title="Instagram Page"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -117,16 +131,17 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#F472B6',
-                  fontSize: '17px'
+                  transition: 'all 0.2s'
                 }}
               >
-                <i className="fa-brands fa-instagram"></i>
+                <InstagramIcon size={18} />
               </a>
               <a
                 href="https://www.facebook.com/kuldip.mankotia.39"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Mankotia Holidays on Facebook"
+                title="Facebook Page"
                 style={{
                   width: '38px',
                   height: '38px',
@@ -136,22 +151,61 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#60A5FA',
-                  fontSize: '17px'
+                  transition: 'all 0.2s'
                 }}
               >
-                <i className="fa-brands fa-facebook-f"></i>
+                <FacebookIcon size={18} />
               </a>
             </div>
           </div>
 
-          {/* Col 2: Pilgrimages & Yatra */}
+          {/* Col 2: Our Core Services */}
           <div>
             <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '18px' }}>
-              🕉️ Sacred Pilgrimages
+              ⚡ Our Travel Services
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
               <li>
-                <a href="#char-dham" onClick={(e) => { e.preventDefault(); scrollTo('char-dham'); }} style={{ color: '#CBD5E1', transition: 'color 0.2s' }}>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  🚌 Volvo / Car Packages
+                </a>
+              </li>
+              <li>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  💑 Group Tour & Honeymoon Packages
+                </a>
+              </li>
+              <li>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  ✈️🚆 Online Flights, Trains & Buses
+                </a>
+              </li>
+              <li>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  🚖 Volvo / Car / Taxi Rentals
+                </a>
+              </li>
+              <li>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  🏨🏡 Hotels & Mountain Cottages Booking
+                </a>
+              </li>
+              <li>
+                <a href="#services" onClick={(e) => { e.preventDefault(); scrollTo('services'); }} style={{ color: '#CBD5E1' }}>
+                  🏕️🧗 Camping, Sightseeing & Adventure
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Pilgrimages & Yatras */}
+          <div>
+            <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '18px' }}>
+              🕉️ Pilgrimages & Yatras
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+              <li>
+                <a href="#char-dham" onClick={(e) => { e.preventDefault(); scrollTo('char-dham'); }} style={{ color: '#CBD5E1' }}>
                   Char Dham Yatra Deluxe (10N/11D)
                 </a>
               </li>
@@ -166,13 +220,13 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                 </a>
               </li>
               <li>
-                <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ color: '#CBD5E1' }}>
-                  Biometric Yatra Registration Guide
+                <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#CBD5E1' }}>
+                  Golden Triangle: Delhi-Agra-Jaipur
                 </a>
               </li>
               <li>
                 <a href="#yatra-guide" onClick={(e) => { e.preventDefault(); scrollTo('yatra-guide'); }} style={{ color: '#CBD5E1' }}>
-                  High Altitude Health & Packing Guide
+                  Biometric Yatra Registration Guide
                 </a>
               </li>
             </ul>
@@ -343,11 +397,10 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
       <a
         href="https://wa.me/919816461616?text=Hi%20Mankotia%20Holidays!%20I%20would%20like%20to%20inquire%20about%20Char%20Dham%20/%20Uttarakhand%20packages."
         target="_blank"
-        rel="noopener noreferrer"
         className="floating-whatsapp"
         title="Chat on WhatsApp"
       >
-        <i className="fa-brands fa-whatsapp"></i>
+        <MessageCircle size={28} />
       </a>
     </footer>
   );
