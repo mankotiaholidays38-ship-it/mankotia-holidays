@@ -126,51 +126,27 @@ export default function Hero({ onOpenInquiry }) {
             <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay at unbeatable prices.
           </p>
 
-          {/* Quick Services Visual Badges */}
+          {/* Clean Simple Services Line (No button styling so on phone it doesn't look like clickable buttons) */}
           <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '8px',
-            maxWidth: '880px',
-            margin: '0 auto 20px'
+            color: '#CBD5E1',
+            fontSize: 'clamp(0.85rem, 1.3vw, 0.95rem)',
+            fontWeight: 500,
+            lineHeight: 1.8,
+            maxWidth: '850px',
+            margin: '0 auto 16px',
+            textAlign: 'center'
           }}>
-            <span style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.35)', color: '#FCD34D', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              🚌 Volvo / Car Packages
-            </span>
-            <span style={{ background: 'rgba(236, 72, 153, 0.15)', border: '1px solid rgba(236, 72, 153, 0.35)', color: '#F472B6', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              💑 Group & Honeymoon Tours
-            </span>
-            <span style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', color: '#38BDF8', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              ✈️🚆🚌 Flights, Trains & Buses
-            </span>
-            <span style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)', color: '#6EE7B7', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              🚖 Taxi & Car Rentals
-            </span>
-            <span style={{ background: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.35)', color: '#C084FC', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              🏨🏡 Hotels & Cottages
-            </span>
-            <span style={{ background: 'rgba(249, 115, 22, 0.15)', border: '1px solid rgba(249, 115, 22, 0.35)', color: '#FDBA74', padding: '5px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-              🏕️🧗 Camping & Adventure
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <a
-              href="#services"
-              className="btn btn-primary-gold"
-              style={{ padding: '12px 26px', fontSize: '0.95rem' }}
-            >
-              <span>Explore All Services & Bookings</span>
-              <ArrowRight size={17} />
-            </a>
-            <button
-              onClick={() => onOpenInquiry({ destination: 'Custom Tour & Hotel Package' })}
-              className="btn btn-outline-gold"
-              style={{ padding: '12px 24px', fontSize: '0.95rem' }}
-            >
-              <span>Instant Custom Quote</span>
-            </button>
+            <span>🚌 Volvo / Car Packages</span>
+            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
+            <span>💑 Group & Honeymoon Tours</span>
+            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
+            <span>✈️🚆🚌 Flights, Trains & Buses</span>
+            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
+            <span>🚖 Taxi & Car Rentals</span>
+            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
+            <span>🏨🏡 Hotels & Cottages</span>
+            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
+            <span>🏕️🧗 Camping & Adventure</span>
           </div>
         </div>
 

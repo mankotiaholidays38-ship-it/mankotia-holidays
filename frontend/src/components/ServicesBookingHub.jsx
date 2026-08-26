@@ -47,7 +47,13 @@ const isPastDate = (dateStr) => {
 };
 
 export default function ServicesBookingHub({ onOpenInquiry }) {
-  const [activeServiceTab, setActiveServiceTab] = useState('transit'); // 'transit', 'cabs', 'hotels', 'group'
+  const [activeServiceTab, setActiveServiceTab] = useState(null); // 'transit', 'cabs', 'hotels', 'group' or null (collapsed by default)
+
+  const toggleServiceTab = (tab) => {
+    setActiveServiceTab((prev) => (prev === tab ? null : tab));
+    setTransitSuccess(null);
+    setCabSuccess(null);
+  };
 
   // Transit state (Flights / Trains / Buses)
   const [transitType, setTransitType] = useState('Domestic Flight'); // 'Domestic Flight', 'Express & Tatkal Train', 'Luxury AC Volvo Bus'
@@ -285,10 +291,11 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
           justifyContent: 'center',
           gap: '10px',
           flexWrap: 'wrap',
-          marginBottom: '26px'
+          marginBottom: activeServiceTab ? '26px' : '0'
         }}>
           <button
-            onClick={() => { setActiveServiceTab('transit'); setTransitSuccess(null); }}
+            type="button"
+            onClick={() => toggleServiceTab('transit')}
             className={`btn ${activeServiceTab === 'transit' ? 'btn-primary-gold' : 'btn-outline-gold'}`}
             style={{
               padding: '12px 20px',
@@ -297,15 +304,21 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: activeServiceTab === 'transit' ? '0 0 16px rgba(245, 158, 11, 0.4)' : 'none'
             }}
           >
             <Plane size={18} />
             <span>Flights, Trains & Buses Query</span>
+            <span style={{ fontSize: '0.72rem', opacity: 0.8, marginLeft: '2px' }}>
+              {activeServiceTab === 'transit' ? '▲ Close' : '▼ Open'}
+            </span>
           </button>
 
           <button
-            onClick={() => { setActiveServiceTab('cabs'); setCabSuccess(null); }}
+            type="button"
+            onClick={() => toggleServiceTab('cabs')}
             className={`btn ${activeServiceTab === 'cabs' ? 'btn-primary-gold' : 'btn-outline-gold'}`}
             style={{
               padding: '12px 20px',
@@ -314,15 +327,21 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: activeServiceTab === 'cabs' ? '0 0 16px rgba(6, 182, 212, 0.4)' : 'none'
             }}
           >
             <Car size={18} />
             <span>Volvo / Car / Taxi Rentals</span>
+            <span style={{ fontSize: '0.72rem', opacity: 0.8, marginLeft: '2px' }}>
+              {activeServiceTab === 'cabs' ? '▲ Close' : '▼ Open'}
+            </span>
           </button>
 
           <button
-            onClick={() => setActiveServiceTab('hotels')}
+            type="button"
+            onClick={() => toggleServiceTab('hotels')}
             className={`btn ${activeServiceTab === 'hotels' ? 'btn-primary-gold' : 'btn-outline-gold'}`}
             style={{
               padding: '12px 20px',
@@ -331,15 +350,21 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: activeServiceTab === 'hotels' ? '0 0 16px rgba(168, 85, 247, 0.4)' : 'none'
             }}
           >
             <Hotel size={18} />
             <span>Hotels & Cottages Booking</span>
+            <span style={{ fontSize: '0.72rem', opacity: 0.8, marginLeft: '2px' }}>
+              {activeServiceTab === 'hotels' ? '▲ Close' : '▼ Open'}
+            </span>
           </button>
 
           <button
-            onClick={() => setActiveServiceTab('group')}
+            type="button"
+            onClick={() => toggleServiceTab('group')}
             className={`btn ${activeServiceTab === 'group' ? 'btn-primary-gold' : 'btn-outline-gold'}`}
             style={{
               padding: '12px 20px',
@@ -348,13 +373,39 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: activeServiceTab === 'group' ? '0 0 16px rgba(244, 114, 182, 0.4)' : 'none'
             }}
           >
             <Heart size={18} />
             <span>Group, Honeymoon & Adventure</span>
+            <span style={{ fontSize: '0.72rem', opacity: 0.8, marginLeft: '2px' }}>
+              {activeServiceTab === 'group' ? '▲ Close' : '▼ Open'}
+            </span>
           </button>
         </div>
+
+        {/* Compact Prompt shown when no form is expanded */}
+        {activeServiceTab === null && (
+          <div style={{
+            textAlign: 'center',
+            padding: '24px 16px',
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px dashed rgba(245, 158, 11, 0.25)',
+            borderRadius: '16px',
+            maxWidth: '650px',
+            margin: '20px auto 0',
+            animation: 'fadeIn 0.3s ease'
+          }}>
+            <div style={{ color: '#FCD34D', fontSize: '0.95rem', fontWeight: 700, marginBottom: '4px' }}>
+              👆 Click Any Service Button Above To Open Its Booking Query Form
+            </div>
+            <div style={{ color: '#94A3B8', fontSize: '0.82rem' }}>
+              Instant ticket quotes for Flights, Trains & Volvo buses, verified cab rentals, and curated hotel stays.
+            </div>
+          </div>
+        )}
 
         {/* Tab 1: Flights, Trains & Buses (Individual Form & Direct Submission) */}
         {activeServiceTab === 'transit' && (
