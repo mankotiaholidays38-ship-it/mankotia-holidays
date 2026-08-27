@@ -13,7 +13,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
       price: "₹34,999",
       originalPrice: "₹45,000",
       badge: "Complete Spiritual Circuit",
-      image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80",
+      image: "/images/packages/kedarnath_temple.jpg",
       description: "Our flagship pilgrimage package covering all four sacred Himalayan shrines with comfortable stays, pure vegetarian Satvik meals, biometric yatra pass assistance, and experienced mountain drivers.",
       features: [
         "10 Nights Deluxe Hotel & Alpine Swiss Camp Stays",
@@ -34,7 +34,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
       price: "₹22,500",
       originalPrice: "₹29,999",
       badge: "Most Popular Pilgrimage",
-      image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+      image: "/images/packages/badrinath_temple.jpg",
       description: "Ideal for travelers with limited time seeking the supreme blessings of Lord Shiva at Kedarnath and Lord Vishnu at Badrinath with Haridwar/Rishikesh pick-up and drop.",
       features: [
         "5 Nights Deluxe Hotel / Camp Accommodation",
@@ -54,7 +54,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
       price: "₹19,999",
       originalPrice: "₹26,500",
       badge: "VIP Helicopter Express",
-      image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80",
+      image: "/images/packages/kedarnath_heli_shrine.jpg",
       description: "Fly directly to Kedarnath Helipad (just 500m from the temple) with confirmed helicopter shuttle tickets, priority VIP darshan guidance, and luxury resort stays.",
       features: [
         "Confirmed Helicopter Round-trip Tickets (Phata / Sirsi / Guptkashi)",

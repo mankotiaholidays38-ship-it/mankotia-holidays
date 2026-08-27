@@ -31,3 +31,7 @@ Thumbs.db
 # Frontend dependencies
 frontend/node_modules/
 
+# Scratch directory
+scratch/
+
+

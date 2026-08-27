@@ -95,6 +95,46 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
       drop: "Srinagar International Airport (SXR)"
     },
     { 
+      name: "Delhi Capital", 
+      fullName: "Delhi Capital City Heritage & Sightseeing Tour", 
+      days: 2, 
+      style: "Capital Heritage",
+      pickup: "Delhi IGI Airport / New Delhi Railway Station",
+      drop: "Delhi IGI Airport / New Delhi Railway Station"
+    },
+    { 
+      name: "Agra Taj Mahal", 
+      fullName: "Agra Mughal Marvels & Taj Mahal Heritage Tour", 
+      days: 2, 
+      style: "Mughal Heritage",
+      pickup: "Delhi NCR / Agra Cantt Railway Station",
+      drop: "Delhi NCR / Agra Cantt Railway Station"
+    },
+    { 
+      name: "Jaipur Pink City", 
+      fullName: "Jaipur Royal Pink City & Forts Experience", 
+      days: 3, 
+      style: "Royal Rajputana",
+      pickup: "Jaipur International Airport / Railway Station / Delhi NCR",
+      drop: "Jaipur International Airport / Railway Station / Delhi NCR"
+    },
+    { 
+      name: "Mathura Vrindavan", 
+      fullName: "Sacred Mathura & Vrindavan Dham Yatra (Braj Bhoomi Darshan)", 
+      days: 3, 
+      style: "Pilgrimage & Spiritual",
+      pickup: "Delhi NCR / Mathura Junction Railway Station",
+      drop: "Delhi NCR / Mathura Junction Railway Station"
+    },
+    { 
+      name: "Golden Triangle", 
+      fullName: "Golden Triangle Classic (Delhi • Agra • Jaipur Grand Tour)", 
+      days: 6, 
+      style: "Heritage & Cultural",
+      pickup: "New Delhi IGI Airport / New Delhi Railway Station",
+      drop: "New Delhi IGI Airport / Jaipur Airport"
+    },
+    { 
       name: "Royal Rajasthan", 
       fullName: "Royal Rajasthan (Jaipur • Jodhpur • Udaipur)", 
       days: 6, 

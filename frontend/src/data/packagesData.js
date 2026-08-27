@@ -13,7 +13,7 @@ export const PACKAGES = [
     badge: "Divine Best Seller",
     rating: 4.9,
     reviews_count: 148,
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kedarnath_temple.jpg",
     description: "Complete spiritual pilgrimage covering all four sacred Himalayan Dhams with dedicated mountain vehicle, deluxe hotel stays, biometric registration assistance, and VIP Darshan guidance.",
     highlights: [
       "Complete 4 Holy Dhams in Uttarakhand Himalayas",
@@ -57,7 +57,7 @@ export const PACKAGES = [
     badge: "Most Popular Yatra",
     rating: 4.9,
     reviews_count: 215,
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/badrinath_temple.jpg",
     description: "Express spiritual journey to Lord Shiva's Kedarnath Jyotirlinga and Lord Vishnu's Badrinath Dham with smooth transfers from Haridwar/Rishikesh.",
     highlights: [
       "Kedarnath Jyotirlinga Darshan & Evening Swarna Aarti",
@@ -93,7 +93,7 @@ export const PACKAGES = [
     badge: "Helicopter Special",
     rating: 5.0,
     reviews_count: 98,
-    image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kedarnath_heli_shrine.jpg",
     description: "VIP Express package with confirmed Helicopter Shuttle from Phata/Sirsi/Guptkashi helipads directly to Kedarnath Top, priority temple darshan, and scenic resort stays.",
     highlights: [
       "Helicopter Round-trip Tickets (Phata / Sirsi / Guptkashi)",
@@ -126,7 +126,7 @@ export const PACKAGES = [
     badge: "Sacred Rivers Yatra",
     rating: 4.8,
     reviews_count: 110,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/bhagirathi_river_glacial.jpg",
     description: "Pilgrimage to the holy origins of India's two most revered rivers: Goddess Yamuna at Yamunotri and Goddess Ganga at Gangotri through picturesque Harsil Valley.",
     highlights: [
       "Yamunotri Holy Surya Kund & Divya Shila Darshan",
@@ -160,7 +160,7 @@ export const PACKAGES = [
     badge: "Lord Vishnu's Abode",
     rating: 4.9,
     reviews_count: 88,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/neelkanth_peak.jpg",
     description: "Dedicated spiritual retreat to Lord Badri Vishal, hot sulfur spring bath at Tapt Kund, and cultural exploration of Mana - the First Village of India.",
     highlights: [
       "Special Mahabhishek & Evening Shayan Aarti at Badrinath",
@@ -193,7 +193,7 @@ export const PACKAGES = [
     badge: "Ultimate Shiva Pilgrimage",
     rating: 5.0,
     reviews_count: 65,
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/tungnath_shiva_temple.jpg",
     description: "The supreme Himalayan pilgrimage honoring the 5 sacred forms of Lord Shiva in Garhwal Himalayas with certified trek leaders, porters, and camps.",
     highlights: [
       "Kedarnath (Hump), Tungnath (Arms - Highest Shiva Temple)",
@@ -230,7 +230,7 @@ export const PACKAGES = [
     badge: "Spiritual Weekend",
     rating: 4.8,
     reviews_count: 142,
-    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/rishikesh_ganga_aarti.jpg",
     description: "Immerse in divine Ganga Aarti at Har Ki Pauri, visit ancient Neelkanth Mahadev temple, witness the holy Bhagirathi-Alaknanda confluence at Devprayag, and explore yoga ashrams in Rishikesh.",
     highlights: [
       "Har Ki Pauri World-Famous Grand Ganga Aarti",
@@ -267,7 +267,7 @@ export const PACKAGES = [
     badge: "Family Favorite",
     rating: 4.8,
     reviews_count: 184,
-    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/nainital_lake.jpg",
     description: "The ultimate Uttarakhand holiday combining serene lake boating in Nainital, thrilling tiger jeep safaris in Jim Corbett, waterfalls in Mussoorie, and Ganga Aarti in Rishikesh.",
     highlights: [
       "Emerald Naini Lake Boating & Naina Devi Temple",
@@ -303,7 +303,7 @@ export const PACKAGES = [
     badge: "Adventure & Nature",
     rating: 4.9,
     reviews_count: 126,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/auli_snow_skiing.jpg",
     description: "Discover the 'Mini Switzerland of India' at Chopta, summit Chandrashila Peak, visit the world's highest Shiva temple at Tungnath (12,073 ft), and ride the Auli Cable Car with Nanda Devi views.",
     highlights: [
       "Auli Ropeway (Asia's longest cable car) & Ski Slopes",
@@ -338,7 +338,7 @@ export const PACKAGES = [
     badge: "Serene & Scenic",
     rating: 4.8,
     reviews_count: 94,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/nainital_lake.jpg",
     description: "Breathtaking panoramic views of Trishul & Nanda Devi peaks from Kausani, lush pine forests of Ranikhet, and apple orchards of Mukteshwar.",
     highlights: [
       "Kausani 300 km Panoramic Himalayan Sunrise",
@@ -372,7 +372,7 @@ export const PACKAGES = [
     badge: "Wild Safari",
     rating: 4.8,
     reviews_count: 210,
-    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/corbett_tiger.jpg",
     description: "India's premier tiger reserve experience featuring 4x4 open jeep jungle safaris, riverside luxury resort stay with swimming pool, and birdwatching on Kosi river banks.",
     highlights: [
       "4x4 Open Gypsy Jungle Safari with Forest Guide",
@@ -404,7 +404,7 @@ export const PACKAGES = [
     badge: "Queen of Hills",
     rating: 4.7,
     reviews_count: 135,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kempty_falls_mussoorie.jpg",
     description: "Escape to Mussoorie's colonial charm, explore Dhanaulti deodar eco-parks, ride the Surkanda Devi ropeway, and stay in serene Swiss tents in Kanatal.",
     highlights: [
       "Mussoorie Kempty Falls, Cloud's End & Mall Road",
@@ -437,7 +437,7 @@ export const PACKAGES = [
     badge: "Himalayan Panorama",
     rating: 4.8,
     reviews_count: 112,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/nainital_lake.jpg",
     description: "Explore the lake paradise of Nainital, birdwatching in Binsar wildlife sanctuary, and sunrise over snow-clad Trishul and Nanda Devi peaks in Kausani.",
     highlights: [
       "Nainital Lake Boating & Snow View Point Cable Car",
@@ -471,7 +471,7 @@ export const PACKAGES = [
     badge: "Adventure Capital",
     rating: 4.9,
     reviews_count: 260,
-    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/rishikesh_ganga_aarti.jpg",
     description: "The ultimate adventure adrenaline package in Rishikesh: 16 km Ganga white water rafting, cliff jumping, luxury riverside AC dome camping, and Ganga Aarti.",
     highlights: [
       "16 KM Shivpuri to Rishikesh Grade III/IV River Rafting",
@@ -507,7 +507,7 @@ export const PACKAGES = [
     badge: "Himachal Best Seller",
     rating: 4.8,
     reviews_count: 310,
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/solang_valley_snow.jpg",
     description: "Experience the snow magic of Himachal with Solang Valley adventures, engineering wonder Atal Tunnel, Sissu waterfall in Lahaul, and cozy Old Manali cafes.",
     highlights: [
       "Solang Valley Adventure Sports (Paragliding & Zorbing)",
@@ -541,7 +541,7 @@ export const PACKAGES = [
     badge: "Queen of Hills",
     rating: 4.8,
     reviews_count: 195,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/shimla_ridge.jpg",
     description: "Colonial charm on Shimla Ridge & Mall Road, snow adventures in Kufri, and the world's highest cricket ground at Chail Palace.",
     highlights: [
       "Historic Shimla Ridge, Mall Road & Christ Church",
@@ -574,7 +574,7 @@ export const PACKAGES = [
     badge: "Tibetan & Alpine Charm",
     rating: 4.9,
     reviews_count: 160,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/khajjiar_lake.jpg",
     description: "Spiritual residence of Dalai Lama in McLeodGanj, picturesque tea gardens in Dharamshala, colonial Dalhousie, and the green alpine meadows of Khajjiar.",
     highlights: [
       "Dalai Lama Main Temple Complex & Namgyal Monastery",
@@ -608,7 +608,7 @@ export const PACKAGES = [
     badge: "Bucket List Expedition",
     rating: 5.0,
     reviews_count: 140,
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/key_monastery_spiti.jpg",
     description: "The ultimate Himalayan road expedition to the Middle Land of Spiti: 1000-year-old Key Monastery, world's highest post office Hikkim, and moon lake Chandratal.",
     highlights: [
       "Chandratal High-Altitude Moon Lake Glamping",
@@ -644,7 +644,7 @@ export const PACKAGES = [
     badge: "Himachal Grand Tour",
     rating: 4.8,
     reviews_count: 225,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/shimla_ridge.jpg",
     description: "The classic Himachal family tour covering colonial capital Shimla, snow fun at Kufri, river rafting in Kullu valley, and alpine adventures in Manali & Solang.",
     highlights: [
       "Shimla Mall Road, Ridge & Christ Church",
@@ -679,7 +679,7 @@ export const PACKAGES = [
     badge: "Offbeat Himachal",
     rating: 4.9,
     reviews_count: 180,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/solang_valley_snow.jpg",
     description: "Relax by the roaring Parvati river in Kasol, soak in hot springs at Manikaran Sahib, explore wooden cottages in Jibhi, and fish for trout in Tirthan valley.",
     highlights: [
       "Kasol Riverside Cafes & Chalal Village Nature Hike",
@@ -712,7 +712,7 @@ export const PACKAGES = [
     badge: "Sky Adventure",
     rating: 4.8,
     reviews_count: 150,
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/bir_billing_paragliding.jpg",
     description: "Fly like a bird at the World's 2nd Highest Paragliding Takeoff Point in Billing, explore lush Palampur tea estates, and visit ancient Baijnath Shiva Temple.",
     highlights: [
       "Tandem Paragliding Flight from Billing (8,000 ft) to Bir",
@@ -749,7 +749,7 @@ export const PACKAGES = [
     badge: "Kashmir Crown",
     rating: 4.9,
     reviews_count: 240,
-    image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/dal_lake_shikara.jpg",
     description: "Indulge in a royal Kashmiri holiday with handcrafted cedarwood houseboats on Dal Lake, world-famous Gulmarg Gondola rides, and pristine Lidder river valleys in Pahalgam.",
     highlights: [
       "Dal Lake Handcrafted Luxury Cedarwood Houseboat Stay",
@@ -784,7 +784,7 @@ export const PACKAGES = [
     badge: "Honeymoon Special",
     rating: 5.0,
     reviews_count: 175,
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/dal_lake_shikara.jpg",
     description: "Tailor-made romantic honeymoon in Kashmir with luxury houseboat Jacuzzi suites, flower bed decorations, candle-lit dinners, and private cab transfers.",
     highlights: [
       "Super Deluxe Houseboat with Private Balcony on Nigeen Lake",
@@ -819,7 +819,7 @@ export const PACKAGES = [
     badge: "Glacier Special",
     rating: 4.8,
     reviews_count: 120,
-    image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/sonamarg_glacier.jpg",
     description: "Explore the golden meadows of Sonamarg, trek to perpetual snow at Thajiwas Glacier, fish for Himalayan trout in Sindh river, and cruise Dal Lake.",
     highlights: [
       "Sonamarg Thajiwas Glacier Sledge & Snow Point",
@@ -852,7 +852,7 @@ export const PACKAGES = [
     badge: "Untouched Beauty",
     rating: 4.9,
     reviews_count: 85,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/dal_lake_shikara.jpg",
     description: "Escape the tourist crowds to the Valley of Milk at Doodhpathri and alpine grasslands of Yusmarg with bubbling streams, pine forests, and homestays.",
     highlights: [
       "Doodhpathri Shaliganga River Valley of Milk",
@@ -885,7 +885,7 @@ export const PACKAGES = [
     badge: "Snow Paradise",
     rating: 4.9,
     reviews_count: 165,
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/gulmarg_gondola_ski.jpg",
     description: "Immerse in winter wonderland with Asia's highest cable car, professional ski instructors, snowmobiles, and cozy pine resort stays in Gulmarg.",
     highlights: [
       "Gulmarg Gondola Phase 1 (Kongdoori) & Phase 2 (Apharwat)",
@@ -918,7 +918,7 @@ export const PACKAGES = [
     badge: "Off-the-Map Kashmir",
     rating: 5.0,
     reviews_count: 70,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/gurez_valley.jpg",
     description: "Travel along the ancient Silk Route across Razdan Pass (11,672 ft) to the mythical Gurez Valley, Kishan Ganga river, and pyramid peak Habba Khatoon.",
     highlights: [
       "Spectacular Cross-Mountain Drive over Razdan Pass",
@@ -952,7 +952,7 @@ export const PACKAGES = [
     badge: "Spiritual & Scenic",
     rating: 4.9,
     reviews_count: 195,
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/katra_trikuta_mountain.jpg",
     description: "The ultimate North Indian journey combining the divine blessings of Mata Vaishno Devi in Katra with the scenic paradise of Kashmir valley.",
     highlights: [
       "Mata Vaishno Devi Bhawan Yatra (Heli / Battery Car Support)",
@@ -992,7 +992,7 @@ export const PACKAGES = [
     badge: "Heritage Special",
     rating: 4.8,
     reviews_count: 155,
-    image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/jaipur_pink_city.jpg",
     description: "Explore the land of maharajas with majestic Amber Fort in Jaipur, towering Mehrangarh Fort in Jodhpur, and romantic boat cruises on Lake Pichola in Udaipur.",
     highlights: [
       "Amber Fort Elephant/Jeep Ride & City Palace Jaipur",
@@ -1027,7 +1027,7 @@ export const PACKAGES = [
     badge: "Desert Safari",
     rating: 4.9,
     reviews_count: 220,
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/jaisalmer_desert.jpg",
     description: "Live like royalty in luxury desert Swiss tents, enjoy camel & 4x4 dune bashing safaris on Sam Sand Dunes, and explore the living Golden Fort of Jaisalmer.",
     highlights: [
       "Sam Sand Dunes Luxury Swiss Tent Stay with Cultural Folk Show",
@@ -1060,7 +1060,7 @@ export const PACKAGES = [
     badge: "Lakes & Hills",
     rating: 4.8,
     reviews_count: 140,
-    image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/udaipur_city_palace.jpg",
     description: "Experience the romance of Udaipur's royal lakes and palaces combined with the cool mountain breezes and ornate Jain marble carvings of Mount Abu.",
     highlights: [
       "Lake Pichola Sunset Boat Cruise & Jag Mandir Island",
@@ -1094,7 +1094,7 @@ export const PACKAGES = [
     badge: "Wild Royalty",
     rating: 4.8,
     reviews_count: 115,
-    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/ranthambore_tiger.jpg",
     description: "Combine the grandeur of Jaipur's palaces and forts with thrilling open canter tiger safaris inside Ranthambore National Park.",
     highlights: [
       "Open Canter / Gypsy Safari in Ranthambore Tiger Reserve",
@@ -1127,7 +1127,7 @@ export const PACKAGES = [
     badge: "Spiritual Heritage",
     rating: 4.7,
     reviews_count: 130,
-    image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/pushkar_lake.jpg",
     description: "Visit the world's only Lord Brahma Temple and sacred Sarovar lake in Pushkar, pay homage at Ajmer Sharif Dargah, and tour the royal sights of Jaipur.",
     highlights: [
       "World-Famous Lord Brahma Temple & 52 Holy Ghats in Pushkar",
@@ -1159,7 +1159,7 @@ export const PACKAGES = [
     badge: "Thar Circuit",
     rating: 4.8,
     reviews_count: 95,
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/jaisalmer_desert.jpg",
     description: "Venture deep into the Thar Desert exploring Junagarh Fort in Bikaner, camel breeding farm, Sam dunes camp in Jaisalmer, and Mehrangarh Fort in Jodhpur.",
     highlights: [
       "Bikaner Unconquered Junagarh Fort & Karni Mata Rat Temple",
@@ -1194,7 +1194,7 @@ export const PACKAGES = [
     badge: "Grand Royal Journey",
     rating: 4.9,
     reviews_count: 110,
-    image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/jaipur_pink_city.jpg",
     description: "The complete royal grand circuit of Rajasthan covering majestic palaces, ancient desert temples, marble Jain wonders at Ranakpur, and lake cruises.",
     highlights: [
       "Jaipur Amber Fort, City Palace & Hawa Mahal",
@@ -1234,7 +1234,7 @@ export const PACKAGES = [
     badge: "Trending Beach",
     rating: 4.7,
     reviews_count: 280,
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/goa_beach_yacht.jpg",
     description: "Relax on sun-kissed beaches, explore Portuguese heritage in Fontainhas Latin Quarter, and enjoy sunset party cruises on Mandovi River.",
     highlights: [
       "Baga, Calangute, Anjuna & Candolim Beach Tour",
@@ -1267,7 +1267,7 @@ export const PACKAGES = [
     badge: "Honeymoon Special",
     rating: 4.9,
     reviews_count: 172,
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kerala_houseboat.jpg",
     description: "Endless rolling tea estates in Munnar, spice plantations & boat safaris in Thekkady, and private luxury houseboat cruise on Alleppey backwaters.",
     highlights: [
       "Private Air-Conditioned Houseboat Cruise in Alleppey",
@@ -1301,7 +1301,7 @@ export const PACKAGES = [
     badge: "Luxury & Serenity",
     rating: 4.8,
     reviews_count: 140,
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/goa_beach_yacht.jpg",
     description: "Indulge in peaceful white-sand beaches at Palolem, private 4x4 jungle jeep safari to Dudhsagar Waterfalls, organic spice plantation tour, and 5-star beachfront resorts.",
     highlights: [
       "Dudhsagar 4-Tier Waterfall 4x4 Jungle Jeep Safari",
@@ -1334,7 +1334,7 @@ export const PACKAGES = [
     badge: "Treehouse Glamping",
     rating: 4.9,
     reviews_count: 110,
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/wayanad_rainforest.jpg",
     description: "Stay in a romantic luxury treehouse perched 60 ft amidst coffee and spice plantations, explore Edakkal prehistoric caves, and trek to heart-shaped Chembra Lake.",
     highlights: [
       "Authentic Luxury Wooden Treehouse Stay in Rainforest",
@@ -1367,7 +1367,7 @@ export const PACKAGES = [
     badge: "Kerala Grand Tour",
     rating: 4.9,
     reviews_count: 145,
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kerala_houseboat.jpg",
     description: "The complete Kerala experience from misty tea hills of Munnar, wildlife safaris in Thekkady, luxury backwater houseboat cruise in Alleppey to crescent Kovalam beach.",
     highlights: [
       "Munnar Eravikulam National Park & Tea Hills",
@@ -1403,7 +1403,7 @@ export const PACKAGES = [
     badge: "VIP Party & Scuba",
     rating: 4.8,
     reviews_count: 190,
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/goa_beach_yacht.jpg",
     description: "Experience Goa in ultimate style with Grand Island scuba diving, private luxury sunset yacht cruise with champagne, and VIP club entry.",
     highlights: [
       "Grand Island Scuba Diving with Certified PADI Instructor & Video",
@@ -1436,7 +1436,7 @@ export const PACKAGES = [
     badge: "Classic Kerala",
     rating: 4.9,
     reviews_count: 130,
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
+    image: "/images/packages/kerala_houseboat.jpg",
     description: "The ideal short vacation in Kerala combining 2 nights in the cool tea hills of Munnar and 1 night on a private luxury houseboat in Alleppey backwaters.",
     highlights: [
       "Munnar Endless Rolling Tea Hills & Echo Point",
@@ -1457,6 +1457,516 @@ export const PACKAGES = [
       { day: 3, title: "Munnar to Alleppey Luxury Private Houseboat", desc: "Drive to Alleppey, 12:30 PM houseboat check-in, cruise backwaters & sunset." },
       { day: 4, title: "Alleppey to Fort Kochi & Airport Drop", desc: "Morning backwater sunrise, visit Fort Kochi Chinese fishing nets & airport drop." }
     ]
+  },
+  // ==========================================
+  // 7. INDIVIDUAL & COMBO PACKAGES: DELHI, AGRA, JAIPUR & MATHURA-VRINDAVAN
+  // ==========================================
+  
+  // ==========================================
+  // 7. INDIVIDUAL & COMBO PACKAGES: DELHI, AGRA, JAIPUR & MATHURA-VRINDAVAN
+  // ==========================================
+  
+  // --- A. INDIVIDUAL DELHI PACKAGES ---
+  {
+    id: "pkg-delhi-same-day-darshan",
+    title: "Same Day Delhi Capital Sightseeing & Heritage Express",
+    destination: "Old Delhi • New Delhi • Akshardham Temple",
+    category: "Delhi",
+    duration: "1 Day (Full Day)",
+    price_inr: 3499,
+    original_price_inr: 5500,
+    badge: "Same Day Delhi Express",
+    rating: 4.8,
+    reviews_count: 128,
+    image: "/images/packages/delhi_monuments.jpg",
+    description: "Full day express city tour of India's capital covering Mughal wonders, colonial landmarks of Lutyens' Delhi, and the magnificent Akshardham Temple with dedicated AC cab and chauffeur.",
+    highlights: [
+      "Red Fort & Jama Masjid photo-stop with Old Delhi vibes",
+      "Qutub Minar (UNESCO World Heritage Site)",
+      "Humayun's Tomb & India Gate War Memorial drive",
+      "Rashtrapati Bhavan, Parliament House & Connaught Place",
+      "Lotus Temple (Bahá'í House of Worship) & Swaminarayan Akshardham Temple",
+      "Delhi Street Food & Souvenir Shopping support"
+    ],
+    inclusions: [
+      "Full Day Dedicated AC Sedan/SUV with Driver (8 Hrs / 80 Kms or Full Day)",
+      "Doorstep Pickup & Drop anywhere in Delhi / NCR / Airport / Railway Station",
+      "All Fuel, Toll Taxes, Parking & Driver Allowances",
+      "Customizable Sightseeing Stops & Lunch Break"
+    ],
+    days: [
+      { day: 1, title: "Delhi Full Day Heritage & Modern Capital Tour", desc: "Morning pickup, explore Red Fort, Jama Masjid, India Gate, drive past Parliament & Rashtrapati Bhavan, visit Humayun's Tomb, Qutub Minar, Lotus Temple & grand Akshardham Temple evening light/water show followed by drop-off." }
+    ]
+  },
+  {
+    id: "pkg-delhi-capital-sightseeing",
+    title: "Delhi Capital City Heritage & Sightseeing Tour",
+    destination: "Old Delhi • New Delhi • Swaminarayan Akshardham",
+    category: "Delhi",
+    duration: "2 Days / 1 Night",
+    price_inr: 6499,
+    original_price_inr: 9500,
+    badge: "Delhi Weekend Special",
+    rating: 4.8,
+    reviews_count: 162,
+    image: "/images/packages/delhi_monuments.jpg",
+    description: "Explore India's historic and vibrant capital city spanning the Mughal grandeur of Old Delhi, the colonial architecture of Lutyens' Delhi, and the magnificent modern Akshardham Temple.",
+    highlights: [
+      "Red Fort, Jama Masjid & exciting Chandni Chowk Cycle Rickshaw Ride",
+      "UNESCO World Heritage sites: Qutub Minar & Humayun's Tomb",
+      "India Gate War Memorial & Rashtrapati Bhavan drive-through",
+      "Lotus Temple (Bahá'í House of Worship) tranquil visit",
+      "Grand Swaminarayan Akshardham Temple with Evening Water & Light Show",
+      "Delhi Street Food Trail at Paranthe Wali Gali & Chaat corners"
+    ],
+    inclusions: [
+      "1 Night 4★ Deluxe Hotel Stay in Central/South Delhi",
+      "Daily Buffet Breakfast",
+      "Private AC Sedan/SUV with Knowledgeable Chauffeur",
+      "Old Delhi Rickshaw Ride Experience",
+      "Airport / Station Pickup & Drop Included"
+    ],
+    days: [
+      { day: 1, title: "Old Delhi Heritage, Chandni Chowk & Grand Akshardham Evening", desc: "Pickup in Delhi, visit Red Fort, Jama Masjid, cycle rickshaw ride in Chandni Chowk, Raj Ghat & evening Sahaj Anand Water Show at Akshardham Temple." },
+      { day: 2, title: "Lutyens Delhi, Qutub Minar, Humayun's Tomb & Lotus Temple", desc: "Drive past India Gate & Parliament House, explore Humayun's Tomb, Qutub Minar, Lotus Temple & drop at Delhi Airport / Railway Station." }
+    ]
+  },
+  {
+    id: "pkg-delhi-ncr-monuments-weekend",
+    title: "Grand Delhi Heritage, Culture & Food Walk Extravaganza",
+    destination: "Old Delhi • New Delhi • Mehrauli • Akshardham • Dilli Haat",
+    category: "Delhi",
+    duration: "3 Days / 2 Nights",
+    price_inr: 9499,
+    original_price_inr: 13999,
+    badge: "Complete Capital Tour",
+    rating: 4.9,
+    reviews_count: 85,
+    image: "/images/packages/delhi_monuments.jpg",
+    description: "An unhurried luxury exploration of Delhi's 8 historic cities, UNESCO monuments, artisan markets at Dilli Haat, food trails in Old Delhi, and musical water fountain shows.",
+    highlights: [
+      "Mehrauli Archaeological Park & UNESCO Qutub Minar Complex",
+      "Humayun's Tomb & Lodhi Art District Walk",
+      "Safdarjung Tomb, Agrasen ki Baoli & National War Memorial",
+      "Chandni Chowk, Khari Baoli Spice Market & Paranthe Wali Gali",
+      "Akshardham Musical Fountain Show & Dilli Haat Handicrafts Shopping",
+      "National Museum & Rashtrapati Bhavan Heritage Tour"
+    ],
+    inclusions: [
+      "2 Nights 4★ Deluxe Hotel Stay in Delhi NCR",
+      "Daily Buffet Breakfast & 1 Traditional Mughal Lunch / Dinner",
+      "Dedicated AC Chauffeur Driven Private Sedan/SUV",
+      "Airport / Railway Station Transfers & Sightseeing",
+      "Monument Parking, Tolls & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Arrival, Lutyens Delhi, National War Memorial & Dilli Haat", desc: "Chauffeur pickup, check-in, visit India Gate, National War Memorial, Safdarjung Tomb & evening handicrafts shopping at Dilli Haat." },
+      { day: 2, title: "Old Delhi Mughal Trail, Spice Market & Akshardham Light Show", desc: "Explore Red Fort, Jama Masjid, cycle rickshaw ride, Khari Baoli spice walk, Raj Ghat & evening boat ride & light show at Akshardham Temple." },
+      { day: 3, title: "UNESCO Monuments: Humayun's Tomb, Qutub Minar & Departure Drop", desc: "Visit Humayun's Tomb, Lodhi Gardens, Agrasen ki Baoli stepwell, Qutub Minar & on-time drop at Delhi Airport / Railway Station." }
+    ]
+  },
+
+  // --- B. INDIVIDUAL AGRA PACKAGES ---
+  {
+    id: "pkg-agra-taj-same-day-express",
+    title: "Same Day Agra Taj Mahal & UNESCO Fort Express Tour",
+    destination: "Delhi NCR • Yamuna Expressway • Agra Taj Mahal • Agra Fort",
+    category: "Agra",
+    duration: "1 Day (Same Day Express)",
+    price_inr: 4499,
+    original_price_inr: 6500,
+    badge: "Same Day Taj Express",
+    rating: 4.9,
+    reviews_count: 220,
+    image: "/images/packages/taj_mahal_sunrise.jpg",
+    description: "The most convenient same-day Taj Mahal tour from Delhi NCR via high-speed Yamuna Expressway. Experience the Taj Mahal, UNESCO Agra Fort, and authentic marble inlay craft in a single day.",
+    highlights: [
+      "Taj Mahal guided tour with approved historian guide & skip-the-line assistance",
+      "UNESCO Agra Fort (Diwan-i-Aam, Jahangiri Mahal, Musamman Burj)",
+      "Mehtab Bagh sunset view of Taj Mahal across River Yamuna",
+      "Traditional Agra Petha tasting & live Pietra Dura marble inlay workshop",
+      "Smooth 3-hour journey via Yamuna Expressway in private AC Cab"
+    ],
+    inclusions: [
+      "Dedicated Private AC Sedan / SUV with Chauffeur from Delhi NCR",
+      "Doorstep Pickup & Drop (Hotel / Home / Delhi Airport / Station)",
+      "Govt Approved English/Hindi Tour Guide in Agra",
+      "All Yamuna Expressway Tolls, Border Permits, Parking & Fuel"
+    ],
+    days: [
+      { day: 1, title: "Same Day Express: Delhi to Taj Mahal, Agra Fort & Return", desc: "6:00 AM pickup from Delhi NCR, express drive via Yamuna Expressway to Agra, visit Taj Mahal with guide, buffet lunch break, explore Agra Fort & Mehtab Bagh, return express drive with drop at Delhi by 8:30 PM." }
+    ]
+  },
+  {
+    id: "pkg-agra-fatehpur-sikri-heritage",
+    title: "Agra Mughal Marvels & Taj Mahal Heritage Tour",
+    destination: "Agra • Fatehpur Sikri • Mehtab Bagh • Sikandra",
+    category: "Agra",
+    duration: "2 Days / 1 Night",
+    price_inr: 6999,
+    original_price_inr: 10500,
+    badge: "Agra Overnight Special",
+    rating: 4.8,
+    reviews_count: 135,
+    image: "/images/packages/agra_red_fort.jpg",
+    description: "An immersive overnight getaway to the Mughal capital featuring the breathtaking Taj Mahal at sunrise, the formidable Agra Fort, Mehtab Bagh gardens, and Emperor Akbar's Fatehpur Sikri.",
+    highlights: [
+      "Early morning Taj Mahal sunrise tour with expert historian guide",
+      "Agra Fort: Diwan-i-Aam, Diwan-i-Khas, Jahangiri Mahal & Musamman Burj",
+      "Fatehpur Sikri: Buland Darwaza, Jama Masjid & Tomb of Salim Chishti",
+      "Mehtab Bagh moonlit sunset view across the sacred Yamuna River",
+      "Traditional Agra Petha tasting & marble inlay art demonstration"
+    ],
+    inclusions: [
+      "1 Night Deluxe 4★ Hotel Stay near Taj VIP Gate",
+      "Buffet Breakfast & Welcome Drink",
+      "Private AC Vehicle for all transfers from Delhi NCR or Agra Station",
+      "Govt Approved Tour Guide at Taj Mahal & Agra Fort",
+      "All Parking, Highway Tolls & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Arrival in Agra, Agra Fort, Mehtab Bagh Sunset & Artisan Tour", desc: "Pickup from Delhi NCR or Agra Station, check-in, explore UNESCO Agra Fort, sunset view of Taj Mahal from Mehtab Bagh & visit marble craftsmanship centers." },
+      { day: 2, title: "Sunrise Taj Mahal, Fatehpur Sikri Buland Darwaza & Departure", desc: "Witness majestic sunrise at Taj Mahal with expert guide, breakfast, excursion to Fatehpur Sikri royal complex & return drop at Delhi/Agra." }
+    ]
+  },
+  {
+    id: "pkg-agra-taj-sunrise-sunset",
+    title: "Agra Taj Mahal Sunrise, Fatehpur Sikri & Royal Heritage Retreat",
+    destination: "Agra • Fatehpur Sikri • Sikandra • Itmad-ud-Daulah (Baby Taj)",
+    category: "Agra",
+    duration: "3 Days / 2 Nights",
+    price_inr: 10499,
+    original_price_inr: 15500,
+    badge: "Royal Agra Retreat",
+    rating: 4.9,
+    reviews_count: 78,
+    image: "/images/packages/buland_darwaza.jpg",
+    description: "A luxury in-depth exploration of Mughal architectural jewels: Taj Mahal during both sunrise & sunset, Baby Taj (Tomb of I'timād-ud-Daulah), Akbar's Tomb at Sikandra, and Fatehpur Sikri.",
+    highlights: [
+      "Taj Mahal Sunrise VIP Guided Excursion",
+      "Sunset photography at Mehtab Bagh Gardens & Yamuna Viewpoint",
+      "Tomb of I'timād-ud-Daulah (Baby Taj) & Sikandra Tomb",
+      "Fatehpur Sikri UNESCO Palace Complex & Buland Darwaza",
+      "Agra Fort Mughal Palaces & Sheesh Mahal",
+      "Chaar Bagh Mughal Garden Walks & Heritage High Tea"
+    ],
+    inclusions: [
+      "2 Nights 4★ / 5★ Luxury Hotel Stay in Agra",
+      "Daily Buffet Breakfast & 1 Candlelight Dinner",
+      "Private AC Chauffeur Driven Vehicle for 3 Days",
+      "Professional Guide for Taj Mahal, Agra Fort & Fatehpur Sikri",
+      "Delhi / NCR / Agra Station Transfers Included"
+    ],
+    days: [
+      { day: 1, title: "Pickup, Agra Fort, Baby Taj & Sunset at Mehtab Bagh", desc: "Pickup, check-in, visit Tomb of I'timād-ud-Daulah (Baby Taj), UNESCO Agra Fort, and sunset over Taj Mahal from Mehtab Bagh." },
+      { day: 2, title: "Sunrise Taj Mahal, Artisan Tour & Akbar's Tomb at Sikandra", desc: "Magical sunrise at Taj Mahal with historian guide, breakfast, visit marble inlay workshops, sadar bazaar & Akbar's Tomb at Sikandra." },
+      { day: 3, title: "Fatehpur Sikri Grand Tour & Departure Drop", desc: "Excursion to Emperor Akbar's fortified city Fatehpur Sikri & Buland Darwaza, followed by comfortable highway drop to Delhi / Agra." }
+    ]
+  },
+
+  // --- C. INDIVIDUAL JAIPUR PACKAGES ---
+  {
+    id: "pkg-jaipur-same-day-heritage",
+    title: "Same Day Royal Jaipur Pink City Express Tour",
+    destination: "Delhi NCR • Jaipur • Amer Fort • Hawa Mahal • Jal Mahal",
+    category: "Jaipur",
+    duration: "1 Day (Same Day Express)",
+    price_inr: 4999,
+    original_price_inr: 7500,
+    badge: "Same Day Jaipur Express",
+    rating: 4.8,
+    reviews_count: 140,
+    image: "/images/packages/hawa_mahal.jpg",
+    description: "Full day royal excursion to the Pink City of Jaipur from Delhi NCR or Jaipur. Experience grand Amer Fort, Jal Mahal, Hawa Mahal, City Palace, and vibrant Johari Bazaar in a single action-packed day.",
+    highlights: [
+      "Amer Fort Jeep ascent & Sheesh Mahal (Mirror Palace)",
+      "Photo-stop at Jal Mahal (Water Palace) in Man Sagar Lake",
+      "Iconic Hawa Mahal (Palace of Winds) facade photo opportunity",
+      "City Palace Royal Museum & Jantar Mantar Observatory",
+      "Shopping at Johari Bazaar for blue pottery, textiles & jewelry",
+      "Smooth travel via Delhi-Mumbai Expressway"
+    ],
+    inclusions: [
+      "Dedicated Sanitized AC Sedan / SUV with Chauffeur",
+      "Doorstep Pickup & Drop (Delhi NCR or Jaipur)",
+      "Local Tour Guide Assistance at Amer Fort & City Palace",
+      "All Expressway Tolls, Taxes, Parking & Fuel"
+    ],
+    days: [
+      { day: 1, title: "Express Jaipur Pink City Sightseeing & Return", desc: "Early morning pickup, express drive to Jaipur, Amer Fort tour, Jal Mahal photo-stop, City Palace, Hawa Mahal, shopping in Pink City bazaars & return express drive with evening drop-off." }
+    ]
+  },
+  {
+    id: "pkg-jaipur-heritage-haveli-retreat",
+    title: "Jaipur Pink City Heritage Havelis, Amer Fort & Chokhi Dhani Tour",
+    category: "Jaipur",
+    destination: "Jaipur • Amer • Nahargarh • Chokhi Dhani",
+    duration: "2 Days / 1 Night",
+    price_inr: 6999,
+    original_price_inr: 10500,
+    badge: "Jaipur Weekend Special",
+    rating: 4.9,
+    reviews_count: 185,
+    image: "/images/packages/amber_fort_jaipur.jpg",
+    description: "The ideal weekend royal getaway to Jaipur featuring heritage haveli stays, Amber Fort Jeep ascent, sunset over Jaipur from Nahargarh Fort, and cultural dinner extravaganza at Chokhi Dhani.",
+    highlights: [
+      "Amer Fort Jeep ascent & Sheesh Mahal mirror palace",
+      "Panoramic sunset over the entire Pink City from Nahargarh Fort",
+      "Chokhi Dhani Cultural Village: Folk dance, camel ride & royal thali",
+      "City Palace, Jantar Mantar & Hawa Mahal sightseeing",
+      "Jal Mahal water palace photo-stop & Bapu Bazaar shopping"
+    ],
+    inclusions: [
+      "1 Night Deluxe Heritage Haveli / 4★ Hotel Stay in Jaipur",
+      "Buffet Breakfast & Welcome Drink",
+      "Private AC Cab for all Transfers & Sightseeing",
+      "Chokhi Dhani Traditional Village Dinner Ticket",
+      "All Tolls, Parking & Driver Night Allowances"
+    ],
+    days: [
+      { day: 1, title: "Jaipur Arrival, City Palace, Nahargarh Sunset & Chokhi Dhani", desc: "Pickup in Jaipur or Delhi, check-in, visit City Palace, Jantar Mantar, sunset at Nahargarh Fort & royal cultural dinner at Chokhi Dhani." },
+      { day: 2, title: "Amber Fort, Jal Mahal, Hawa Mahal & Departure Drop", desc: "Jeep ascent to Amber Fort, Sheesh Mahal, Jal Mahal photo-stop, Hawa Mahal, Bapu Bazaar handicraft shopping & return drop." }
+    ]
+  },
+  {
+    id: "pkg-jaipur-pink-city-royal",
+    title: "Jaipur Royal Pink City & Forts Experience",
+    destination: "Jaipur • Amer • Nahargarh • Jaigarh • Chokhi Dhani",
+    category: "Jaipur",
+    duration: "3 Days / 2 Nights",
+    price_inr: 9999,
+    original_price_inr: 14500,
+    badge: "Jaipur Grand Special",
+    rating: 4.9,
+    reviews_count: 210,
+    image: "/images/packages/jaipur_pink_city.jpg",
+    description: "Experience the splendor of the Maharaja era with grand hill fortresses, pink sandstone palaces, observatory wonders, bustling jewel bazars, and authentic cultural village dining.",
+    highlights: [
+      "Amber Fort Jeep ascent & Sheesh Mahal mirror palace tour",
+      "Iconic Hawa Mahal (Palace of Winds) & Jal Mahal photo-stop",
+      "City Palace Museum & Jantar Mantar UNESCO Astronomical Observatory",
+      "Panoramic Sunset view over Jaipur from Nahargarh Fort",
+      "Traditional Rajasthani Folk Dance, Camel Ride & Feast at Chokhi Dhani",
+      "Jaigarh Fort (World's largest cannon Jaivana) & Albert Hall Museum"
+    ],
+    inclusions: [
+      "2 Nights Deluxe Heritage Haveli / 4★ Hotel Stay in Jaipur",
+      "Daily Buffet Breakfast & Authentic Welcome Drink",
+      "Private Sanitized AC Sedan/SUV for all transfers & sightseeing",
+      "Chokhi Dhani Cultural Entry & Traditional Dinner Ticket",
+      "Local Guide for Amber Fort & City Palace"
+    ],
+    days: [
+      { day: 1, title: "Jaipur Arrival, City Palace, Jantar Mantar & Bazaars", desc: "Pickup in Jaipur/Delhi, hotel check-in, explore City Palace royal residence, Jantar Mantar & evening stroll through colorful Pink City bazaars." },
+      { day: 2, title: "Amber Fort, Jal Mahal, Nahargarh Sunset & Chokhi Dhani", desc: "Visit magnificent Amber Fort, Jal Mahal in Man Sagar Lake, sunset over the city at Nahargarh Fort & royal dinner at Chokhi Dhani." },
+      { day: 3, title: "Hawa Mahal, Albert Hall Museum, Jaigarh Fort & Drop", desc: "Photo-stop at Hawa Mahal, explore Albert Hall Museum, Jaigarh Fort (world's largest cannon Jaivana) & airport/station drop." }
+    ]
+  },
+
+  // --- D. INDIVIDUAL MATHURA & VRINDAVAN PACKAGES ---
+  {
+    id: "pkg-mathura-vrindavan-same-day",
+    title: "Same Day Sacred Mathura & Vrindavan Braj Darshan Express",
+    destination: "Delhi NCR • Mathura • Vrindavan • Prem Mandir",
+    category: "Mathura & Vrindavan",
+    duration: "1 Day (Same Day Darshan)",
+    price_inr: 3999,
+    original_price_inr: 5800,
+    badge: "Same Day Braj Express",
+    rating: 4.9,
+    reviews_count: 240,
+    image: "/images/packages/shri_krishna_janmasthan.jpg",
+    description: "Divine same-day pilgrimage from Delhi NCR via Yamuna Expressway to Lord Krishna's sacred birthplace Mathura and beloved Vrindavan with Prem Mandir musical light show.",
+    highlights: [
+      "Shri Krishna Janmasthan Temple Complex & Garbha Griha in Mathura",
+      "Dwarkadhish Temple & Vishram Ghat Yamuna Darshan",
+      "Banke Bihari Ji Temple & Nidhivan sacred tulsi groves in Vrindavan",
+      "ISKCON Sri Krishna Balaram Temple",
+      "Grand Prem Mandir Musical Fountain & Illuminated Light Show in the evening",
+      "Famous Mathura Peda & Vrindavan Lassi food experience"
+    ],
+    inclusions: [
+      "Dedicated Private AC Sedan / SUV with Chauffeur from Delhi NCR / Mathura",
+      "Doorstep Pickup & Drop (Hotel / Home / Delhi Airport / Station)",
+      "Darshan Timing & Queue Management Assistance",
+      "All Yamuna Expressway Tolls, Parking & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Same Day Braj Darshan: Mathura, Vrindavan & Prem Mandir", desc: "6:30 AM pickup from Delhi NCR, drive to Mathura, visit Shri Krishna Janmabhoomi & Dwarkadhish Temple, lunch break, proceed to Vrindavan for Banke Bihari Ji darshan, ISKCON temple, mystical Nidhivan, evening dazzling Prem Mandir light show & return drive with drop at Delhi by 9:30 PM." }
+    ]
+  },
+  {
+    id: "pkg-mathura-vrindavan-gokul-barsana",
+    title: "Divine Mathura, Vrindavan, Gokul & Barsana 2-Day Yatra",
+    destination: "Mathura • Vrindavan • Gokul • Barsana • Prem Mandir",
+    category: "Mathura & Vrindavan",
+    duration: "2 Days / 1 Night",
+    price_inr: 5999,
+    original_price_inr: 8800,
+    badge: "Braj Weekend Special",
+    rating: 4.9,
+    reviews_count: 195,
+    image: "/images/packages/banke_bihari_vrindavan.jpg",
+    description: "A heartfelt 2-day spiritual journey traversing the major holy shrines of Braj Bhoomi including Mathura Janmabhoomi, Vrindavan Banke Bihari, Gokul Raman Reti, and Barsana Radha Rani Temple.",
+    highlights: [
+      "Shri Krishna Janmasthan & Dwarkadhish Temple in Mathura",
+      "Banke Bihari Ji, ISKCON Temple & Nidhivan in Vrindavan",
+      "Prem Mandir Spectacular Evening Light & Water Fountain Show",
+      "Gokul: Raman Reti, Chaurasi Khamba & Krishna Bal Leela Sthan",
+      "Barsana: Shri Radha Rani Mandir on Bhanugarh Hill",
+      "Evening Yamuna Maha Aarti at Vishram Ghat"
+    ],
+    inclusions: [
+      "1 Night Deluxe Hotel / Ashram Resort Stay in Vrindavan/Mathura",
+      "Pure Satvik Vegetarian Buffet Breakfast & Dinner",
+      "Private Sanitized AC Cab for all Temple Sightseeing",
+      "VIP Darshan Guidance & Chauffeur Support",
+      "All Tolls, Parking & Interstate Permits"
+    ],
+    days: [
+      { day: 1, title: "Mathura Janmabhoomi, Gokul Raman Reti & Prem Mandir Evening", desc: "Pickup in Delhi NCR/Mathura, visit Shri Krishna Janmasthan, Gokul Raman Reti, check-in at Vrindavan hotel, evening Prem Mandir illuminated light show & Yamuna Aarti." },
+      { day: 2, title: "Banke Bihari Ji, ISKCON, Nidhivan, Barsana & Return Drop", desc: "Morning darshan at Banke Bihari Ji, ISKCON temple, Nidhivan grove, drive to Barsana Shri Radha Rani Temple, shopping for idols/kanha poshak & return drop." }
+    ]
+  },
+  {
+    id: "pkg-mathura-vrindavan-dham",
+    title: "Sacred Mathura & Vrindavan Dham Yatra (Braj Bhoomi Darshan)",
+    destination: "Mathura • Vrindavan • Gokul • Barsana • Govardhan",
+    category: "Mathura & Vrindavan",
+    duration: "3 Days / 2 Nights",
+    price_inr: 8499,
+    original_price_inr: 12000,
+    badge: "Complete Braj Dham",
+    rating: 4.9,
+    reviews_count: 310,
+    image: "/images/packages/prem_mandir_vrindavan.jpg",
+    description: "Immerse in the divine leelas of Lord Shri Krishna and Radha Rani across the sacred realm of Braj Bhoomi covering Mathura Janmabhoomi, Banke Bihari Ji, illuminated Prem Mandir, Govardhan Parikrama, and Barsana.",
+    highlights: [
+      "Shri Krishna Janmasthan & Dwarkadhish Temple in Mathura",
+      "Banke Bihari Ji VIP Darshan & Nidhivan sacred grove in Vrindavan",
+      "World-famous Prem Mandir Musical Light & Fountain Show",
+      "Govardhan Hill Parikrama, Mansi Ganga & Radha Kund",
+      "Barsana Shri Radha Rani Temple & Gokul Raman Reti Ashram",
+      "Yamuna River Evening Maha Aarti at Vishram Ghat Mathura"
+    ],
+    inclusions: [
+      "2 Nights Deluxe Hotel / Ashram Resort Stay in Vrindavan/Mathura",
+      "Daily Pure Satvik Vegetarian Breakfast & Dinner",
+      "Private Sanitized AC Cab for all Temple Sightseeing & Transfers",
+      "Special Puja / Darshan Coordination Support & Chauffeur",
+      "Pickup & Drop from Delhi NCR / Mathura Railway Station"
+    ],
+    days: [
+      { day: 1, title: "Delhi/Mathura Pickup, Krishna Janmabhoomi & Yamuna Aarti", desc: "Chauffeur pickup, check-in, visit Shri Krishna Janmasthan Temple complex, Dwarkadhish Temple & witness evening Yamuna Maha Aarti at Vishram Ghat." },
+      { day: 2, title: "Vrindavan Temples: Banke Bihari, ISKCON, Nidhivan & Prem Mandir", desc: "Morning darshan at Banke Bihari Ji, ISKCON Krishna Balaram Temple, mystical Nidhivan & evening dazzling light show at Prem Mandir." },
+      { day: 3, title: "Gokul Raman Reti, Govardhan Parikrama, Barsana & Return Drop", desc: "Visit Raman Reti Gokul, Govardhan Mansi Ganga, Barsana Radha Rani Mandir & on-time return drop at Delhi NCR or Mathura Station." }
+    ]
+  },
+
+  // --- E. GOLDEN TRIANGLE COMBO CIRCUITS ---
+  {
+    id: "pkg-golden-triangle-delhi-agra",
+    title: "Golden Triangle Express: Delhi & Agra Taj Tour",
+    destination: "New Delhi • Old Delhi • Agra • Fatehpur Sikri",
+    category: "Golden Triangle",
+    duration: "3 Days / 2 Nights",
+    price_inr: 9999,
+    original_price_inr: 14500,
+    badge: "Taj Heritage Express",
+    rating: 4.9,
+    reviews_count: 176,
+    image: "/images/packages/taj_mahal_sunrise.jpg",
+    description: "The classic North India cultural gateway covering the iconic monuments of Delhi and the eternal wonder Taj Mahal in Agra via the high-speed Yamuna Expressway with dedicated chauffeur and expert guide.",
+    highlights: [
+      "Sunrise view of the iconic Taj Mahal with skip-the-line entry",
+      "UNESCO World Heritage Agra Fort & Diwan-i-Aam / Diwan-i-Khas",
+      "Fatehpur Sikri royal complex & magnificent Buland Darwaza",
+      "Delhi sightseeing: Qutub Minar, India Gate, Lotus Temple & Red Fort",
+      "Smooth transfers via Yamuna Expressway in private AC Sedan/SUV",
+      "Mehtab Bagh sunset viewpoint of the Taj Mahal across the Yamuna"
+    ],
+    inclusions: [
+      "2 Nights Deluxe 4★ Hotel Stays in Delhi & Agra",
+      "Daily Buffet Breakfast & Welcome Drinks",
+      "Dedicated Sanitized AC Private Cab with Chauffeur",
+      "Monument Entry Assistance & Approved English/Hindi Tour Guide",
+      "All Tolls, Interstate Taxes, Driver Allowance & Parking"
+    ],
+    days: [
+      { day: 1, title: "Arrival in Delhi & Capital City Heritage Sightseeing", desc: "Pickup from Delhi Airport/Station, visit Qutub Minar, Humayun's Tomb, India Gate, Rashtrapati Bhavan drive, Lotus Temple, check-in & relax." },
+      { day: 2, title: "Old Delhi Tour & Express Drive to Agra (Sunset at Mehtab Bagh)", desc: "Visit Red Fort photo-stop, Jama Masjid, drive via Yamuna Expressway to Agra, check-in, sunset at Mehtab Bagh & visit Agra marble artisans." },
+      { day: 3, title: "Sunrise Taj Mahal, Agra Fort, Fatehpur Sikri & Return Drop", desc: "Early morning Taj Mahal sunrise darshan, breakfast, explore Agra Fort, visit Fatehpur Sikri Buland Darwaza & drop back at Delhi Airport/Station." }
+    ]
+  },
+  {
+    id: "pkg-golden-triangle-classic",
+    title: "Golden Triangle Classic: Delhi, Agra & Jaipur Grand Tour",
+    destination: "Delhi • Agra • Fatehpur Sikri • Jaipur Pink City",
+    category: "Golden Triangle",
+    duration: "6 Days / 5 Nights",
+    price_inr: 18999,
+    original_price_inr: 26000,
+    badge: "India's #1 Circuit",
+    rating: 5.0,
+    reviews_count: 245,
+    image: "/images/packages/taj_mahal_sunrise.jpg",
+    description: "India's most celebrated heritage journey connecting the political capital Delhi, the Mughal marvel Agra (Taj Mahal), and the royal Rajputana Pink City Jaipur with palace stays and guided excursions.",
+    highlights: [
+      "Comprehensive Delhi Sightseeing: Qutub Minar, India Gate, Humayun's Tomb",
+      "Breathtaking Sunrise at Taj Mahal & Agra Fort UNESCO Site",
+      "En-route exploration of Emperor Akbar's abandoned city Fatehpur Sikri",
+      "Jaipur Amber Fort Jeep ascent, City Palace, Jantar Mantar & Hawa Mahal",
+      "Sunset over Pink City from Nahargarh Fort & Jal Mahal photo-stop",
+      "Traditional Rajasthani cultural evening dinner at Chokhi Dhani"
+    ],
+    inclusions: [
+      "5 Nights Deluxe 4★ Hotel / Heritage Haveli Stays (2N Delhi, 1N Agra, 2N Jaipur)",
+      "Daily Buffet Breakfast & Traditional Welcome",
+      "Private Sanitized AC Chauffeur Driven Vehicle (Sedan/SUV/Innova)",
+      "Govt Approved City Guides at Delhi, Agra & Jaipur",
+      "All Highway Tolls, Border Permits, Parking & Driver Night Charges"
+    ],
+    days: [
+      { day: 1, title: "Delhi Arrival & Capital Heritage Tour", desc: "Pickup, explore Qutub Minar, Lotus Temple, India Gate & Rashtrapati Bhavan drive. Overnight in Delhi." },
+      { day: 2, title: "Old Delhi Heritage to Mughal City Agra", desc: "Visit Red Fort, Jama Masjid, drive via Yamuna Expressway to Agra. Evening Mehtab Bagh sunset view of Taj Mahal." },
+      { day: 3, title: "Sunrise Taj Mahal, Agra Fort & Fatehpur Sikri to Jaipur", desc: "Breathtaking Taj Mahal sunrise tour, Agra Fort exploration, visit Fatehpur Sikri Buland Darwaza & drive to Jaipur Pink City." },
+      { day: 4, title: "Royal Jaipur: Amber Fort, Jal Mahal & Pink City Bazaars", desc: "Jeep ascent to Amber Fort, Sheesh Mahal, Jal Mahal photo-stop, Hawa Mahal & colorful Johari/Bapu bazaar shopping." },
+      { day: 5, title: "City Palace, Jantar Mantar & Nahargarh Sunset", desc: "Explore City Palace royal museum, Jantar Mantar observatory, sunset at Nahargarh Fort & cultural dinner at Chokhi Dhani." },
+      { day: 6, title: "Jaipur to Delhi Departure Drop", desc: "Morning breakfast, visit Albert Hall Museum & scenic highway drive back to Delhi Airport / Railway Station." }
+    ]
+  },
+  {
+    id: "pkg-delhi-mathura-agra-same-day",
+    title: "Delhi - Mathura - Vrindavan - Agra Heritage & Pilgrimage Circuit",
+    destination: "Delhi • Mathura • Vrindavan • Agra Taj Mahal",
+    category: "Golden Triangle",
+    duration: "4 Days / 3 Nights",
+    price_inr: 12999,
+    original_price_inr: 18500,
+    badge: "Pilgrimage + Heritage",
+    rating: 4.9,
+    reviews_count: 195,
+    image: "/images/packages/taj_mahal_sunrise.jpg",
+    description: "The ultimate blend of spirituality and world heritage combining Delhi capital monuments, the divine Krishna temples of Mathura-Vrindavan, and the majestic Taj Mahal in Agra.",
+    highlights: [
+      "Capital Sightseeing: Qutub Minar, India Gate & Akshardham Temple",
+      "Lord Krishna Janmabhoomi & Banke Bihari Ji Darshan in Braj",
+      "Spectacular Evening Prem Mandir Light & Water Show",
+      "Sunrise at Taj Mahal & Guided tour of UNESCO Agra Fort",
+      "Mehtab Bagh sunset & Fatehpur Sikri Buland Darwaza visit"
+    ],
+    inclusions: [
+      "3 Nights 4★ Deluxe Hotel Stays (1N Delhi, 1N Vrindavan, 1N Agra)",
+      "Daily Buffet Breakfast & Satvik Dinners",
+      "Dedicated AC Chauffeur Driven Vehicle for entire circuit",
+      "Tolls, Interstate Permits, Parking & Driver Allowances"
+    ],
+    days: [
+      { day: 1, title: "Delhi Sightseeing & Grand Akshardham Temple", desc: "Pickup in Delhi, visit Qutub Minar, India Gate, Lotus Temple & magnificent Swaminarayan Akshardham Temple." },
+      { day: 2, title: "Delhi to Mathura & Vrindavan Divine Temple Tour", desc: "Drive to Mathura, visit Shri Krishna Janmasthan, Banke Bihari Temple in Vrindavan, and evening Prem Mandir musical fountain show." },
+      { day: 3, title: "Vrindavan to Agra: Taj Mahal Sunset & Agra Fort", desc: "Drive via Yamuna Expressway to Agra, visit UNESCO Agra Fort, Itmad-ud-Daulah, and evening Mehtab Bagh sunset view of Taj Mahal." },
+      { day: 4, title: "Sunrise Taj Mahal, Fatehpur Sikri & Departure Drop to Delhi", desc: "Early morning Taj Mahal sunrise visit, explore Emperor Akbar's Fatehpur Sikri & smooth express highway drop back to Delhi." }
+    ]
   }
 ];
 
@@ -1465,7 +1975,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Sacred Char Dham Yatra",
     badge: "Most Sacred",
     tagline: "Yamunotri • Gangotri • Kedarnath • Badrinath",
-    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/kedarnath_temple.jpg",
     altitude: "10,000 - 12,000 ft",
     ideal_duration: "10-11 Days",
     price_inr: 34999,
@@ -1475,7 +1985,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Do Dham (Kedarnath & Badrinath)",
     badge: "Spiritual Express",
     tagline: "Lord Shiva Jyotirlinga & Lord Badrinath Ji",
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/badrinath_temple.jpg",
     altitude: "11,750 ft",
     ideal_duration: "5-6 Days",
     price_inr: 22500,
@@ -1485,7 +1995,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Nainital Emerald Lake District",
     badge: "Scenic Lakes",
     tagline: "Emerald Naini Lake, Bhimtal & Sattal",
-    image: "https://images.unsplash.com/photo-1588714477688-cf28a50e94f7?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/nainital_lake.jpg",
     altitude: "6,837 ft",
     ideal_duration: "3-4 Days",
     price_inr: 12500,
@@ -1495,7 +2005,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Mussoorie Queen of Hills & Kanatal",
     badge: "Heritage Hill Station",
     tagline: "Kempty Falls, Gun Hill & George Everest",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/kempty_falls_mussoorie.jpg",
     altitude: "6,580 ft",
     ideal_duration: "3-4 Days",
     price_inr: 12500,
@@ -1505,7 +2015,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Jim Corbett Tiger Reserve",
     badge: "Wildlife Safari",
     tagline: "Royal Bengal Tiger Reserve & Jungle Lodges",
-    image: "https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/corbett_tiger.jpg",
     altitude: "1,300 ft",
     ideal_duration: "2-3 Days",
     price_inr: 9999,
@@ -1515,7 +2025,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Auli Ski Slopes & Chopta Tungnath",
     badge: "Snow & Alpine Trek",
     tagline: "Mini Switzerland & Highest Shiva Temple",
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/auli_snow_skiing.jpg",
     altitude: "9,200 - 12,100 ft",
     ideal_duration: "4-5 Days",
     price_inr: 15999,
@@ -1525,7 +2035,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Rishikesh Rafting & Glamping",
     badge: "Yoga & Holy Ganga",
     tagline: "16KM River Rafting & Evening Ganga Aarti",
-    image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/rishikesh_ganga_aarti.jpg",
     altitude: "1,200 ft",
     ideal_duration: "2-3 Days",
     price_inr: 7499,
@@ -1535,7 +2045,7 @@ export const UTTARAKHAND_DESTINATIONS = [
     name: "Kumaon Highlands: Kausani & Ranikhet",
     badge: "Tranquil Himalayas",
     tagline: "300KM Himalayan Sunrise & Pine Forests",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    image: "/images/packages/kempty_falls_mussoorie.jpg",
     altitude: "6,200 ft",
     ideal_duration: "4-5 Days",
     price_inr: 14500,
@@ -1654,6 +2164,46 @@ export const TESTIMONIALS = [
 
 export const ALL_DESTINATION_CATEGORIES = [
   {
+    group: "Delhi & Capital Specials",
+    options: [
+      "Same Day Delhi Capital Sightseeing & Heritage Express",
+      "Delhi Capital City Heritage & Sightseeing Tour (2D/1N)",
+      "Grand Delhi Heritage, Culture & Food Walk Extravaganza (3D/2N)"
+    ]
+  },
+  {
+    group: "Agra & Taj Mahal Specials",
+    options: [
+      "Same Day Agra Taj Mahal & UNESCO Fort Express Tour",
+      "Agra Mughal Marvels & Taj Mahal Heritage Tour (2D/1N)",
+      "Agra Taj Mahal Sunrise, Fatehpur Sikri & Royal Heritage Retreat (3D/2N)"
+    ]
+  },
+  {
+    group: "Jaipur Pink City Specials",
+    options: [
+      "Same Day Royal Jaipur Pink City Express Tour",
+      "Jaipur Pink City Heritage Havelis, Amer Fort & Chokhi Dhani Tour (2D/1N)",
+      "Jaipur Royal Pink City & Forts Experience (3D/2N)"
+    ]
+  },
+  {
+    group: "Mathura & Vrindavan Braj Dham",
+    options: [
+      "Same Day Sacred Mathura & Vrindavan Braj Darshan Express",
+      "Divine Mathura, Vrindavan, Gokul & Barsana 2-Day Yatra (2D/1N)",
+      "Sacred Mathura & Vrindavan Dham Yatra (Braj Bhoomi Darshan 3D/2N)"
+    ]
+  },
+  {
+    group: "Golden Triangle Combo Circuits",
+    options: [
+      "Golden Triangle Classic (Delhi • Agra • Jaipur Grand Tour 6D/5N)",
+      "Golden Triangle Express (Delhi & Agra Taj Mahal Tour 3D/2N)",
+      "Delhi - Mathura - Vrindavan - Agra Heritage & Pilgrimage Circuit (4D/3N)"
+    ]
+  },
+  {
     group: "Sacred Pilgrimages & Yatras",
     options: [
       "Char Dham Yatra (Yamunotri • Gangotri • Kedarnath • Badrinath)",
@@ -1700,7 +2250,7 @@ export const ALL_DESTINATION_CATEGORIES = [
     group: "Royal Rajasthan",
     options: [
       "Royal Rajasthan (Jaipur • Jodhpur • Udaipur)",
-      "Jaipur Pink City & Amber Fort Heritage",
+      "Jaipur Pink City & Royal Forts Experience",
       "Udaipur City of Lakes & Royal Palaces",
       "Jaisalmer Golden Fort & Thar Desert Camping"
     ]
@@ -1732,11 +2282,15 @@ export const ALL_DESTINATION_CATEGORIES = [
 ];
 
 export const QUICK_DESTINATION_PILLS = [
+  { label: "Delhi Special", value: "Delhi Capital City Heritage & Sightseeing Tour" },
+  { label: "Agra & Taj", value: "Agra Mughal Marvels & Taj Mahal Heritage Tour" },
+  { label: "Jaipur Forts", value: "Jaipur Royal Pink City & Forts Experience" },
+  { label: "Mathura Vrindavan", value: "Sacred Mathura & Vrindavan Dham Yatra (Braj Bhoomi Darshan)" },
+  { label: "Golden Triangle", value: "Golden Triangle Classic (Delhi • Agra • Jaipur Grand Tour)" },
   { label: "Char Dham", value: "Char Dham Yatra (Yamunotri • Gangotri • Kedarnath • Badrinath)" },
   { label: "Do Dham", value: "Do Dham Yatra (Kedarnath & Badrinath Ji)" },
   { label: "Kedarnath Heli", value: "Kedarnath Helicopter Express & VIP Darshan" },
   { label: "Uttarakhand", value: "Uttarakhand Complete (Nainital • Corbett • Mussoorie • Rishikesh)" },
-  { label: "Auli & Chopta", value: "Auli Ski Paradise & Chopta Tungnath Trek" },
   { label: "Manali", value: "Manali & Solang Valley (Atal Tunnel & Sissu Snow Tour)" },
   { label: "Kashmir", value: "Kashmir Luxury Tour (Srinagar • Gulmarg • Pahalgam)" },
   { label: "Rajasthan", value: "Royal Rajasthan (Jaipur • Jodhpur • Udaipur)" },
@@ -1745,6 +2299,56 @@ export const QUICK_DESTINATION_PILLS = [
 ];
 
 export const VISUAL_DESTINATIONS = [
+  {
+    id: "delhi-capital",
+    category: "Delhi",
+    tab: "Delhi",
+    icon: "🏛️",
+    title: "Delhi Capital Heritage",
+    subtitle: "Red Fort • Qutub Minar • Akshardham • India Gate",
+    days: 2,
+    badge: "Capital Special"
+  },
+  {
+    id: "agra-taj-mahal",
+    category: "Agra",
+    tab: "Agra",
+    icon: "🕌",
+    title: "Agra & Taj Mahal Tour",
+    subtitle: "Taj Mahal Sunrise • Agra Fort • Mehtab Bagh",
+    days: 2,
+    badge: "Wonder of World"
+  },
+  {
+    id: "jaipur-pink-city",
+    category: "Jaipur",
+    tab: "Jaipur",
+    icon: "👑",
+    title: "Jaipur Pink City & Forts",
+    subtitle: "Amber Fort • Hawa Mahal • City Palace • Chokhi Dhani",
+    days: 3,
+    badge: "Royal Pink City"
+  },
+  {
+    id: "mathura-vrindavan",
+    category: "Mathura & Vrindavan",
+    tab: "Mathura & Vrindavan",
+    icon: "🦚",
+    title: "Mathura & Vrindavan Dham",
+    subtitle: "Krishna Janmabhoomi • Banke Bihari • Prem Mandir",
+    days: 3,
+    badge: "Divine Braj"
+  },
+  {
+    id: "golden-triangle-classic",
+    category: "Golden Triangle",
+    tab: "Golden Triangle",
+    icon: "✨",
+    title: "Golden Triangle Grand Tour",
+    subtitle: "Delhi • Agra Taj Mahal • Jaipur Pink City",
+    days: 6,
+    badge: "India's #1 Circuit"
+  },
   {
     id: "chardham-deluxe",
     category: "Sacred Pilgrimages",

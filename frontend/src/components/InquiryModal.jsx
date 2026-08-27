@@ -47,7 +47,8 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
     drop: '',
     days: 4,
     budget: 'Standard',
-    notes: initialData.notes || ''
+    notes: initialData.notes || '',
+    source: initialData.source || 'Website Booking Modal'
   });
 
   const [loading, setLoading] = useState(false);
@@ -74,7 +75,8 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
         rooms_required: initialData.rooms_required || prev.rooms_required,
         vehicle_category: initialData.vehicle_category || prev.vehicle_category,
         hotel_category: initialData.hotel_category || prev.hotel_category,
-        meal_plan: initialData.meal_plan || prev.meal_plan
+        meal_plan: initialData.meal_plan || prev.meal_plan,
+        source: initialData.source || prev.source || 'Website Booking Modal'
       }));
     }
   }, [initialData]);
@@ -125,7 +127,7 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
           travelers: formData.travelers,
           budget: formData.budget,
           notes: formData.notes,
-          source: 'Website Booking Modal'
+          source: formData.source || initialData.source || 'Website Booking Modal'
         })
       });
 
@@ -813,32 +815,6 @@ export default function InquiryModal({ isOpen, onClose, initialData = {} }) {
               Thank you, <strong>{formData.name}</strong>! Your travel inquiry for <strong>{formData.destination}</strong> has been logged into our private database. 
               Our senior holiday planner is connecting with you on WhatsApp right now.
             </p>
-
-            {/* Optional Token Advance Box */}
-            <div style={{
-              background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.12) 0%, rgba(17, 26, 46, 0.8) 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.35)',
-              borderRadius: '14px',
-              padding: '16px 20px',
-              marginBottom: '22px',
-              textAlign: 'left'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-                <div style={{ fontWeight: 800, color: '#F59E0B', fontSize: '0.92rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Sparkles size={16} /> Optional: Lock Your Travel Dates Instantly
-                </div>
-                <span className="badge-gold" style={{ fontSize: '0.7rem', padding: '2px 8px' }}>
-                  ₹2,000 Token Advance
-                </span>
-              </div>
-              <p style={{ fontSize: '0.8rem', color: '#CBD5E1', margin: '0 0 10px', lineHeight: 1.45 }}>
-                To immediately reserve vehicle & hotel allocations for peak 2026 yatra dates, pay a token advance via UPI/GPay/PhonePe:
-              </p>
-              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '8px 12px', borderRadius: '8px', fontSize: '0.82rem', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                <span>Official UPI ID: <strong style={{ color: '#FCD34D' }}>9816461616@upi</strong></span>
-                <span style={{ color: '#10B981', fontWeight: 600 }}>Name: Mankotia Holidays</span>
-              </div>
-            </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <a

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Shield, Lock, Search, Phone, MessageCircle, RefreshCw, X, FileSpreadsheet, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Shield, Lock, Search, Phone, Mail, MessageCircle, RefreshCw, X, FileSpreadsheet, Eye, EyeOff, Trash2 } from 'lucide-react';
 
 export default function AdminPortal({ isOpen, onClose }) {
   const [password, setPassword] = useState('');
@@ -10,6 +10,8 @@ export default function AdminPortal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategoryTab, setActiveCategoryTab] = useState('all'); // 'all', 'package', 'ticket', 'transport'
+  const [selectedLeadIds, setSelectedLeadIds] = useState([]);
 
   const fetchLeads = useCallback(async (authToken) => {
     setLoading(true);
@@ -19,6 +21,7 @@ export default function AdminPortal({ isOpen, onClose }) {
       if (data.success) {
         setLeads(data.leads || []);
         setIsAuthenticated(true);
+        setSelectedLeadIds([]);
       } else {
         setIsAuthenticated(false);
         setToken('');
@@ -41,6 +44,8 @@ export default function AdminPortal({ isOpen, onClose }) {
       setLeads([]);
       setError('');
       setSearchTerm('');
+      setActiveCategoryTab('all');
+      setSelectedLeadIds([]);
     }
   }, [isOpen]);
 
@@ -78,6 +83,7 @@ export default function AdminPortal({ isOpen, onClose }) {
     setPassword('');
     setLeads([]);
     setError('');
+    setSelectedLeadIds([]);
     sessionStorage.removeItem('mankotia_admin_token');
     localStorage.removeItem('mankotia_admin_token');
   };
@@ -89,8 +95,48 @@ export default function AdminPortal({ isOpen, onClose }) {
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.detail || 'Could not delete lead.');
       setLeads((currentLeads) => currentLeads.filter((currentLead) => currentLead.lead_id !== lead.lead_id));
+      setSelectedLeadIds(prev => prev.filter(id => id !== lead.lead_id));
     } catch (err) {
       setError(err.message);
+    }
+  };
+
+  const handleToggleSelectLead = (leadId) => {
+    if (!leadId) return;
+    setSelectedLeadIds(prev => 
+      prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
+    );
+  };
+
+  const handleSelectAllFiltered = (e, filteredItems) => {
+    if (e.target.checked) {
+      const allIds = filteredItems.map(l => l.lead_id).filter(Boolean);
+      setSelectedLeadIds(allIds);
+    } else {
+      setSelectedLeadIds([]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedLeadIds.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedLeadIds.length} selected inquiries? This action cannot be undone.`)) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/leads/bulk-delete?token=${encodeURIComponent(token)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lead_ids: selectedLeadIds })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.detail || 'Could not bulk delete leads.');
+      
+      setLeads(prev => prev.filter(l => !selectedLeadIds.includes(l.lead_id)));
+      setSelectedLeadIds([]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,8 +146,6 @@ export default function AdminPortal({ isOpen, onClose }) {
   };
 
   if (!isOpen) return null;
-
-  const [activeCategoryTab, setActiveCategoryTab] = useState('all'); // 'all', 'package', 'ticket', 'transport'
 
   const filteredLeads = leads.filter(l => {
     const term = searchTerm.toLowerCase();
@@ -250,7 +294,18 @@ export default function AdminPortal({ isOpen, onClose }) {
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                {selectedLeadIds.length > 0 && (
+                  <button
+                    onClick={handleBulkDelete}
+                    className="btn btn-call btn-sm"
+                    style={{ background: '#EF4444', color: '#FFFFFF', borderColor: '#DC2626', fontWeight: 700 }}
+                  >
+                    <Trash2 size={15} />
+                    <span>Delete Selected ({selectedLeadIds.length})</span>
+                  </button>
+                )}
+
                 <a
                   href={`/api/admin/download-leads?token=${encodeURIComponent(token)}`}
                   download
@@ -367,6 +422,15 @@ export default function AdminPortal({ isOpen, onClose }) {
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#FCD34D', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                    <th style={{ padding: '12px 10px', width: '36px', textAlign: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={filteredLeads.length > 0 && selectedLeadIds.length === filteredLeads.length}
+                        onChange={(e) => handleSelectAllFiltered(e, filteredLeads)}
+                        title="Select all inquiries"
+                        style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#F59E0B' }}
+                      />
+                    </th>
                     <th style={{ padding: '12px 10px' }}>Date</th>
                     <th style={{ padding: '12px 10px' }}>Customer</th>
                     <th style={{ padding: '12px 10px' }}>Destination</th>
@@ -376,77 +440,96 @@ export default function AdminPortal({ isOpen, onClose }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredLeads.map((lead, idx) => (
-                    <tr 
-                      key={idx}
-                      style={{
-                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <td style={{ padding: '12px 10px', color: '#64748B', whiteSpace: 'nowrap', fontSize: '0.8rem' }}>
-                        {lead.timestamp ? lead.timestamp.split(' ')[0] : 'Today'}
-                      </td>
-                      <td style={{ padding: '12px 10px' }}>
-                        <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{lead.name}</div>
-                        <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{lead.phone}</div>
-                      </td>
-                      <td style={{ padding: '12px 10px', color: '#67E8F9', fontWeight: 600 }}>
-                        {lead.destination}
-                      </td>
-                      <td style={{ padding: '12px 10px', color: '#CBD5E1', fontSize: '0.82rem' }}>
-                        {lead.travelers || '2 Travelers'}
-                      </td>
-                      <td style={{ padding: '12px 10px', color: '#94A3B8', fontSize: '0.8rem', maxWidth: '200px' }}>
-                        {lead.notes || lead.source || 'Website form'}
-                      </td>
-                      <td style={{ padding: '12px 10px', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
-                          <a
-                            href={`tel:${lead.phone}`}
-                            className="btn btn-call btn-sm"
-                            style={{ padding: '6px 10px', borderRadius: '8px' }}
-                            title="Call Customer"
-                          >
-                            <Phone size={13} />
-                          </a>
-                          <a
-                            href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${lead.name}! This is Mankotia Holidays regarding your inquiry for ${lead.destination}. How can I assist you with custom quotes?`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-whatsapp btn-sm"
-                            style={{ padding: '6px 10px', borderRadius: '8px' }}
-                            title="Message on WhatsApp"
-                          >
-                            <MessageCircle size={13} />
-                          </a>
-                          <a
-                            href={`/api/admin/hotel-plan/hotels-${encodeURIComponent(lead.lead_id).replace(/%23/g, '').replace(/%2D/g, '_')}.pdf?token=${encodeURIComponent(token)}`}
-                            className="btn btn-call btn-sm"
-                            style={{ padding: '6px 10px', borderRadius: '8px' }}
-                            title="Download private hotel plan PDF"
-                          >
-                            <FileSpreadsheet size={13} />
-                          </a>
-                          <button
-                            onClick={() => handleDeleteLead(lead)}
-                            className="btn btn-call btn-sm"
-                            style={{ padding: '6px 10px', borderRadius: '8px', color: '#FCA5A5', borderColor: 'rgba(239, 68, 68, 0.3)' }}
-                            title="Delete inquiry"
-                            aria-label={`Delete inquiry from ${lead.name}`}
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredLeads.map((lead, idx) => {
+                    const isSelected = selectedLeadIds.includes(lead.lead_id);
+                    return (
+                      <tr 
+                        key={lead.lead_id || idx}
+                        style={{
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                          background: isSelected ? 'rgba(245, 158, 11, 0.12)' : 'transparent',
+                          transition: 'background 0.2s'
+                        }}
+                        onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'; }}
+                        onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <td style={{ padding: '12px 10px', textAlign: 'center' }}>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleSelectLead(lead.lead_id)}
+                            style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#F59E0B' }}
+                          />
+                        </td>
+                        <td style={{ padding: '12px 10px', color: '#64748B', whiteSpace: 'nowrap', fontSize: '0.8rem' }}>
+                          {lead.timestamp ? lead.timestamp.split(' ')[0] : 'Today'}
+                        </td>
+                        <td style={{ padding: '12px 10px' }}>
+                          <div style={{ fontWeight: 700, color: '#FFFFFF', fontSize: '0.92rem' }}>{lead.name || 'Customer'}</div>
+                          <div style={{ fontSize: '0.78rem', color: '#FCD34D', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                            <Phone size={12} /> {lead.phone || 'N/A'}
+                          </div>
+                          {lead.email && (
+                            <div style={{ fontSize: '0.76rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px', wordBreak: 'break-all' }}>
+                              <Mail size={12} /> {lead.email}
+                            </div>
+                          )}
+                        </td>
+                        <td style={{ padding: '12px 10px', color: '#67E8F9', fontWeight: 600 }}>
+                          {lead.destination}
+                        </td>
+                        <td style={{ padding: '12px 10px', color: '#CBD5E1', fontSize: '0.82rem' }}>
+                          {lead.travelers || '2 Travelers'}
+                        </td>
+                        <td style={{ padding: '12px 10px', color: '#94A3B8', fontSize: '0.8rem', maxWidth: '200px' }}>
+                          {lead.notes || lead.source || 'Website form'}
+                        </td>
+                        <td style={{ padding: '12px 10px', textAlign: 'right' }}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                            <a
+                              href={`tel:${lead.phone}`}
+                              className="btn btn-call btn-sm"
+                              style={{ padding: '6px 10px', borderRadius: '8px' }}
+                              title="Call Customer"
+                            >
+                              <Phone size={13} />
+                            </a>
+                            <a
+                              href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${lead.name}! This is Mankotia Holidays regarding your inquiry for ${lead.destination}. How can I assist you with custom quotes?`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-whatsapp btn-sm"
+                              style={{ padding: '6px 10px', borderRadius: '8px' }}
+                              title="Message on WhatsApp"
+                            >
+                              <MessageCircle size={13} />
+                            </a>
+                            <a
+                              href={`/api/admin/hotel-plan/hotels-${encodeURIComponent(lead.lead_id).replace(/%23/g, '').replace(/%2D/g, '_')}.pdf?token=${encodeURIComponent(token)}`}
+                              className="btn btn-call btn-sm"
+                              style={{ padding: '6px 10px', borderRadius: '8px' }}
+                              title="Download private hotel plan PDF"
+                            >
+                              <FileSpreadsheet size={13} />
+                            </a>
+                            <button
+                              onClick={() => handleDeleteLead(lead)}
+                              className="btn btn-call btn-sm"
+                              style={{ padding: '6px 10px', borderRadius: '8px', color: '#FCA5A5', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                              title="Delete inquiry"
+                              aria-label={`Delete inquiry from ${lead.name}`}
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
 
                   {filteredLeads.length === 0 && (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>
+                      <td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>
                         No leads match your search criteria.
                       </td>
                     </tr>

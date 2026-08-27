@@ -5,14 +5,16 @@ import { PACKAGES } from '../data/packagesData';
 export default function PackageCatalog({ onOpenInquiry }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [expandedItineraries, setExpandedItineraries] = useState({});
 
-  const sliderRefs = useRef({});
-
   const categories = [
     { id: 'All', label: 'All Packages', icon: '🌟', color: '#F59E0B' },
+    { id: 'Delhi', label: 'Delhi Specials', icon: '🏛️', color: '#38BDF8' },
+    { id: 'Agra', label: 'Agra & Taj Mahal', icon: '🕌', color: '#F43F5E' },
+    { id: 'Jaipur', label: 'Jaipur Pink City', icon: '👑', color: '#FB923C' },
+    { id: 'Mathura Vrindavan', label: 'Mathura & Vrindavan', icon: '🦚', color: '#A855F7' },
+    { id: 'Golden Triangle', label: 'Golden Triangle Circuits', icon: '✨', color: '#EAB308' },
     { id: 'Pilgrimage', label: 'Char Dham & Pilgrimage', icon: '🕉️', color: '#F59E0B' },
     { id: 'Uttarakhand', label: 'Uttarakhand Specials', icon: '🏔️', color: '#06B6D4' },
     { id: 'Himachal', label: 'Himachal Pradesh', icon: '🌲', color: '#10B981' },
@@ -21,13 +23,32 @@ export default function PackageCatalog({ onOpenInquiry }) {
     { id: 'Goa & Kerala', label: 'Goa & Kerala', icon: '🏖️', color: '#38BDF8' }
   ];
 
-  const categoryDescriptions = {
-    'Pilgrimage': 'Sacred Himalayan Dhams, VIP Kedarnath Helicopter shuttles, and biometric registration support.',
-    'Uttarakhand': 'Scenic emerald lakes, Jim Corbett tiger safaris, Queen of Hills Mussoorie, and alpine ski slopes.',
-    'Himachal': 'Snowy Solang valley, engineering wonder Atal Tunnel, colonial Shimla, and mini Switzerland Khajjiar.',
-    'Kashmir': 'Royal Dal Lake houseboats, Asia\'s highest Gulmarg gondola, and picturesque pine valleys in Pahalgam.',
-    'Rajasthan': 'Grand royal forts, heritage Rajputana havelis, and romantic Lake Pichola boat cruises.',
-    'Goa & Kerala': 'Sun-kissed Goan beach carnivals and tranquil luxury backwater houseboat cruises in Alleppey.'
+  const getCategoryPackages = (catId) => {
+    return PACKAGES.filter(p => {
+      if (catId === 'All') return true;
+      if (catId === 'Delhi') return p.category === 'Delhi' || p.id.startsWith('pkg-delhi-');
+      if (catId === 'Agra') return p.category === 'Agra' || p.id.startsWith('pkg-agra-');
+      if (catId === 'Jaipur') return p.category === 'Jaipur' || p.id.startsWith('pkg-jaipur-');
+      if (catId === 'Mathura Vrindavan') return p.category === 'Mathura & Vrindavan' || p.id.startsWith('pkg-mathura-');
+      if (catId === 'Golden Triangle') return p.category === 'Golden Triangle' || p.id.startsWith('pkg-golden-triangle-');
+      if (catId === 'Pilgrimage') return (
+        p.category === 'Pilgrimage' || 
+        p.category === 'Sacred Pilgrimages' || 
+        p.id.startsWith('pkg-chardham-') || 
+        p.id.startsWith('pkg-dodham-') || 
+        p.id.startsWith('pkg-kedarnath-') || 
+        p.id.startsWith('pkg-badrinath-') || 
+        p.id.startsWith('pkg-gangotri-') || 
+        p.id.startsWith('pkg-panch-kedar-') || 
+        p.id.startsWith('pkg-vaishnodevi-')
+      );
+      if (catId === 'Uttarakhand') return p.category === 'Uttarakhand' || p.id.startsWith('pkg-uttarakhand-') || p.id.startsWith('pkg-auli-') || p.id.startsWith('pkg-jim-corbett-') || p.id.startsWith('pkg-mussoorie-') || p.id.startsWith('pkg-kumaon-') || p.id.startsWith('pkg-nainital-') || p.id.startsWith('pkg-rishikesh-');
+      if (catId === 'Himachal') return p.category === 'Himachal' || p.id.startsWith('pkg-shimla-') || p.id.startsWith('pkg-manali-') || p.id.startsWith('pkg-spiti-') || p.id.startsWith('pkg-kasol-') || p.id.startsWith('pkg-bir-') || p.id.startsWith('pkg-dharamshala-');
+      if (catId === 'Kashmir') return p.category === 'Kashmir' || p.id.startsWith('pkg-kashmir-') || p.id.startsWith('pkg-sonamarg-') || p.id.startsWith('pkg-doodhpathri-') || p.id.startsWith('pkg-gulmarg-');
+      if (catId === 'Rajasthan') return p.category === 'Rajasthan' || p.category === 'Jaipur' || p.id.startsWith('pkg-jaipur-') || p.id.startsWith('pkg-rajasthan-') || p.id.startsWith('pkg-jaisalmer-') || p.id.startsWith('pkg-udaipur-') || p.id.startsWith('pkg-pushkar-') || p.id.startsWith('pkg-bikaner-');
+      if (catId === 'Goa & Kerala') return p.category === 'Goa & Kerala' || p.id.startsWith('pkg-goa-') || p.id.startsWith('pkg-kerala-') || p.id.startsWith('pkg-south-goa-') || p.id.startsWith('pkg-wayanad-') || p.id.startsWith('pkg-munnar-');
+      return p.category === catId;
+    });
   };
 
   const toggleItinerary = (pkgId) => {
@@ -37,52 +58,6 @@ export default function PackageCatalog({ onOpenInquiry }) {
     }));
   };
 
-  const scrollSlider = (catId, direction) => {
-    const el = sliderRefs.current[catId];
-    if (el) {
-      const scrollStep = 340;
-      const maxScroll = el.scrollWidth - el.clientWidth;
-
-      if (direction === 'right') {
-        // If at or near the end, loop smoothly back to the beginning!
-        if (el.scrollLeft >= maxScroll - 20) {
-          el.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          el.scrollBy({ left: scrollStep, behavior: 'smooth' });
-        }
-      } else {
-        // If at or near the beginning, loop smoothly around to the end!
-        if (el.scrollLeft <= 20) {
-          el.scrollTo({ left: maxScroll, behavior: 'smooth' });
-        } else {
-          el.scrollBy({ left: -scrollStep, behavior: 'smooth' });
-        }
-      }
-    }
-  };
-
-  const filterAndSort = (pkgs) => {
-    return pkgs.filter((p) => {
-      const query = searchQuery.trim().toLowerCase();
-      if (!query) return true;
-      return (
-        p.title.toLowerCase().includes(query) ||
-        p.destination.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query) ||
-        (p.highlights && p.highlights.some(h => h.toLowerCase().includes(query)))
-      );
-    }).sort((a, b) => {
-      if (sortBy === 'price-low') return a.price_inr - b.price_inr;
-      if (sortBy === 'price-high') return b.price_inr - a.price_inr;
-      if (sortBy === 'rating') return b.rating - a.rating;
-      return 0;
-    });
-  };
-
-  const sectionsToRender = activeCategory === 'All'
-    ? categories.filter(c => c.id !== 'All')
-    : categories.filter(c => c.id === activeCategory);
-
   const handleBookFromModal = (pkg) => {
     setSelectedPackage(null);
     onOpenInquiry({
@@ -91,7 +66,19 @@ export default function PackageCatalog({ onOpenInquiry }) {
     });
   };
 
-  const renderCard = (pkg) => {
+  const currentCategoryPool = getCategoryPackages(activeCategory);
+  const displayedPackages = currentCategoryPool.filter((p) => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return true;
+    return (
+      p.title.toLowerCase().includes(query) ||
+      p.destination.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query) ||
+      (p.highlights && p.highlights.some(h => h.toLowerCase().includes(query)))
+    );
+  });
+
+  const renderCard = (pkg, isGrid = false) => {
     const isExpanded = !!expandedItineraries[pkg.id];
 
     return (
@@ -108,436 +95,382 @@ export default function PackageCatalog({ onOpenInquiry }) {
           border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
           scrollSnapAlign: 'start',
-          flex: '0 0 min(340px, 85vw)',
-          minWidth: 'min(340px, 85vw)',
+          flex: isGrid ? '1 1 auto' : '0 0 min(340px, 85vw)',
+          minWidth: isGrid ? '0' : 'min(340px, 85vw)',
+          width: isGrid ? '100%' : 'auto',
           transition: 'transform 0.25s ease, border-color 0.25s ease'
         }}
       >
         <div>
-          <div style={{ position: 'relative', height: '190px', overflow: 'hidden' }}>
+          <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
             <img 
               src={pkg.image} 
               alt={pkg.title}
               loading="lazy"
               decoding="async"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                if (pkg.category === 'Mathura & Vrindavan' || pkg.category === 'Sacred Pilgrimages') {
+                  e.currentTarget.src = "/images/packages/prem_mandir_vrindavan.jpg";
+                } else if (pkg.category === 'Jaipur') {
+                  e.currentTarget.src = "/images/packages/hawa_mahal.jpg";
+                } else {
+                  e.currentTarget.src = "/images/packages/kedarnath_temple.jpg";
+                }
+              }}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transition: 'transform 0.4s ease'
+                transition: 'transform 0.5s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.06)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             />
-            <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span className="badge-gold" style={{ fontSize: '0.72rem', padding: '3px 8px', fontWeight: 700 }}>
-                {pkg.badge}
-              </span>
-            </div>
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.2) 60%, transparent 100%)' }}></div>
+            
+            <span 
+              className="badge-gold"
+              style={{
+                position: 'absolute',
+                top: '12px',
+                left: '12px',
+                fontSize: '0.68rem',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
+              }}
+            >
+              {pkg.badge}
+            </span>
+
             <div style={{
               position: 'absolute',
-              bottom: '10px',
-              right: '10px',
-              background: 'rgba(11, 17, 32, 0.88)',
-              backdropFilter: 'blur(8px)',
-              padding: '3px 8px',
-              borderRadius: '20px',
-              fontSize: '0.72rem',
-              color: '#FFFFFF',
-              fontWeight: 700,
+              top: '12px',
+              right: '12px',
+              background: 'rgba(11, 17, 32, 0.85)',
+              backdropFilter: 'blur(4px)',
+              padding: '3px 7px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              color: '#F59E0B',
+              border: '1px solid rgba(245, 158, 11, 0.3)'
             }}>
-              <Clock size={12} color="#F59E0B" /> {pkg.duration}
+              <Star size={11} fill="#F59E0B" color="#F59E0B" />
+              <span>{pkg.rating}</span>
+            </div>
+
+            <div style={{ position: 'absolute', bottom: '10px', left: '12px', right: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#38BDF8', fontSize: '0.74rem', fontWeight: 600, marginBottom: '2px' }}>
+                <MapPin size={12} />
+                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{pkg.destination}</span>
+              </div>
+              <h3 style={{ fontSize: '1.02rem', fontWeight: 700, color: '#FFFFFF', margin: 0, lineHeight: 1.25, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {pkg.title}
+              </h3>
             </div>
           </div>
 
-          <div style={{ padding: '16px 16px 10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span style={{ fontSize: '0.76rem', color: '#38BDF8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', maxWidth: '70%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <MapPin size={12} style={{ flexShrink: 0 }} /> {pkg.destination}
+          <div style={{ padding: '14px 14px 10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: '#94A3B8', background: 'rgba(255, 255, 255, 0.04)', padding: '3px 7px', borderRadius: '4px' }}>
+                <Clock size={12} color="#F59E0B" /> {pkg.duration}
               </span>
-              <span style={{ fontSize: '0.76rem', color: '#FCD34D', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
-                <Star size={12} fill="#FCD34D" color="#FCD34D" /> {pkg.rating} ({pkg.reviews_count})
+              <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 600, background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                100% Sanitized AC Cab
               </span>
             </div>
 
-            <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '8px', lineHeight: 1.3, height: '2.6em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-              {pkg.title}
-            </h4>
+            <p style={{ fontSize: '0.79rem', color: '#94A3B8', lineHeight: 1.4, margin: '0 0 10px 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {pkg.description}
+            </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
-              {pkg.highlights.slice(0, 2).map((hl, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#94A3B8' }}>
-                  <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981', flexShrink: 0 }}>
-                    <Check size={9} strokeWidth={3} />
+            {pkg.highlights && pkg.highlights.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
+                {pkg.highlights.slice(0, 3).map((hl, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '5px', fontSize: '0.74rem', color: '#CBD5E1' }}>
+                    <Check size={11} color="#F59E0B" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hl}</span>
                   </div>
-                  <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {hl}
+                ))}
+              </div>
+            )}
+
+            {pkg.days && pkg.days.length > 0 && (
+              <div style={{ marginBottom: '10px' }}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleItinerary(pkg.id);
+                  }}
+                  style={{
+                    background: isExpanded ? 'rgba(245, 158, 11, 0.12)' : 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '6px',
+                    padding: '5px 8px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    color: isExpanded ? '#FCD34D' : '#94A3B8',
+                    fontSize: '0.73rem',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Calendar size={11} color="#F59E0B" /> {isExpanded ? 'Hide Day Schedule' : `View ${pkg.days.length}-Day Plan`}
                   </span>
-                </div>
-              ))}
-            </div>
+                  {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                </button>
 
-            <div style={{ borderTop: '1px dashed rgba(255, 255, 255, 0.08)', paddingTop: '8px', marginBottom: '6px' }}>
-              <button
-                type="button"
-                onClick={() => toggleItinerary(pkg.id)}
-                style={{
-                  background: isExpanded ? 'rgba(245, 158, 11, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                  border: isExpanded ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '8px',
-                  padding: '6px 10px',
-                  width: '100%',
-                  color: isExpanded ? '#FCD34D' : '#38BDF8',
-                  fontSize: '0.76rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Calendar size={13} />
-                  <span>{isExpanded ? 'Hide Day-by-Day Schedule' : `Show Itinerary (${pkg.days ? pkg.days.length : 'Full'} Days)`}</span>
-                </span>
-                {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              </button>
-
-              {isExpanded && (
-                <div style={{
-                  marginTop: '8px',
-                  padding: '8px',
-                  background: 'rgba(11, 17, 32, 0.8)',
-                  borderRadius: '8px',
-                  maxHeight: '160px',
-                  overflowY: 'auto',
-                  border: '1px solid rgba(255, 255, 255, 0.05)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                  animation: 'fadeIn 0.2s ease-out'
-                }}>
-                  {pkg.days && pkg.days.length > 0 ? (
-                    pkg.days.map((d, dIdx) => (
-                      <div key={dIdx} style={{ fontSize: '0.72rem', borderBottom: dIdx < pkg.days.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none', paddingBottom: '4px' }}>
-                        <strong style={{ color: '#FCD34D' }}>Day {d.day}:</strong> <span style={{ color: '#F1F5F9' }}>{d.title}</span>
+                {isExpanded && (
+                  <div style={{
+                    marginTop: '6px',
+                    padding: '8px',
+                    background: 'rgba(11, 17, 32, 0.7)',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    maxHeight: '160px',
+                    overflowY: 'auto'
+                  }}>
+                    {pkg.days.map((d, di) => (
+                      <div key={di} style={{ fontSize: '0.72rem', borderBottom: di < pkg.days.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none', paddingBottom: '4px' }}>
+                        <span style={{ color: '#38BDF8', fontWeight: 700 }}>Day {d.day}: </span>
+                        <span style={{ color: '#F8FAFC', fontWeight: 600 }}>{d.title}</span>
+                        <div style={{ color: '#94A3B8', marginTop: '1px', fontSize: '0.68rem', lineHeight: 1.3 }}>{d.desc}</div>
                       </div>
-                    ))
-                  ) : (
-                    <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
-                      Detailed day-wise itinerary available upon booking or in full overview.
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
+        <div style={{ padding: '10px 14px 14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <div>
+              <span style={{ fontSize: '0.68rem', color: '#64748B', textDecoration: 'line-through', marginRight: '5px' }}>
+                ₹{pkg.original_price_inr.toLocaleString('en-IN')}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#F59E0B' }}>
+                  ₹{pkg.price_inr.toLocaleString('en-IN')}
+                </span>
+                <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>/person</span>
+              </div>
+            </div>
+            <span style={{ fontSize: '0.65rem', color: '#10B981', background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+              Save ₹{(pkg.original_price_inr - pkg.price_inr).toLocaleString('en-IN')}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '6px' }}>
             <button
               onClick={() => setSelectedPackage(pkg)}
               style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#94A3B8',
+                flex: '1',
+                padding: '7px 8px',
+                borderRadius: '8px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#FFFFFF',
                 fontSize: '0.74rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
-                padding: '2px 0',
-                textDecoration: 'underline'
+                justifyContent: 'center',
+                gap: '4px'
               }}
             >
-              <Eye size={12} /> Full inclusions & overview
+              <Eye size={12} /> Details
             </button>
-
+            <button
+              onClick={() => onOpenInquiry({
+                destination: pkg.title,
+                notes: `Interested in: ${pkg.title} (${pkg.duration}) at ₹${pkg.price_inr.toLocaleString('en-IN')}/person`
+              })}
+              style={{
+                flex: '1.4',
+                padding: '7px 8px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                border: 'none',
+                color: '#0B1120',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4px'
+              }}
+            >
+              Book Now <ArrowRight size={12} />
+            </button>
           </div>
-        </div>
-
-        <div style={{
-          padding: '12px 16px 14px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '8px',
-          background: 'rgba(0, 0, 0, 0.2)'
-        }}>
-          <div>
-            <div style={{ fontSize: '0.66rem', color: '#94A3B8', textTransform: 'uppercase' }}>
-              Starting From
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-              <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F59E0B', fontFamily: 'var(--font-heading)' }}>
-                ₹{pkg.price_inr.toLocaleString('en-IN')}
-              </span>
-              <span style={{ fontSize: '0.72rem', color: '#64748B', textDecoration: 'line-through' }}>
-                ₹{pkg.original_price_inr.toLocaleString('en-IN')}
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => onOpenInquiry({
-              destination: pkg.title,
-              notes: `Package Booking: ${pkg.title} (${pkg.duration})`
-            })}
-            className="btn btn-primary-gold"
-            style={{ padding: '7px 14px', fontSize: '0.78rem', borderRadius: '8px', fontWeight: 700 }}
-          >
-            <span>Book Now</span>
-            <ArrowRight size={12} />
-          </button>
         </div>
       </div>
     );
   };
 
   return (
-    <section id="packages" className="section-padding" style={{
-      background: 'linear-gradient(180deg, #0B1120 0%, #111A2E 100%)',
-      position: 'relative'
-    }}>
-      <div className="container">
-        <div className="section-header" style={{ marginBottom: '20px' }}>
-          <div className="badge-wrap">
-            <span className="badge-gold">
-              <Tag size={14} /> Curated Domestic Holidays
-            </span>
+    <section id="packages" className="section-padding" style={{ position: 'relative', background: '#0B1120', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '10%', left: '5%', width: '380px', height: '380px', background: 'radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '15%', right: '5%', width: '420px', height: '420px', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+        
+        <div style={{ textAlign: 'center', maxWidth: '840px', margin: '0 auto 16px' }}>
+          <div className="badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+            <Sparkles size={13} /> 100% Verified Packages • 40+ Handcrafted Tours
           </div>
-          <h2>
-            Explore <span className="text-gradient-gold">All Tour Packages</span>
+          <h2 style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.35rem)', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.18, margin: 0 }}>
+            Explore All Tour Packages
           </h2>
-          <p>
-            Browse 40+ handcrafted holiday itineraries across Char Dham, Uttarakhand, Himachal, Kashmir, Rajasthan, Goa & Kerala. Slide through multiple options below!
-          </p>
         </div>
 
+        {/* Search Bar */}
+        <div style={{
+          maxWidth: '560px',
+          margin: '0 auto 16px',
+          position: 'relative'
+        }}>
+          <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search packages by destination, temple, fort, city..."
+            style={{
+              width: '100%',
+              padding: '10px 40px 10px 42px',
+              background: 'rgba(17, 26, 46, 0.95)',
+              border: '1px solid rgba(255, 255, 255, 0.14)',
+              borderRadius: '24px',
+              color: '#FFFFFF',
+              fontSize: '0.88rem',
+              outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* Destination Category Filter Tabs - Wrapping & Centered (All visible at a glance) */}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '10px',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
+          gap: '8px 10px',
           maxWidth: '1100px',
-          margin: '0 auto 14px',
-          background: 'rgba(17, 26, 46, 0.75)',
-          backdropFilter: 'blur(12px)',
-          padding: '8px 14px',
-          borderRadius: '12px',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
+          margin: '0 auto 20px',
+          padding: '0 4px'
         }}>
-          <div style={{ position: 'relative', flex: '1 1 260px', minWidth: '220px' }}>
-            <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search destination (e.g. Manali, Kedarnath, Shimla, Nainital)..."
-              style={{
-                width: '100%',
-                padding: '7px 32px 7px 34px',
-                background: '#0B1120',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '20px',
-                color: '#FFFFFF',
-                fontSize: '0.84rem',
-                outline: 'none'
-              }}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
-                aria-label="Clear search"
-              >
-                <X size={15} />
-              </button>
-            )}
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <SlidersHorizontal size={14} color="#F59E0B" />
-            <span style={{ fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600 }}>Sort:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                background: '#0B1120',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '8px',
-                color: '#F8FAFC',
-                padding: '5px 8px',
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                outline: 'none'
-              }}
-            >
-              <option value="featured">Featured First</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Top Rated (★)</option>
-            </select>
-          </div>
-        </div>
-
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          paddingBottom: '8px',
-          marginBottom: '20px',
-          justifyContent: 'flex-start',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
-        }}>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                border: activeCategory === cat.id ? '1.5px solid #F59E0B' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: activeCategory === cat.id ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.15))' : 'rgba(255, 255, 255, 0.03)',
-                color: activeCategory === cat.id ? '#FDE68A' : '#CBD5E1',
-                fontWeight: activeCategory === cat.id ? 700 : 500,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <span>{cat.icon}</span>
-              <span>{cat.label}</span>
-            </button>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
-          {sectionsToRender.map((sec) => {
-            const sectionPackages = PACKAGES.filter(p => p.category === sec.id);
-            const filteredSecPkgs = filterAndSort(sectionPackages);
-
-            if (filteredSecPkgs.length === 0) return null;
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.id;
 
             return (
-              <div key={sec.id} style={{
-                background: 'rgba(15, 23, 42, 0.65)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '16px',
-                padding: '20px',
-                position: 'relative'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '1.4rem' }}>{sec.icon}</span>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
-                          {sec.label}
-                        </h3>
-                        <span style={{ fontSize: '0.72rem', background: 'rgba(245, 158, 11, 0.15)', color: '#FCD34D', padding: '2px 8px', borderRadius: '12px', fontWeight: 700 }}>
-                          {filteredSecPkgs.length} Tours Available
-                        </span>
-                      </div>
-                      <div style={{ fontSize: '0.76rem', color: '#94A3B8', marginTop: '2px' }}>
-                        {categoryDescriptions[sec.id] || 'Handcrafted packages with chauffeur & verified stays.'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '0.72rem', color: '#64748B', marginRight: '4px' }} className="mobile-hide">
-                      Slide for options
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => scrollSlider(sec.id, 'left')}
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        border: '1px solid rgba(255, 255, 255, 0.12)',
-                        color: '#FFFFFF',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                      aria-label="Previous tours"
-                    >
-                      <ChevronLeft size={18} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => scrollSlider(sec.id, 'right')}
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        background: 'rgba(245, 158, 11, 0.18)',
-                        border: '1px solid rgba(245, 158, 11, 0.35)',
-                        color: '#FCD34D',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                      aria-label="Next tours"
-                    >
-                      <ChevronRight size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                <div 
-                  ref={el => sliderRefs.current[sec.id] = el}
-                  className="package-slider-track"
-                  style={{
-                    display: 'flex',
-                    gap: '16px',
-                    overflowX: 'auto',
-                    scrollSnapType: 'x mandatory',
-                    paddingBottom: '10px',
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none',
-                    WebkitOverflowScrolling: 'touch'
-                  }}
-                >
-                  {filteredSecPkgs.map((pkg) => renderCard(pkg))}
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.72rem', color: '#64748B', marginTop: '6px' }}>
-                  <span>👈 Swipe sideways to see all {filteredSecPkgs.length} {sec.label} options 👉</span>
-                </div>
-              </div>
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 16px',
+                  borderRadius: '24px',
+                  border: isActive ? '1.5px solid #F59E0B' : '1px solid rgba(255, 255, 255, 0.1)',
+                  background: isActive ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(217, 119, 6, 0.18))' : 'rgba(255, 255, 255, 0.04)',
+                  color: isActive ? '#FDE68A' : '#CBD5E1',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: '0.84rem',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.18s ease',
+                  boxShadow: isActive ? '0 0 14px rgba(245, 158, 11, 0.25)' : 'none'
+                }}
+              >
+                <span style={{ fontSize: '1rem', lineHeight: 1 }}>{cat.icon}</span>
+                <span>{cat.label}</span>
+              </button>
             );
           })}
         </div>
 
-        {PACKAGES.filter(p => activeCategory === 'All' || p.category === activeCategory).filter(p => {
-          const query = searchQuery.trim().toLowerCase();
-          if (!query) return true;
-          return p.title.toLowerCase().includes(query) || p.destination.toLowerCase().includes(query);
-        }).length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px 20px', background: 'rgba(17, 26, 46, 0.4)', borderRadius: '16px', maxWidth: '600px', margin: '20px auto' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🔍</div>
-            <h3 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '8px' }}>No packages matched "{searchQuery}"</h3>
-            <p style={{ fontSize: '0.88rem', color: '#94A3B8', marginBottom: '18px' }}>Try searching with a different term like "Kedarnath", "Manali", "Shimla", or reset the filter.</p>
+        {/* Minimalist Summary when Search or Category is Active */}
+        {(searchQuery || activeCategory !== 'All') && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '16px',
+            padding: '6px 14px',
+            background: 'rgba(15, 23, 42, 0.6)',
+            borderRadius: '10px',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            fontSize: '0.8rem',
+            color: '#94A3B8'
+          }}>
+            <div>
+              <span>Showing <strong style={{ color: '#FCD34D' }}>{displayedPackages.length}</strong> {displayedPackages.length === 1 ? 'package' : 'packages'}</span>
+              {activeCategory !== 'All' && <span> in <strong style={{ color: '#38BDF8' }}>{activeCategory}</strong></span>}
+              {searchQuery && <span> matching "<strong>{searchQuery}</strong>"</span>}
+            </div>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setActiveCategory('All');
+              }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#FDA4AF',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <X size={13} /> Reset
+            </button>
+          </div>
+        )}
+
+        {/* Direct Responsive Package Cards Grid */}
+        {displayedPackages.length > 0 ? (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px'
+          }}>
+            {displayedPackages.map((pkg) => renderCard(pkg, true))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '48px 20px', background: 'rgba(17, 26, 46, 0.4)', borderRadius: '16px', maxWidth: '500px', margin: '20px auto' }}>
+            <div style={{ fontSize: '2.2rem', marginBottom: '10px' }}>🔍</div>
+            <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF', marginBottom: '6px' }}>No packages matched your search</h3>
+            <p style={{ fontSize: '0.84rem', color: '#94A3B8', marginBottom: '16px' }}>Try searching with a different destination or keyword.</p>
             <button onClick={() => { setSearchQuery(''); setActiveCategory('All'); }} className="btn btn-outline-gold btn-sm">
-              Reset Filters
+              Show All Packages
             </button>
           </div>
         )}
@@ -558,7 +491,15 @@ export default function PackageCatalog({ onOpenInquiry }) {
             </button>
 
             <div style={{ position: 'relative', height: '220px', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
-              <img src={selectedPackage.image} alt={selectedPackage.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img 
+                src={selectedPackage.image} 
+                alt={selectedPackage.title} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/images/packages/kedarnath_temple.jpg";
+                }}
+              />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(11, 17, 32, 0.9) 0%, transparent 60%)' }}></div>
               <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
                 <span className="badge-gold" style={{ fontSize: '0.72rem', padding: '3px 8px', marginBottom: '6px' }}>

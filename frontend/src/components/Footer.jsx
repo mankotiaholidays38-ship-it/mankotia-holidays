@@ -30,7 +30,7 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
       color: '#94A3B8'
     }}>
       <div className="container">
-        
+
         {/* Main Footer Grid */}
         <div style={{
           display: 'grid',
@@ -38,15 +38,15 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
           gap: '28px',
           marginBottom: '32px'
         }}>
-          
+
           {/* Col 1: Brand Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <img 
-                src="/images/logo.jpg" 
-                alt="Mankotia Holidays Logo" 
+              <img
+                src="/images/logo.jpg"
+                alt="Mankotia Holidays Logo"
                 onError={(e) => { e.currentTarget.src = '/static/images/logo.jpg'; }}
-                style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: '10px' }} 
+                style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: '10px' }}
               />
               <div>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)' }}>
@@ -58,14 +58,31 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
               </div>
             </div>
 
-            <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#94A3B8', marginBottom: '20px' }}>
+            <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#94A3B8', marginBottom: '14px' }}>
               Mankotia Holidays is a leading travel platform in India featuring the largest network of hotels, genuine guest reviews, and complete travel solutions including flight/train/bus ticketing, taxi rentals, luxury cottages, and spiritual yatras.
             </p>
 
+            <div style={{
+              marginBottom: '20px',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              background: 'rgba(245, 158, 11, 0.08)',
+              border: '1px solid rgba(245, 158, 11, 0.25)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.78rem',
+              color: '#FCD34D',
+              fontWeight: 600
+            }}>
+              <Shield size={14} color="#F59E0B" />
+              <span>GSTIN / UIN: <strong>07AGQPM4637F1Z4</strong></span>
+            </div>
+
             <div style={{ display: 'flex', gap: '10px' }}>
-              <a 
-                href="https://wa.me/919816461616" 
-                target="_blank" 
+              <a
+                href="https://wa.me/919816461616"
+                target="_blank"
                 rel="noopener noreferrer"
                 title="WhatsApp Chat"
                 style={{
@@ -82,7 +99,7 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
               >
                 <MessageCircle size={18} />
               </a>
-              <a 
+              <a
                 href="tel:+919816461616"
                 title="Direct Phone Call"
                 style={{
@@ -99,7 +116,7 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
               >
                 <Phone size={18} />
               </a>
-              <a 
+              <a
                 href="mailto:mankotiaholidays38@gmail.com"
                 title="Official Email"
                 style={{
@@ -276,8 +293,10 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                 <Phone size={16} color="#F59E0B" style={{ marginTop: '2px', flexShrink: 0 }} />
                 <div>
                   <div style={{ color: '#FFFFFF', fontWeight: 600 }}>Phone / Call Now:</div>
-                  <a href="tel:+919816461616" style={{ display: 'block', color: '#94A3B8' }}>+91 98164 61616</a>
-                  <a href="tel:+919811485028" style={{ display: 'block', color: '#94A3B8' }}>+91 98114 85028</a>
+                  <a href="tel:+919816461616" style={{ display: 'block', color: '#CBD5E1', fontWeight: 600 }}>+91 86270 68616</a>
+                  <a href="tel:+919811498028" style={{ display: 'block', color: '#CBD5E1', fontWeight: 600 }}>+91 981148 5028</a>
+                  <a href="tel:+919971135092" style={{ display: 'block', color: '#CBD5E1', fontWeight: 600 }}>+91 99711 35092</a>
+                  <a href="tel:+918627068616" style={{ display: 'block', color: '#CBD5E1', fontWeight: 600 }}>+91 98164 61616</a>
                 </div>
               </div>
 
@@ -285,7 +304,8 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
                 <MessageCircle size={16} color="#22C55E" style={{ marginTop: '2px', flexShrink: 0 }} />
                 <div>
                   <div style={{ color: '#FFFFFF', fontWeight: 600 }}>24/7 WhatsApp Support:</div>
-                  <a href="https://wa.me/919816461616" target="_blank" rel="noopener noreferrer" style={{ color: '#94A3B8' }}>+91 98164 61616</a>
+                  <a href="https://wa.me/919816461616" target="_blank" rel="noopener noreferrer" style={{ display: 'block', color: '#94A3B8' }}>+91 98164 61616</a>
+                  <a href="https://wa.me/919811485028" target="_blank" rel="noopener noreferrer" style={{ display: 'block', color: '#94A3B8' }}>+91 98114 85028</a>
                 </div>
               </div>
 
@@ -309,6 +329,73 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
             </div>
           </div>
 
+        </div>
+
+        {/* Branch Offices Section */}
+        <div style={{
+          marginTop: '24px',
+          marginBottom: '32px',
+          paddingTop: '24px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+        }}>
+          <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-heading)' }}>
+            🏢 Our Office Locations
+          </h4>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '16px'
+          }}>
+            {/* Delhi Office */}
+            <div style={{
+              background: 'rgba(17, 26, 46, 0.7)',
+              border: '1px solid rgba(245, 158, 11, 0.2)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div style={{ color: '#F59E0B', fontWeight: 700, fontSize: '0.92rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                📍 Office in Delhi
+              </div>
+              <div style={{ fontSize: '0.84rem', color: '#E2E8F0', lineHeight: 1.55 }}>
+                GROUND FLOOR, WP-135A<br />
+                PITAM PURA, NEW DELHI<br />
+                NORTH WEST DELHI - 110034
+              </div>
+            </div>
+
+            {/* Manali Office */}
+            <div style={{
+              background: 'rgba(17, 26, 46, 0.7)',
+              border: '1px solid rgba(6, 182, 212, 0.2)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div style={{ color: '#06B6D4', fontWeight: 700, fontSize: '0.92rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                📍 Office in Manali (Himachal Pradesh)
+              </div>
+              <div style={{ fontSize: '0.84rem', color: '#E2E8F0', lineHeight: 1.55 }}>
+                Kwality Cafe<br />
+                Hadimba Road, Manali<br />
+                Himachal Pradesh - 175131
+              </div>
+            </div>
+
+            {/* Una Office */}
+            <div style={{
+              background: 'rgba(17, 26, 46, 0.7)',
+              border: '1px solid rgba(34, 197, 94, 0.2)',
+              borderRadius: '12px',
+              padding: '16px'
+            }}>
+              <div style={{ color: '#22C55E', fontWeight: 700, fontSize: '0.92rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                📍 Office in Una (Himachal Pradesh)
+              </div>
+              <div style={{ fontSize: '0.84rem', color: '#E2E8F0', lineHeight: 1.55 }}>
+                66 - Basant Vihar, Rakkar colony<br />
+                Una, Himachal Pradesh - 174303
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Bottom Bar */}

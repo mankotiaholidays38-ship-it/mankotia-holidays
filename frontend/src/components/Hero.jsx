@@ -10,42 +10,42 @@ export default function Hero({ onOpenInquiry }) {
       category: 'Sacred Pilgrimage',
       title: 'Char Dham Yatra',
       description: 'Kedarnath, Badrinath, Gangotri and Yamunotri with complete on-ground support.',
-      image: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/kedarnath_temple.jpg',
       accent: '#F59E0B'
     },
     {
       category: 'Himalayan Escape',
       title: 'Manali & Himachal',
       description: 'Snow valleys, scenic drives and comfortable stays for your perfect mountain break.',
-      image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/solang_valley_snow.jpg',
       accent: '#06B6D4'
     },
     {
       category: 'Family Holidays',
       title: 'Kashmir Paradise',
       description: 'Houseboats, Gulmarg snow and unforgettable family memories in the valley.',
-      image: 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/dal_lake_shikara.jpg',
       accent: '#10B981'
     },
     {
       category: 'School & College Trips',
       title: 'Learning Beyond Classrooms',
       description: 'Safe, organized educational tours with transport, stays and group coordination.',
-      image: 'https://images.unsplash.com/photo-1504150558240-0b4fd8946624?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/delhi_monuments.jpg',
       accent: '#A78BFA'
     },
     {
       category: 'Adventure Tours',
       title: 'Auli & Chopta',
       description: 'Ski slopes, alpine trails and guided Himalayan adventures for every group.',
-      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/auli_snow_skiing.jpg',
       accent: '#FB923C'
     },
     {
       category: 'Domestic Getaways',
       title: 'Goa, Kerala & Rajasthan',
       description: 'Beach escapes, backwaters and royal heritage journeys designed around you.',
-      image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=85',
+      image: '/images/packages/jaipur_pink_city.jpg',
       accent: '#F472B6'
     }
   ];
@@ -113,8 +113,8 @@ export default function Hero({ onOpenInquiry }) {
             letterSpacing: '-0.8px',
             marginBottom: '14px'
           }}>
-            Sacred Pilgrimages, Luxury Stays & <br />
-            <span className="text-gradient-gold">Complete Travel Solutions In India</span>
+            Turn Your Dream <br />
+            <span className="text-gradient-gold">Vacation into Reality</span>
           </h1>
           <p style={{
             fontSize: 'clamp(0.92rem, 1.55vw, 1.08rem)',
@@ -125,29 +125,6 @@ export default function Hero({ onOpenInquiry }) {
           }}>
             <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay at unbeatable prices.
           </p>
-
-          {/* Clean Simple Services Line (No button styling so on phone it doesn't look like clickable buttons) */}
-          <div style={{
-            color: '#CBD5E1',
-            fontSize: 'clamp(0.85rem, 1.3vw, 0.95rem)',
-            fontWeight: 500,
-            lineHeight: 1.8,
-            maxWidth: '850px',
-            margin: '0 auto 16px',
-            textAlign: 'center'
-          }}>
-            <span>🚌 Volvo / Car Packages</span>
-            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
-            <span>💑 Group & Honeymoon Tours</span>
-            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
-            <span>✈️🚆🚌 Flights, Trains & Buses</span>
-            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
-            <span>🚖 Taxi & Car Rentals</span>
-            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
-            <span>🏨🏡 Hotels & Cottages</span>
-            <span style={{ color: '#F59E0B', margin: '0 8px' }}>•</span>
-            <span>🏕️🧗 Camping & Adventure</span>
-          </div>
         </div>
 
         {/* Dynamic Interactive Tour Carousel Card */}

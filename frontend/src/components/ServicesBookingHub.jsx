@@ -130,7 +130,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
           travel_class: transitClass,
           passengers: Number(transitPassengers),
           notes: transitNotes,
-          source: 'Website Ticket Booking Form'
+          source: 'All Travel Services - Ticket Booking Form'
         })
       });
 
@@ -184,7 +184,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
           duration_days: Number(cabDays),
           passengers: Number(cabPassengers),
           notes: cabNotes,
-          source: 'Website Transport & Cab Form'
+          source: 'All Travel Services - Transport & Cab Form'
         })
       });
 
@@ -224,6 +224,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
       hotel_category: hotelType === 'Deluxe Mountain Cottage' ? 'Luxury Resort' : '3 Star',
       meal_plan: hotelMeal,
       travelers: `${hotelGuests} Guests in ${hotelRooms} Room(s)`,
+      source: 'All Travel Services - Hotel Booking Hub',
       notes: `Hotel / Mountain Cottage Booking Query in ${hotelCity}.\nProperty: ${hotelType}\nMeal Plan: ${hotelMeal}\nNights: ${hotelNights}\nRooms: ${hotelRooms}\nGuests: ${hotelGuests}`
     });
   };
@@ -239,6 +240,7 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
       days: 5,
       vehicle_category: groupMembers > 8 ? 'Tempo Traveller' : 'SUV / MUV',
       travelers: `${groupMembers} Persons (${tourCategory})`,
+      source: 'All Travel Services - Group & Honeymoon Hub',
       notes: `Special Package Query: ${tourCategory} in ${groupDestination} for ${groupMembers} Persons.`
     });
   };
@@ -385,27 +387,6 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
             </span>
           </button>
         </div>
-
-        {/* Compact Prompt shown when no form is expanded */}
-        {activeServiceTab === null && (
-          <div style={{
-            textAlign: 'center',
-            padding: '24px 16px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px dashed rgba(245, 158, 11, 0.25)',
-            borderRadius: '16px',
-            maxWidth: '650px',
-            margin: '20px auto 0',
-            animation: 'fadeIn 0.3s ease'
-          }}>
-            <div style={{ color: '#FCD34D', fontSize: '0.95rem', fontWeight: 700, marginBottom: '4px' }}>
-              👆 Click Any Service Button Above To Open Its Booking Query Form
-            </div>
-            <div style={{ color: '#94A3B8', fontSize: '0.82rem' }}>
-              Instant ticket quotes for Flights, Trains & Volvo buses, verified cab rentals, and curated hotel stays.
-            </div>
-          </div>
-        )}
 
         {/* Tab 1: Flights, Trains & Buses (Individual Form & Direct Submission) */}
         {activeServiceTab === 'transit' && (

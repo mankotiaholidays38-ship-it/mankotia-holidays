@@ -161,7 +161,7 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'cancellatio
               1. Standard Road Tour Cancellation Timeline
             </h4>
             <ul style={{ paddingLeft: '20px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <li><strong>30+ Days Prior to Travel:</strong> 90% Refund of token advance amount (10% covers administrative & bank charges).</li>
+              <li><strong>30+ Days Prior to Travel:</strong> 90% Refund of booking advance amount (10% covers administrative charges).</li>
               <li><strong>15 to 29 Days Prior:</strong> 50% Refund of the total tour advance.</li>
               <li><strong>8 to 14 Days Prior:</strong> 25% Refund of the total tour advance.</li>
               <li><strong>Less than 7 Days / No-Show:</strong> 100% Non-Refundable as hotels and hill chauffeurs are pre-locked.</li>
@@ -242,14 +242,44 @@ export default function PolicyModal({ isOpen, onClose, initialTab = 'cancellatio
             </p>
 
             <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px' }}>
-              2. Secure Communication
+              2. Secure Communication & Helpline
             </h4>
             <p style={{ marginBottom: '12px' }}>
-              All inquiries submitted through our website are transmitted over 256-bit SSL encryption. Communication regarding your trip happens directly through our official helpline (<strong>+91 98164 61616</strong>) and email (<strong>mankotiaholidays38@gmail.com</strong>).
+              All inquiries submitted through our website are transmitted over 256-bit SSL encryption. Communication regarding your trip happens directly through our official helpline (<strong>+91 86270 68616</strong>, <strong>+91 99711 35092</strong>, <strong>+91 98164 61616</strong>) and email (<strong>mankotiaholidays38@gmail.com</strong>).
             </p>
 
             <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px' }}>
-              3. Opt-Out Anytime
+              3. Official GST & Registered Offices
+            </h4>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.7)',
+              border: '1px solid rgba(245, 158, 11, 0.2)',
+              borderRadius: '10px',
+              padding: '12px 14px',
+              marginBottom: '12px',
+              fontSize: '0.82rem'
+            }}>
+              <div style={{ color: '#FCD34D', fontWeight: 700, marginBottom: '8px' }}>
+                GSTIN / UIN: 07AGQPM4637F1Z4
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', color: '#CBD5E1' }}>
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>Delhi Office:</strong><br />
+                  Ground Floor, WP-135A, Pitam Pura, New Delhi - 110034
+                </div>
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>Manali Office:</strong><br />
+                  Kwality Cafe, Hadimba Road, Manali, H.P. - 175131
+                </div>
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>Una Office:</strong><br />
+                  66 - Basant Vihar, Rakkar colony, Una, H.P. - 174303
+                </div>
+              </div>
+            </div>
+
+            <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px' }}>
+              4. Opt-Out Anytime
             </h4>
             <p style={{ margin: 0 }}>
               You may request deletion of your inquiry details or opt out of trip advisory updates at any time by messaging us on WhatsApp or sending an email.
