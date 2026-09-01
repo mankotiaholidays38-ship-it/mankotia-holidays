@@ -205,7 +205,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
   const handleCopy = () => {
     if (!itinerary) return;
-    const text = `🌴 ${itinerary.title}\n📍 Destination: ${itinerary.destination}\n🚗 Pickup: ${itinerary.pickup_location || pickupLocation}\n🏁 Drop: ${itinerary.drop_location || dropLocation}\n🗺️ Route: ${itinerary.route_summary || 'Custom Highway Route'}\n⏱️ Duration: ${itinerary.duration}\n💰 Cost: ${itinerary.estimated_cost_inr}\n\n` +
+    const text = `🌴 ${itinerary.title}\n📍 Destination: ${itinerary.destination}\n🚗 Pickup: ${itinerary.pickup_location || pickupLocation}\n🏁 Drop: ${itinerary.drop_location || dropLocation}\n🗺️ Route: ${itinerary.route_summary || 'Custom Highway Route'}\n⏱️ Duration: ${itinerary.duration}\n💰 Cost: Price On Request\n\n` +
       itinerary.days.map(d => `Day ${d.day_number}: ${d.theme}\n- Morning: ${d.morning}\n- Afternoon: ${d.afternoon}\n- Evening: ${d.evening}\n- Stay: ${d.stay_suggestion}\n`).join('\n') +
       `\n🗺️ Google Maps Directions: ${itinerary.google_maps_route_url || ''}\nCurated by Mankotia Holidays (Call/WhatsApp: +919816461616)`;
     
@@ -217,7 +217,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const handleWhatsAppShare = () => {
     if (!itinerary) return;
     const resolvedDrop = itinerary.drop_location || (sameAsPickup ? pickupLocation : dropLocation);
-    const itineraryText = `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration}\nEstimated cost: ${itinerary.estimated_cost_inr || 'Custom Quote'}\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`;
+    const itineraryText = `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`;
     onOpenInquiry({
       destination: itinerary.destination || destination,
       days: parseInt(days, 10),
@@ -226,7 +226,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
       pickup: itinerary.pickup_location || pickupLocation,
       drop: resolvedDrop,
       itinerary_text: itineraryText,
-      notes: `Selected AI itinerary: ${itinerary.title} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: ${itinerary.estimated_cost_inr || 'Custom Quote'} | Style: ${travelStyle} | Requests: ${specialRequests || 'None'}`
+      notes: `Selected AI itinerary: ${itinerary.title} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: Price On Request | Style: ${travelStyle} | Requests: ${specialRequests || 'None'}`
     });
   };
 
@@ -240,8 +240,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
       budget,
       pickup: itinerary.pickup_location || pickupLocation,
       drop: resolvedDrop,
-      itinerary_text: `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nDuration: ${itinerary.duration}\nEstimated cost: ${itinerary.estimated_cost_inr || 'Custom Quote'}\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`,
-      notes: `Selected AI itinerary: ${itinerary.title} | Destination: ${itinerary.destination} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: ${itinerary.estimated_cost_inr || 'Custom Quote'}`
+      itinerary_text: `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nDuration: ${itinerary.duration}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`,
+      notes: `Selected AI itinerary: ${itinerary.title} | Destination: ${itinerary.destination} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: Price On Request`
     });
   };
 
@@ -551,7 +551,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                   {itinerary.title}
                 </h3>
                 <div style={{ fontSize: '0.92rem', color: '#94A3B8', marginTop: '6px' }}>
-                  📍 <strong>{itinerary.destination}</strong> • Estimated Cost: <span style={{ color: '#F59E0B', fontWeight: 700 }}>{itinerary.estimated_cost_inr}</span>
+                  📍 <strong>{itinerary.destination}</strong> • <span style={{ color: '#F59E0B', fontWeight: 600 }}>Customized Travel Circuit</span>
                 </div>
               </div>
 

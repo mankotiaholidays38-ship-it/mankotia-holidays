@@ -10,8 +10,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
     chardham: {
       title: "Sacred Char Dham Yatra Deluxe Tour (10N / 11D)",
       subtitle: "Yamunotri • Gangotri • Kedarnath • Badrinath",
-      price: "₹34,999",
-      originalPrice: "₹45,000",
+      price: "Price On Request",
       badge: "Complete Spiritual Circuit",
       image: "/images/packages/kedarnath_temple.jpg",
       description: "Our flagship pilgrimage package covering all four sacred Himalayan shrines with comfortable stays, pure vegetarian Satvik meals, biometric yatra pass assistance, and experienced mountain drivers.",
@@ -31,8 +30,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
     dodham: {
       title: "Divine Do Dham Yatra: Kedarnath & Badrinath (5N / 6D)",
       subtitle: "Kedarnath Jyotirlinga & Lord Badrinath Ji",
-      price: "₹22,500",
-      originalPrice: "₹29,999",
+      price: "Price On Request",
       badge: "Most Popular Pilgrimage",
       image: "/images/packages/badrinath_temple.jpg",
       description: "Ideal for travelers with limited time seeking the supreme blessings of Lord Shiva at Kedarnath and Lord Vishnu at Badrinath with Haridwar/Rishikesh pick-up and drop.",
@@ -51,8 +49,7 @@ export default function YatraSpecial({ onOpenInquiry }) {
     heli: {
       title: "Kedarnath Dham Helicopter & VIP Express (3D / 2N)",
       subtitle: "Phata / Sirsi / Guptkashi Heli-Shuttle",
-      price: "₹19,999",
-      originalPrice: "₹26,500",
+      price: "Price On Request",
       badge: "VIP Helicopter Express",
       image: "/images/packages/kedarnath_heli_shrine.jpg",
       description: "Fly directly to Kedarnath Helipad (just 500m from the temple) with confirmed helicopter shuttle tickets, priority VIP darshan guidance, and luxury resort stays.",
@@ -230,25 +227,16 @@ export default function YatraSpecial({ onOpenInquiry }) {
               flexWrap: 'wrap',
               gap: '12px'
             }}>
-              <div>
-                <span style={{ fontSize: '0.8rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Starting Price / Person
-                </span>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                  <span style={{ fontSize: '2rem', fontWeight: 900, color: '#F59E0B', fontFamily: 'var(--font-heading)' }}>
-                    {currentPkg.price}
-                  </span>
-                  <span style={{ fontSize: '1.1rem', color: '#64748B', textDecoration: 'line-through' }}>
-                    {currentPkg.originalPrice}
-                  </span>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F59E0B', fontWeight: 700, fontSize: '0.95rem' }}>
+                <Sparkles size={18} />
+                <span>Custom All-Inclusive Pilgrimage Package</span>
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button
                   onClick={() => onOpenInquiry({
                     destination: currentPkg.title,
-                    notes: `Selected itinerary: ${currentPkg.title} | Duration: ${currentPkg.duration} | Starting price: ${currentPkg.price}`
+                    notes: `Selected itinerary: ${currentPkg.title} | Duration: ${currentPkg.duration} | Requesting Custom Quote`
                   })}
                   className="btn btn-primary-gold"
                 >

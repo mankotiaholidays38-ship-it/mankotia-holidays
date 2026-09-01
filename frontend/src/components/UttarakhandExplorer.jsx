@@ -222,13 +222,8 @@ export default function UttarakhandExplorer({ onOpenInquiry }) {
                 justifyContent: 'space-between',
                 background: 'rgba(0, 0, 0, 0.2)'
               }}>
-                <div>
-                  <div style={{ fontSize: '0.68rem', color: '#94A3B8', textTransform: 'uppercase' }}>
-                    Starting From
-                  </div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#F59E0B' }}>
-                    ₹{dest.price_inr ? dest.price_inr.toLocaleString('en-IN') : '9,999'}
-                  </div>
+                <div style={{ fontSize: '0.78rem', color: '#38BDF8', fontWeight: 600 }}>
+                  ⏱️ {dest.ideal_duration || 'Custom Duration'}
                 </div>
 
                 <button

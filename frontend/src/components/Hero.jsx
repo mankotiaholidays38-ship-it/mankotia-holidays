@@ -123,7 +123,7 @@ export default function Hero({ onOpenInquiry }) {
             margin: '0 auto 16px',
             lineHeight: 1.6
           }}>
-            <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay at unbeatable prices.
+            <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay with best custom quotes.
           </p>
 
           {/* Quick Popular Package Destinations */}

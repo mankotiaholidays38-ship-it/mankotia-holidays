@@ -8,7 +8,7 @@ POPULAR_DESTINATIONS = {
         "title": "Sacred Char Dham Yatra: Yamunotri, Gangotri, Kedarnath & Badrinath",
         "destination": "Char Dham (Uttarakhand)",
         "duration": "11 Days / 10 Nights",
-        "estimated_cost_inr": "₹34,999 - ₹52,000 per person",
+        "estimated_cost_inr": "Price On Request",
         "best_season": "May to June & September to November (Yatra Season)",
         "packing_essentials": [
             "Thermal innerwear & heavy fleece jackets",
@@ -143,7 +143,7 @@ POPULAR_DESTINATIONS = {
         "title": "Divine Do Dham Yatra: Kedarnath & Badrinath Express",
         "destination": "Kedarnath & Badrinath (Uttarakhand)",
         "duration": "6 Days / 5 Nights",
-        "estimated_cost_inr": "₹22,500 - ₹36,000 per person",
+        "estimated_cost_inr": "Price On Request",
         "best_season": "May to June & September to November",
         "packing_essentials": [
             "Heavy warm jacket & thermal sets",

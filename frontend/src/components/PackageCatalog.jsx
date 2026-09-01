@@ -77,7 +77,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
     setSelectedPackage(null);
     onOpenInquiry({
       destination: pkg.title,
-      notes: `Selected package: ${pkg.title} | Destination: ${pkg.destination} | Duration: ${pkg.duration} | Price: ₹${pkg.price_inr.toLocaleString('en-IN')}`
+      notes: `Selected package: ${pkg.title} | Destination: ${pkg.destination} | Duration: ${pkg.duration} | Requesting Custom Quote`
     });
   };
 
@@ -270,22 +270,7 @@ export default function PackageCatalog({ onOpenInquiry }) {
         </div>
 
         <div style={{ padding: '10px 14px 14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <div>
-              <span style={{ fontSize: '0.68rem', color: '#64748B', textDecoration: 'line-through', marginRight: '5px' }}>
-                ₹{pkg.original_price_inr.toLocaleString('en-IN')}
-              </span>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#F59E0B' }}>
-                  ₹{pkg.price_inr.toLocaleString('en-IN')}
-                </span>
-                <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>/person</span>
-              </div>
-            </div>
-            <span style={{ fontSize: '0.65rem', color: '#10B981', background: 'rgba(16, 185, 129, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
-              Save ₹{(pkg.original_price_inr - pkg.price_inr).toLocaleString('en-IN')}
-            </span>
-          </div>
+
 
           <div style={{ display: 'flex', gap: '6px' }}>
             <button
@@ -306,12 +291,12 @@ export default function PackageCatalog({ onOpenInquiry }) {
                 gap: '4px'
               }}
             >
-              <Eye size={12} /> Details
+              <Eye size={13} /> View Details
             </button>
             <button
               onClick={() => onOpenInquiry({
                 destination: pkg.title,
-                notes: `Interested in: ${pkg.title} (${pkg.duration}) at ₹${pkg.price_inr.toLocaleString('en-IN')}/person`
+                notes: `Interested in: ${pkg.title} (${pkg.duration}) - Requesting Custom Quote`
               })}
               style={{
                 flex: '1.4',
@@ -604,17 +589,13 @@ export default function PackageCatalog({ onOpenInquiry }) {
             </div>
 
             <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-              <div>
-                <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase' }}>All-Inclusive Price</div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#F59E0B' }}>
-                  ₹{selectedPackage.price_inr.toLocaleString('en-IN')}{' '}
-                  <span style={{ fontSize: '0.78rem', color: '#94A3B8', fontWeight: 400 }}>/ person</span>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#10B981', background: 'rgba(16, 185, 129, 0.1)', padding: '6px 12px', borderRadius: '20px', fontWeight: 600 }}>
+                <ShieldCheck size={14} /> Custom Quotes & Instant Support
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <a
-                  href={`https://wa.me/919816461616?text=${encodeURIComponent(`Hi Mankotia Holidays! I am interested in booking "${selectedPackage.title}" (${selectedPackage.duration}) priced at ₹${selectedPackage.price_inr}. Please share dates and details.`)}`}
+                  href={`https://wa.me/919816461616?text=${encodeURIComponent(`Hi Mankotia Holidays! I am interested in booking "${selectedPackage.title}" (${selectedPackage.duration}). Please share dates and best price quote.`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="btn btn-whatsapp btn-sm"
