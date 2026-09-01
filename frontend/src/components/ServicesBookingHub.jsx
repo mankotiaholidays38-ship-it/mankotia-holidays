@@ -676,18 +676,88 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
 
                     <div>
                       <label style={{ display: 'block', color: '#CBD5E1', fontSize: '0.82rem', fontWeight: 700, marginBottom: '6px' }}>
-                        Passengers Count
+                        Passengers Count *
                       </label>
-                      <select
-                        value={transitPassengers}
-                        onChange={(e) => setTransitPassengers(Number(e.target.value))}
-                        className="form-input"
-                        style={{ width: '100%', background: '#111A2E', borderColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF', padding: '10px 14px', borderRadius: '10px' }}
-                      >
-                        {[1, 2, 3, 4, 5, 6, 8, 10, 15, 20].map((num) => (
-                          <option key={num} value={num}>{num} {num === 1 ? 'Passenger' : 'Passengers'}</option>
-                        ))}
-                      </select>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <button
+                          type="button"
+                          onClick={() => setTransitPassengers(prev => Math.max(1, (Number(prev) || 1) - 1))}
+                          style={{
+                            width: '38px',
+                            height: '42px',
+                            borderRadius: '10px',
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            color: '#FFFFFF',
+                            fontWeight: 800,
+                            fontSize: '1.2rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            userSelect: 'none'
+                          }}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={transitPassengers}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '') {
+                              setTransitPassengers('');
+                            } else {
+                              const num = parseInt(val, 10);
+                              setTransitPassengers(isNaN(num) ? 1 : Math.max(1, num));
+                            }
+                          }}
+                          onBlur={() => {
+                            if (!transitPassengers || Number(transitPassengers) < 1) {
+                              setTransitPassengers(1);
+                            }
+                          }}
+                          placeholder="Type count (e.g. 7, 12, 25)"
+                          className="form-input"
+                          style={{
+                            width: '100%',
+                            textAlign: 'center',
+                            background: '#111A2E',
+                            borderColor: 'rgba(255,255,255,0.12)',
+                            color: '#FFFFFF',
+                            padding: '10px 10px',
+                            borderRadius: '10px',
+                            fontWeight: 700,
+                            fontSize: '0.95rem'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setTransitPassengers(prev => (Number(prev) || 0) + 1)}
+                          style={{
+                            width: '38px',
+                            height: '42px',
+                            borderRadius: '10px',
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            color: '#FFFFFF',
+                            fontWeight: 800,
+                            fontSize: '1.2rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            userSelect: 'none'
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <span style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '4px', display: 'block' }}>
+                        Type any passenger count manually or use +/-
+                      </span>
                     </div>
                   </div>
 
@@ -1182,31 +1252,173 @@ export default function ServicesBookingHub({ onOpenInquiry }) {
                   )}
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', color: '#CBD5E1', fontSize: '0.82rem', fontWeight: 700, marginBottom: '6px' }}>
-                    Nights & Rooms
-                  </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <select
-                      value={hotelNights}
-                      onChange={(e) => setHotelNights(Number(e.target.value))}
-                      className="form-input"
-                      style={{ background: '#111A2E', borderColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF', padding: '11px 8px', borderRadius: '10px' }}
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 10, 14].map((n) => (
-                        <option key={n} value={n}>{n} {n === 1 ? 'Night' : 'Nights'}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={hotelRooms}
-                      onChange={(e) => setHotelRooms(Number(e.target.value))}
-                      className="form-input"
-                      style={{ background: '#111A2E', borderColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF', padding: '11px 8px', borderRadius: '10px' }}
-                    >
-                      {[1, 2, 3, 4, 5, 8, 10].map((r) => (
-                        <option key={r} value={r}>{r} {r === 1 ? 'Room' : 'Rooms'}</option>
-                      ))}
-                    </select>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  {/* Nights Manual Field */}
+                  <div>
+                    <label style={{ display: 'block', color: '#CBD5E1', fontSize: '0.82rem', fontWeight: 700, marginBottom: '6px' }}>
+                      Nights Count *
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <button
+                        type="button"
+                        onClick={() => setHotelNights(prev => Math.max(1, (Number(prev) || 1) - 1))}
+                        style={{
+                          width: '34px',
+                          height: '42px',
+                          borderRadius: '8px',
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          color: '#FFFFFF',
+                          fontWeight: 800,
+                          fontSize: '1.1rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          userSelect: 'none'
+                        }}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={hotelNights}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '') {
+                            setHotelNights('');
+                          } else {
+                            const num = parseInt(val, 10);
+                            setHotelNights(isNaN(num) ? 1 : Math.max(1, num));
+                          }
+                        }}
+                        onBlur={() => {
+                          if (!hotelNights || Number(hotelNights) < 1) {
+                            setHotelNights(1);
+                          }
+                        }}
+                        placeholder="Nights"
+                        className="form-input"
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          background: '#111A2E',
+                          borderColor: 'rgba(255,255,255,0.12)',
+                          color: '#FFFFFF',
+                          padding: '10px 6px',
+                          borderRadius: '8px',
+                          fontWeight: 700,
+                          fontSize: '0.9rem'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setHotelNights(prev => (Number(prev) || 0) + 1)}
+                        style={{
+                          width: '34px',
+                          height: '42px',
+                          borderRadius: '8px',
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          color: '#FFFFFF',
+                          fontWeight: 800,
+                          fontSize: '1.1rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          userSelect: 'none'
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Rooms Manual Field */}
+                  <div>
+                    <label style={{ display: 'block', color: '#CBD5E1', fontSize: '0.82rem', fontWeight: 700, marginBottom: '6px' }}>
+                      Rooms Count *
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <button
+                        type="button"
+                        onClick={() => setHotelRooms(prev => Math.max(1, (Number(prev) || 1) - 1))}
+                        style={{
+                          width: '34px',
+                          height: '42px',
+                          borderRadius: '8px',
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          color: '#FFFFFF',
+                          fontWeight: 800,
+                          fontSize: '1.1rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          userSelect: 'none'
+                        }}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={hotelRooms}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '') {
+                            setHotelRooms('');
+                          } else {
+                            const num = parseInt(val, 10);
+                            setHotelRooms(isNaN(num) ? 1 : Math.max(1, num));
+                          }
+                        }}
+                        onBlur={() => {
+                          if (!hotelRooms || Number(hotelRooms) < 1) {
+                            setHotelRooms(1);
+                          }
+                        }}
+                        placeholder="Rooms"
+                        className="form-input"
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          background: '#111A2E',
+                          borderColor: 'rgba(255,255,255,0.12)',
+                          color: '#FFFFFF',
+                          padding: '10px 6px',
+                          borderRadius: '8px',
+                          fontWeight: 700,
+                          fontSize: '0.9rem'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setHotelRooms(prev => (Number(prev) || 0) + 1)}
+                        style={{
+                          width: '34px',
+                          height: '42px',
+                          borderRadius: '8px',
+                          background: 'rgba(255, 255, 255, 0.08)',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          color: '#FFFFFF',
+                          fontWeight: 800,
+                          fontSize: '1.1rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          userSelect: 'none'
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
 

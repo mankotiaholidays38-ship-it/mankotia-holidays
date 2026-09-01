@@ -17,7 +17,7 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id) => {
+  const scrollTo = (id, category = null) => {
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
     setPackagesMenuOpen(false);
@@ -28,6 +28,10 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      if (category) {
+        const event = new CustomEvent('selectPackageCategory', { detail: category });
+        window.dispatchEvent(event);
+      }
     }
   };
 
@@ -246,22 +250,40 @@ export default function Navbar({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
               📦 Explore All Tour Packages
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'All'); }} style={{ color: '#FDE68A', fontWeight: 800, fontSize: '0.88rem', padding: '7px 10px', background: 'rgba(245, 158, 11, 0.2)', borderRadius: '6px', textDecoration: 'none', border: '1px solid rgba(245, 158, 11, 0.4)', gridColumn: 'span 2', textAlign: 'center' }}>
+                🌟 All Packages
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Delhi'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🏛️ Delhi Specials
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Agra'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🕌 Agra & Taj
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Jaipur'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                👑 Jaipur
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Mathura Vrindavan'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                🦚 Mathura Vrindavan
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Golden Triangle'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+                ✨ Golden Triangle
+              </a>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Pilgrimage'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🕉️ Char Dham
               </a>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Uttarakhand'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🏔️ Uttarakhand
               </a>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Himachal'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🌲 Himachal
               </a>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Kashmir'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🌸 Kashmir
               </a>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Rajasthan'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
                 🏰 Rajasthan
               </a>
-              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages'); }} style={{ color: '#F1F5F9', fontSize: '0.88rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none' }}>
+              <a href="#packages" onClick={(e) => { e.preventDefault(); scrollTo('packages', 'Goa & Kerala'); }} style={{ color: '#F1F5F9', fontSize: '0.84rem', padding: '6px 8px', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '6px', textDecoration: 'none', gridColumn: 'span 2', textAlign: 'center' }}>
                 🏖️ Goa & Kerala
               </a>
             </div>

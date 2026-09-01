@@ -597,3 +597,94 @@ select.form-control option, select.form-input option {
 .package-slider-track::-webkit-scrollbar {
   display: none;
 }
+
+/* Complete Mobile & Cross-Device Responsiveness Enhancements */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  
+  /* Inputs prevent iOS auto-zoom on focus */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Modals on Mobile Devices */
+  .modal-backdrop {
+    padding: 8px !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-content {
+    max-height: 92vh !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding: 18px 14px !important;
+    width: 100% !important;
+  }
+
+  /* Glass cards on mobile */
+  .glass-card, .glass-panel {
+    border-radius: 14px !important;
+  }
+
+  /* Touch targets & buttons minimum height */
+  .btn {
+    min-height: 42px;
+    padding: 8px 14px !important;
+  }
+
+  /* Floating action buttons positioning */
+  .floating-whatsapp {
+    bottom: 16px !important;
+    left: 12px !important;
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 22px !important;
+    z-index: 999 !important;
+  }
+
+  .floating-concierge-btn {
+    bottom: 16px !important;
+    right: 12px !important;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+    z-index: 999 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-padding {
+    padding: 20px 0 !important;
+  }
+
+  .container, .section-container {
+    padding: 0 10px !important;
+  }
+
+  h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+  }
+
+  p {
+    font-size: 0.84rem !important;
+  }
+
+  /* Package slider card sizing for small phones */
+  .package-slider-card {
+    flex: 0 0 88vw !important;
+    min-width: 88vw !important;
+  }
+}
+

@@ -125,6 +125,67 @@ export default function Hero({ onOpenInquiry }) {
           }}>
             <strong>Mankotia Holidays</strong>, being a leading travel platform in India, hosts the <strong>largest network of hotels, luxury cottages & verified reviews</strong> to help you choose the perfect stay at unbeatable prices.
           </p>
+
+          {/* Quick Popular Package Destinations */}
+          <div style={{ margin: '18px 0 6px', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.78rem', color: '#F59E0B', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>
+              ⚡ Trending Domestic Packages & Destinations
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px', maxWidth: '920px', margin: '0 auto' }}>
+              {[
+                { label: '👑 Jaipur Pink City', target: 'Jaipur' },
+                { label: '🦚 Mathura & Vrindavan', target: 'Mathura Vrindavan' },
+                { label: '🏛️ Delhi Specials', target: 'Delhi' },
+                { label: '🕌 Agra & Taj Mahal', target: 'Agra' },
+                { label: '✨ Golden Triangle', target: 'Golden Triangle' },
+                { label: '🕉️ Char Dham & Pilgrimage', target: 'Pilgrimage' },
+                { label: '🌲 Himachal & Manali', target: 'Himachal' },
+                { label: '🏔️ Uttarakhand', target: 'Uttarakhand' },
+                { label: '🌸 Kashmir Paradise', target: 'Kashmir' },
+                { label: '🏰 Royal Rajasthan', target: 'Rajasthan' },
+                { label: '🏖️ Goa & Kerala', target: 'Goa & Kerala' }
+              ].map(dest => (
+                <a
+                  key={dest.target}
+                  href="#packages"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const catalogElement = document.getElementById('packages');
+                    if (catalogElement) {
+                      catalogElement.scrollIntoView({ behavior: 'smooth' });
+                      const event = new CustomEvent('selectPackageCategory', { detail: dest.target });
+                      window.dispatchEvent(event);
+                    }
+                  }}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
+                    color: '#F8FAFC',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(8px)',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(245, 158, 11, 0.25)';
+                    e.currentTarget.style.borderColor = '#F59E0B';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.transform = 'none';
+                  }}
+                >
+                  {dest.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Dynamic Interactive Tour Carousel Card */}

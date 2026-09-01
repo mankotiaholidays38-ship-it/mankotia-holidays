@@ -8,6 +8,16 @@ export default function PackageCatalog({ onOpenInquiry }) {
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [expandedItineraries, setExpandedItineraries] = useState({});
 
+  React.useEffect(() => {
+    const handleCategorySelect = (e) => {
+      if (e.detail) {
+        setActiveCategory(e.detail);
+      }
+    };
+    window.addEventListener('selectPackageCategory', handleCategorySelect);
+    return () => window.removeEventListener('selectPackageCategory', handleCategorySelect);
+  }, []);
+
   const categories = [
     { id: 'All', label: 'All Packages', icon: '🌟', color: '#F59E0B' },
     { id: 'Delhi', label: 'Delhi Specials', icon: '🏛️', color: '#38BDF8' },
@@ -26,14 +36,19 @@ export default function PackageCatalog({ onOpenInquiry }) {
   const getCategoryPackages = (catId) => {
     return PACKAGES.filter(p => {
       if (catId === 'All') return true;
-      if (catId === 'Delhi') return p.category === 'Delhi' || p.id.startsWith('pkg-delhi-');
-      if (catId === 'Agra') return p.category === 'Agra' || p.id.startsWith('pkg-agra-');
-      if (catId === 'Jaipur') return p.category === 'Jaipur' || p.id.startsWith('pkg-jaipur-');
-      if (catId === 'Mathura Vrindavan') return p.category === 'Mathura & Vrindavan' || p.id.startsWith('pkg-mathura-');
-      if (catId === 'Golden Triangle') return p.category === 'Golden Triangle' || p.id.startsWith('pkg-golden-triangle-');
+      const titleLower = (p.title || '').toLowerCase();
+      const destLower = (p.destination || '').toLowerCase();
+      const catLower = (p.category || '').toLowerCase();
+
+      if (catId === 'Delhi') return catLower.includes('delhi') || p.id.startsWith('pkg-delhi-') || titleLower.includes('delhi') || destLower.includes('delhi');
+      if (catId === 'Agra') return catLower.includes('agra') || p.id.startsWith('pkg-agra-') || titleLower.includes('agra') || destLower.includes('agra');
+      if (catId === 'Jaipur') return catLower.includes('jaipur') || p.id.startsWith('pkg-jaipur-') || titleLower.includes('jaipur') || destLower.includes('jaipur');
+      if (catId === 'Mathura Vrindavan') return catLower.includes('mathura') || catLower.includes('vrindavan') || p.id.startsWith('pkg-mathura-') || titleLower.includes('mathura') || titleLower.includes('vrindavan') || destLower.includes('mathura') || destLower.includes('vrindavan');
+      if (catId === 'Golden Triangle') return catLower.includes('golden triangle') || p.id.startsWith('pkg-golden-triangle-') || titleLower.includes('golden triangle') || destLower.includes('golden triangle');
       if (catId === 'Pilgrimage') return (
-        p.category === 'Pilgrimage' || 
-        p.category === 'Sacred Pilgrimages' || 
+        catLower.includes('pilgrimage') || 
+        catLower.includes('chardham') || 
+        catLower.includes('sacred') || 
         p.id.startsWith('pkg-chardham-') || 
         p.id.startsWith('pkg-dodham-') || 
         p.id.startsWith('pkg-kedarnath-') || 
@@ -42,11 +57,11 @@ export default function PackageCatalog({ onOpenInquiry }) {
         p.id.startsWith('pkg-panch-kedar-') || 
         p.id.startsWith('pkg-vaishnodevi-')
       );
-      if (catId === 'Uttarakhand') return p.category === 'Uttarakhand' || p.id.startsWith('pkg-uttarakhand-') || p.id.startsWith('pkg-auli-') || p.id.startsWith('pkg-jim-corbett-') || p.id.startsWith('pkg-mussoorie-') || p.id.startsWith('pkg-kumaon-') || p.id.startsWith('pkg-nainital-') || p.id.startsWith('pkg-rishikesh-');
-      if (catId === 'Himachal') return p.category === 'Himachal' || p.id.startsWith('pkg-shimla-') || p.id.startsWith('pkg-manali-') || p.id.startsWith('pkg-spiti-') || p.id.startsWith('pkg-kasol-') || p.id.startsWith('pkg-bir-') || p.id.startsWith('pkg-dharamshala-');
-      if (catId === 'Kashmir') return p.category === 'Kashmir' || p.id.startsWith('pkg-kashmir-') || p.id.startsWith('pkg-sonamarg-') || p.id.startsWith('pkg-doodhpathri-') || p.id.startsWith('pkg-gulmarg-');
-      if (catId === 'Rajasthan') return p.category === 'Rajasthan' || p.category === 'Jaipur' || p.id.startsWith('pkg-jaipur-') || p.id.startsWith('pkg-rajasthan-') || p.id.startsWith('pkg-jaisalmer-') || p.id.startsWith('pkg-udaipur-') || p.id.startsWith('pkg-pushkar-') || p.id.startsWith('pkg-bikaner-');
-      if (catId === 'Goa & Kerala') return p.category === 'Goa & Kerala' || p.id.startsWith('pkg-goa-') || p.id.startsWith('pkg-kerala-') || p.id.startsWith('pkg-south-goa-') || p.id.startsWith('pkg-wayanad-') || p.id.startsWith('pkg-munnar-');
+      if (catId === 'Uttarakhand') return catLower.includes('uttarakhand') || p.id.startsWith('pkg-uttarakhand-') || p.id.startsWith('pkg-auli-') || p.id.startsWith('pkg-jim-corbett-') || p.id.startsWith('pkg-mussoorie-') || p.id.startsWith('pkg-kumaon-') || p.id.startsWith('pkg-nainital-') || p.id.startsWith('pkg-rishikesh-');
+      if (catId === 'Himachal') return catLower.includes('himachal') || p.id.startsWith('pkg-shimla-') || p.id.startsWith('pkg-manali-') || p.id.startsWith('pkg-spiti-') || p.id.startsWith('pkg-kasol-') || p.id.startsWith('pkg-bir-') || p.id.startsWith('pkg-dharamshala-');
+      if (catId === 'Kashmir') return catLower.includes('kashmir') || p.id.startsWith('pkg-kashmir-') || p.id.startsWith('pkg-sonamarg-') || p.id.startsWith('pkg-doodhpathri-') || p.id.startsWith('pkg-gulmarg-');
+      if (catId === 'Rajasthan') return catLower.includes('rajasthan') || catLower.includes('jaipur') || p.id.startsWith('pkg-jaipur-') || p.id.startsWith('pkg-rajasthan-') || p.id.startsWith('pkg-jaisalmer-') || p.id.startsWith('pkg-udaipur-') || p.id.startsWith('pkg-pushkar-') || p.id.startsWith('pkg-bikaner-');
+      if (catId === 'Goa & Kerala') return catLower.includes('goa') || catLower.includes('kerala') || p.id.startsWith('pkg-goa-') || p.id.startsWith('pkg-kerala-') || p.id.startsWith('pkg-south-goa-') || p.id.startsWith('pkg-wayanad-') || p.id.startsWith('pkg-munnar-');
       return p.category === catId;
     });
   };
@@ -455,14 +470,31 @@ export default function PackageCatalog({ onOpenInquiry }) {
           </div>
         )}
 
-        {/* Direct Responsive Package Cards Grid */}
-        {displayedPackages.length > 0 ? (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '20px'
-          }}>
-            {displayedPackages.map((pkg) => renderCard(pkg, true))}
+        {/* Package Sliders by Destination & Category (SLIDERS ONLY) */}
+        {activeCategory === 'All' && !searchQuery ? (
+          <div>
+            {categories.filter(c => c.id !== 'All').map((catObj) => {
+              const catPackages = getCategoryPackages(catObj.id);
+              if (!catPackages || catPackages.length === 0) return null;
+              return (
+                <DestinationPackageSlider
+                  key={catObj.id}
+                  categoryObj={catObj}
+                  packages={catPackages}
+                  renderCard={renderCard}
+                  onSelectCategory={(id) => setActiveCategory(id)}
+                />
+              );
+            })}
+          </div>
+        ) : displayedPackages.length > 0 ? (
+          <div>
+            <DestinationPackageSlider
+              categoryObj={categories.find(c => c.id === activeCategory) || { id: activeCategory, label: activeCategory, icon: '🌟' }}
+              packages={displayedPackages}
+              renderCard={renderCard}
+              onSelectCategory={null}
+            />
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '48px 20px', background: 'rgba(17, 26, 46, 0.4)', borderRadius: '16px', maxWidth: '500px', margin: '20px auto' }}>
@@ -604,5 +636,281 @@ export default function PackageCatalog({ onOpenInquiry }) {
       )}
 
     </section>
+  );
+}
+
+function DestinationPackageSlider({ 
+  categoryObj, 
+  packages, 
+  renderCard, 
+  onSelectCategory 
+}) {
+  const scrollRef = React.useRef(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [isPaused, setIsPaused] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(true);
+
+  // Auto-slide every 5 seconds (5000 ms)
+  React.useEffect(() => {
+    if (isPaused || !packages || packages.length <= 1) return undefined;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % packages.length;
+        if (scrollRef.current) {
+          const cardWidth = scrollRef.current.firstElementChild?.offsetWidth || 330;
+          const gap = 18;
+          scrollRef.current.scrollTo({
+            left: nextIndex * (cardWidth + gap),
+            behavior: 'smooth'
+          });
+        }
+        return nextIndex;
+      });
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [isPaused, packages]);
+
+  const handleManualScroll = (direction) => {
+    setIsPaused(true);
+    let nextIndex = currentIndex;
+    if (direction === 'next') {
+      nextIndex = (currentIndex + 1) % packages.length;
+    } else {
+      nextIndex = (currentIndex - 1 + packages.length) % packages.length;
+    }
+    setCurrentIndex(nextIndex);
+
+    if (scrollRef.current) {
+      const cardWidth = scrollRef.current.firstElementChild?.offsetWidth || 330;
+      const gap = 18;
+      scrollRef.current.scrollTo({
+        left: nextIndex * (cardWidth + gap),
+        behavior: 'smooth'
+      });
+    }
+
+    setTimeout(() => setIsPaused(false), 8000);
+  };
+
+  const handleScrollEvent = () => {
+    if (scrollRef.current) {
+      const cardWidth = scrollRef.current.firstElementChild?.offsetWidth || 330;
+      const gap = 18;
+      const index = Math.round(scrollRef.current.scrollLeft / (cardWidth + gap));
+      if (index !== currentIndex && index >= 0 && index < packages.length) {
+        setCurrentIndex(index);
+      }
+    }
+  };
+
+  if (!packages || packages.length === 0) return null;
+
+  return (
+    <div 
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      style={{
+        position: 'relative',
+        marginBottom: '32px',
+        background: 'linear-gradient(180deg, rgba(17, 26, 46, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '20px',
+        padding: '22px 18px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
+      }}
+    >
+      {/* Header with Title, Badge, View All & Navigation Arrows */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        marginBottom: '16px',
+        paddingBottom: '12px',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '12px',
+            background: 'rgba(245, 158, 11, 0.15)',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.3rem'
+          }}>
+            {categoryObj.icon}
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF', margin: 0, letterSpacing: '-0.2px' }}>
+              {categoryObj.label} Packages
+            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '3px' }}>
+              <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+                {packages.length} Handcrafted Tours
+              </span>
+              <span style={{ fontSize: '0.7rem', background: 'rgba(245, 158, 11, 0.15)', color: '#FCD34D', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
+                ⚡ Auto-slides every 5s
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {onSelectCategory && (
+            <button
+              onClick={() => onSelectCategory(categoryObj.id)}
+              style={{
+                background: 'rgba(245, 158, 11, 0.12)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                color: '#FCD34D',
+                borderRadius: '20px',
+                padding: '5px 12px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              Filter {categoryObj.label} <ChevronRight size={13} />
+            </button>
+          )}
+
+          {/* Expand / Collapse Toggle Button */}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.14)',
+              color: '#CBD5E1',
+              borderRadius: '20px',
+              padding: '5px 12px',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            aria-label={isExpanded ? "Collapse destination packages" : "Expand destination packages"}
+          >
+            {isExpanded ? <span>Hide</span> : <span>Show Packages</span>}
+            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+
+          {/* Slider Prev / Next Manual Arrows */}
+          {isExpanded && (
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button
+                onClick={() => handleManualScroll('prev')}
+                aria-label="Previous Package"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#F59E0B'; e.currentTarget.style.color = '#0B1120'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.color = '#FFFFFF'; }}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={() => handleManualScroll('next')}
+                aria-label="Next Package"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#F59E0B'; e.currentTarget.style.color = '#0B1120'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.color = '#FFFFFF'; }}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Horizontally Scrollable Cards Slider (Collapsible) */}
+      {isExpanded && (
+        <>
+          <div 
+            ref={scrollRef}
+            onScroll={handleScrollEvent}
+            style={{
+              display: 'flex',
+              gap: '18px',
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              paddingBottom: '12px',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(245, 158, 11, 0.4) transparent'
+            }}
+          >
+            {packages.map((pkg) => (
+              <div key={pkg.id} style={{ scrollSnapAlign: 'start', flex: '0 0 min(330px, 82vw)', minWidth: 'min(330px, 82vw)' }}>
+                {renderCard(pkg, false)}
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination Dot Indicators */}
+          {packages.length > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginTop: '12px' }}>
+              {packages.map((pkg, idx) => (
+                <button
+                  key={pkg.id}
+                  onClick={() => {
+                    setIsPaused(true);
+                    setCurrentIndex(idx);
+                    if (scrollRef.current) {
+                      const cardWidth = scrollRef.current.firstElementChild?.offsetWidth || 330;
+                      const gap = 18;
+                      scrollRef.current.scrollTo({ left: idx * (cardWidth + gap), behavior: 'smooth' });
+                    }
+                  }}
+                  style={{
+                    width: idx === currentIndex ? '24px' : '8px',
+                    height: '8px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: idx === currentIndex ? '#F59E0B' : 'rgba(255, 255, 255, 0.25)',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease'
+                  }}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 }
