@@ -32,6 +32,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [sameAsPickup, setSameAsPickup] = useState(true);
 
   const [loading, setLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
   const [itinerary, setItinerary] = useState(null);
   const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
   const [expandedDay, setExpandedDay] = useState(1);
@@ -166,11 +168,13 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
     if (e) e.preventDefault();
     setLoading(true);
     setItinerary(null);
+    setIsStreaming(true);
+    setStreamingText("");
 
     const resolvedDrop = sameAsPickup ? pickupLocation : (dropLocation || pickupLocation);
 
     try {
-      const res = await fetch('/api/generate-itinerary', {
+      const res = await fetch('/api/generate-itinerary-stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -184,22 +188,52 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           drop_location: resolvedDrop
         })
       });
-
-      const data = await res.json();
-      if (data.success && data.itinerary) {
-        setItinerary(data.itinerary);
-        setExpandedDay(1);
-        confetti({
-          particleCount: 70,
-          spread: 50,
-          origin: { y: 0.7 }
-        });
+      
+      if (!res.ok) {
+        throw new Error('Streaming failed');
       }
-    } catch (err) {
-      console.error(err);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+      let accumulatedText = "";
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          accumulatedText += chunk;
+          setStreamingText(accumulatedText);
+        }
+      }
+
+      try {
+          let cleanText = accumulatedText.trim();
+          if (cleanText.startsWith("```json")) cleanText = cleanText.substring(7);
+          else if (cleanText.startsWith("```")) cleanText = cleanText.substring(3);
+          if (cleanText.endsWith("```")) cleanText = cleanText.substring(0, cleanText.length - 3);
+
+          const data = JSON.parse(cleanText.trim());
+          if (data) {
+            setItinerary(data);
+            setExpandedDay(1);
+            confetti({
+              particleCount: 70,
+              spread: 50,
+              origin: { y: 0.7 }
+            });
+          }
+      } catch (parseErr) {
+          console.error("JSON Parse Error:", parseErr);
+          alert("Generated itinerary format was invalid. Please try again.");
+      }
+    } catch (e) {
+      console.error(e);
       alert('Error generating itinerary. Please try again or message our team directly.');
     } finally {
       setLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -292,8 +326,6 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                       setDestination(preset.fullName);
                       setDays(preset.days);
                       setTravelStyle(preset.style);
-                      if (preset.pickup) setPickupLocation(preset.pickup);
-                      if (preset.drop) setDropLocation(preset.drop);
                     }}
                     style={{
                       padding: '6px 14px',
@@ -501,15 +533,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
             {/* Submit Button */}
             <div style={{ textAlign: 'center' }}>
-              <button 
-                type="submit" 
-                className="btn btn-primary-gold btn-lg"
-                disabled={loading}
-                style={{ minWidth: '280px' }}
-              >
-                {loading ? (
-                  <span>Generating AI Itinerary with Maps...</span>
-                ) : (
+                   <button type="submit" className="btn btn-primary-gold btn-lg" disabled={loading || isStreaming} style={{ minWidth: '280px' }}>
+                {(loading || isStreaming) ? <span>Generating AI Itinerary with Maps...</span> : (
                   <>
                     <Sparkles size={18} />
                     <span>Generate Custom Itinerary</span>
@@ -518,8 +543,38 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
               </button>
             </div>
           </form>
-
         </div>
+
+        {isStreaming && !itinerary && (
+        <div className="glass-panel" style={{ maxWidth: '1050px', margin: '0 auto', padding: '36px', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '16px', background: '#0B1120', animation: 'fadeIn 0.3s ease-out' }}>
+            <h3 style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', fontSize: '1.2rem' }}>
+                <Sparkles className="spin-animation" size={20} /> AI is crafting your itinerary in real-time...
+            </h3>
+            <pre style={{ 
+                background: '#111827', 
+                color: '#34D399', 
+                padding: '20px', 
+                borderRadius: '8px', 
+                overflowX: 'auto', 
+                whiteSpace: 'pre-wrap', 
+                wordWrap: 'break-word',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                border: '1px solid #1F2937',
+                maxHeight: '400px',
+                overflowY: 'auto'
+            }}>
+                {streamingText || "Connecting to AI server..."}
+                <span className="blink-cursor">_</span>
+            </pre>
+            <style jsx>{`
+                .spin-animation { animation: spin 2s linear infinite; }
+                .blink-cursor { animation: blink 1s step-end infinite; font-weight: bold; }
+                @keyframes blink { 50% { opacity: 0; } }
+                @keyframes spin { 100% { transform: rotate(360deg); } }
+            `}</style>
+        </div>
+      )}
 
         {/* AI Itinerary Results Output */}
         {itinerary && (
@@ -680,6 +735,34 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                   ))}
                 </ul>
               </div>
+
+              {/* Covered Places */}
+              {itinerary.covered_places && itinerary.covered_places.length > 0 && (
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  padding: '20px',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--border-light)'
+                }}>
+                  <h4 style={{ fontSize: '0.95rem', color: '#10B981', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    📍 Covered Places:
+                  </h4>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {itinerary.covered_places.map((place, i) => (
+                      <span key={i} style={{ 
+                        background: 'rgba(16, 185, 129, 0.1)', 
+                        color: '#34D399', 
+                        padding: '4px 10px', 
+                        borderRadius: '4px', 
+                        fontSize: '0.8rem',
+                        border: '1px solid rgba(16, 185, 129, 0.2)'
+                      }}>
+                        {place}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Packing Essentials */}
               <div style={{

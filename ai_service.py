@@ -6,8 +6,9 @@ import requests
 from typing import Optional, Dict
 from dotenv import load_dotenv
 
-from data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP
+from data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
 from itinerary_templates import POPULAR_DESTINATIONS
+from langchain_service import generate_langchain_itinerary, generate_langchain_itinerary_stream
 
 load_dotenv()
 
@@ -162,21 +163,41 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
     dest_key = (destination or "").lower().strip()
     
-    if GEMINI_API_KEY and GEMINI_API_KEY.startswith("AIza"):
+    if GEMINI_API_KEY:
         try:
-            from google import genai
-            client = genai.Client(api_key=GEMINI_API_KEY)
-            prompt = f"Create a JSON travel itinerary for {destination} ({days} days, {budget} budget, style: {travel_style}, travelers: {travelers}). Pickup: {transit_info['pickup_location']}, Drop: {transit_info['drop_location']}."
-            response = client.models.generate_content(model='gemini-3.6-flash', contents=prompt)
-            raw_text = response.text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-            data = json.loads(raw_text)
+            # Build agency context from predefined packages
+            agency_context = ""
+            matched_packages = []
+            for p in PACKAGES:
+                search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
+                if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
+                    matched_packages.append(p)
+                    
+            if matched_packages:
+                agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
+                for p in matched_packages[:2]:
+                    agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
+                    
+            data = generate_langchain_itinerary(
+                api_key=GEMINI_API_KEY,
+                destination=destination,
+                days=days,
+                budget=budget,
+                travel_style=travel_style,
+                travelers=travelers,
+                special_requests=special_requests,
+                pickup_location=transit_info['pickup_location'],
+                drop_location=transit_info['drop_location'],
+                waypoints=transit_info['waypoints'],
+                agency_context=agency_context
+            )
             data["pickup_location"] = transit_info["pickup_location"]
             data["drop_location"] = transit_info["drop_location"]
             data["google_maps_route_url"] = transit_info["google_maps_route_url"]
             data["route_summary"] = transit_info["route_summary"]
             return data
         except Exception as e:
-            print(f"Gemini API itinerary call failed: {e}")
+            print(f"LangChain API itinerary call failed: {e}")
 
     # Fallback preset template matching
     match_key = None
@@ -184,6 +205,8 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
         match_key = "chardham"
     elif any(k in dest_key for k in ["do dham", "dodham", "kedar badri"]):
         match_key = "dodham"
+    elif any(k in dest_key for k in ["shimla", "manali", "kullu", "chandigarh", "himachal"]):
+        match_key = "shimla_manali"
 
     if match_key and match_key in POPULAR_DESTINATIONS:
         data_copy = json.loads(json.dumps(POPULAR_DESTINATIONS[match_key]))
@@ -213,10 +236,12 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             evening = f"Chauffeur drops you off at {transit_info['drop_location']}."
             stay = f"Drop at {transit_info['drop_location']} / Onward Journey"
         else:
-            theme = f"Landmark Exploration & Sightseeing in {dest_name}"
-            morning = f"Start Day {i} with a delightful breakfast. Explore top viewpoints of {dest_name}."
-            afternoon = f"Enjoy lunch at a renowned local restaurant. Explore cultural heritage spots."
-            evening = f"Witness a breathtaking sunset at premier viewpoint."
+            activities = ["Cultural Heritage Tour", "Nature Walk & Viewpoints", "Local Markets & Shopping", "Temple & Monuments Visit", "Adventure & Leisure Day"]
+            activity = activities[(i - 2) % len(activities)]
+            theme = f"Day {i}: {activity} in {dest_name}"
+            morning = f"Start Day {i} with a delightful breakfast. Explore popular local spots for {activity.lower()}."
+            afternoon = f"Enjoy lunch at a renowned local restaurant. Continue sightseeing around {dest_name}."
+            evening = f"Witness a breathtaking sunset at a premier viewpoint or relax at the hotel."
             stay = f"Deluxe 4-Star Resort in {dest_name}"
 
         generated_days.append({
@@ -261,12 +286,12 @@ CONCIERGE_TOPICS = [
 
 
 def chat_travel_concierge(message: str, history: Optional[list] = None) -> str:
-    if GEMINI_API_KEY and GEMINI_API_KEY.startswith("AIza"):
+    if GEMINI_API_KEY:
         try:
             from google import genai
             client = genai.Client(api_key=GEMINI_API_KEY)
             prompt = f"System: You are 'Aria', AI Travel Concierge for {AGENCY_NAME} (+{AGENCY_WHATSAPP}, {AGENCY_PHONE}). Be polite and helpful.\nUser Query: {message}"
-            response = client.models.generate_content(model='gemini-3.6-flash', contents=prompt)
+            response = client.models.generate_content(model='gemini-1.5-flash', contents=prompt)
             return response.text.strip()
         except Exception:
             pass

@@ -221,5 +221,78 @@ POPULAR_DESTINATIONS = {
                 "pro_tip": "Collect holy Gangajal water before your onward trip."
             }
         ]
+    },
+    "shimla_manali": {
+        "title": "Enchanting Himachal: Shimla, Kullu & Manali Tour",
+        "destination": "Shimla, Kullu & Manali",
+        "duration": "5 Days / 4 Nights",
+        "estimated_cost_inr": "Price On Request",
+        "best_season": "March to June (Summer) & October to February (Winter/Snow)",
+        "packing_essentials": [
+            "Warm jackets, thermals, and woolen caps",
+            "Comfortable trekking or walking shoes",
+            "Motion sickness medication (winding mountain roads)",
+            "Sunglasses and sunscreen (high altitude sun)",
+            "Camera and power banks"
+        ],
+        "highlights": [
+            "Explore the colonial charm of The Ridge & Mall Road in Shimla",
+            "Visit Kufri for scenic Himalayan views and adventure activities",
+            "Drive through the picturesque Kullu Valley and visit shawl factories",
+            "Experience Solang Valley's thrilling adventure sports and snow",
+            "Sightseeing at Hadimba Devi Temple and Vashisht Hot Springs"
+        ],
+        "days": [
+            {
+                "day_number": 1,
+                "theme": "Arrival in Chandigarh & Scenic Drive to Shimla",
+                "morning": "Pickup from Chandigarh Airport/Railway Station. Begin your beautiful drive towards the hills of Shimla.",
+                "afternoon": "En-route lunch. Arrive in Shimla, the Queen of Hills, and check into your hotel.",
+                "evening": "Stroll down the famous Mall Road, visit The Ridge, and enjoy the crisp mountain air.",
+                "meal_recommendation": "Try some local Himachali Siddu or hot momos on Mall Road.",
+                "stay_suggestion": "Deluxe Hotel in Shimla",
+                "pro_tip": "Keep a jacket handy as temperatures drop in the evening."
+            },
+            {
+                "day_number": 2,
+                "theme": "Shimla Local Sightseeing & Kufri Excursion",
+                "morning": "Post breakfast, head for a half-day excursion to Kufri, known for its panoramic views and nature parks.",
+                "afternoon": "Return to Shimla. Visit the Jakhu Temple (dedicated to Lord Hanuman) and the historic Indian Institute of Advanced Studies.",
+                "evening": "Free time for shopping at Lakkar Bazaar (famous for wooden crafts).",
+                "meal_recommendation": "Hearty North Indian dinner at a popular Mall Road restaurant.",
+                "stay_suggestion": "Same Hotel in Shimla",
+                "pro_tip": "Beware of monkeys at Jakhu Temple; keep your sunglasses and phones secure."
+            },
+            {
+                "day_number": 3,
+                "theme": "Shimla to Manali via Scenic Kullu Valley",
+                "morning": "Check out early and begin the long, picturesque drive to Manali (7-8 hours).",
+                "afternoon": "En-route, stop in Kullu Valley. Visit a traditional Kullu Shawl factory and the Vaishno Devi Temple. Enjoy riverside views of the Beas River.",
+                "evening": "Arrive in Manali by evening. Check into your hotel and relax after the long journey.",
+                "meal_recommendation": "Warm Himachali Dham or traditional Indian dinner.",
+                "stay_suggestion": "Riverside Resort/Hotel in Manali",
+                "pro_tip": "The drive is winding; if prone to motion sickness, take medication beforehand."
+            },
+            {
+                "day_number": 4,
+                "theme": "Adventure in Solang Valley & Atal Tunnel",
+                "morning": "Head to Solang Valley for a day of adventure. Enjoy paragliding, zorbing, or a ropeway ride.",
+                "afternoon": "Depending on weather and road conditions, take a drive through the engineering marvel, Atal Tunnel, towards Sissu in Lahaul Valley.",
+                "evening": "Return to Manali. Spend a cozy evening at cafes in Old Manali.",
+                "meal_recommendation": "Trout fish or wood-fired pizza in Old Manali cafes.",
+                "stay_suggestion": "Same Hotel in Manali",
+                "pro_tip": "Start early to avoid traffic jams on the way to Solang Valley."
+            },
+            {
+                "day_number": 5,
+                "theme": "Manali Local Sightseeing & Departure to Chandigarh",
+                "morning": "Visit the ancient Hadimba Devi Temple (surrounded by cedar forests) and the Vashisht Village known for its hot sulfur springs.",
+                "afternoon": "Explore the Tibetan Monastery and pick up souvenirs. After lunch, begin your return journey towards Chandigarh.",
+                "evening": "Drop-off at Chandigarh Airport/Railway Station for your onward journey with wonderful memories.",
+                "meal_recommendation": "Comfort food during the drive back to the plains.",
+                "stay_suggestion": "Drop at Destination / Onward Journey",
+                "pro_tip": "Start the drive down by early afternoon as the journey to Chandigarh takes around 8 hours."
+            }
+        ]
     }
 }

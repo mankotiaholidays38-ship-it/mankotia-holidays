@@ -9,7 +9,7 @@ from typing import Optional, List
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator, model_validator
 from docx import Document
@@ -505,7 +505,13 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
                 filepath = os.path.join(directory, fn)
                 if os.path.exists(filepath):
                     with open(filepath, "rb") as f:
-                        msg.add_attachment(f.read(), maintype="application", subtype="octet-stream", filename=fn)
+                        if fn.lower().endswith('.pdf'):
+                            subtype = "pdf"
+                        elif fn.lower().endswith('.docx'):
+                            subtype = "vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        else:
+                            subtype = "octet-stream"
+                        msg.add_attachment(f.read(), maintype="application", subtype=subtype, filename=fn)
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
             smtp.starttls()
             smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
@@ -786,6 +792,22 @@ def generate_itinerary_endpoint(req: ItineraryRequest):
         return {"success": True, "itinerary": itinerary}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI generation failed: {str(e)}")
+
+
+@app.post("/api/generate-itinerary-stream")
+async def generate_itinerary_stream_endpoint(req: ItineraryRequest):
+    try:
+        return StreamingResponse(
+            ai_service.generate_ai_itinerary_stream(
+                destination=req.destination, days=req.days, budget=req.budget or "Standard",
+                travel_style=req.travel_style or "Family", travelers=req.travelers or "2 Adults",
+                special_requests=req.special_requests or "", pickup_location=req.pickup_location,
+                drop_location=req.drop_location
+            ),
+            media_type="text/event-stream"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI stream generation failed: {str(e)}")
 
 
 @app.post("/api/chat-concierge")
