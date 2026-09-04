@@ -98,7 +98,7 @@ def generate_langchain_itinerary(
     
     # Initialize the LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-flash-lite-latest",
+        model="gemini-3.5-flash",
         google_api_key=api_key,
         temperature=0.7,
         max_retries=0
@@ -171,7 +171,7 @@ async def generate_langchain_itinerary_stream(
     
     # Initialize the LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-flash-lite-latest",
+        model="gemini-3.5-flash",
         google_api_key=api_key,
         temperature=0.7,
         max_retries=0

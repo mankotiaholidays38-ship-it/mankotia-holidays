@@ -210,9 +210,14 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
       try {
           let cleanText = accumulatedText.trim();
-          if (cleanText.startsWith("```json")) cleanText = cleanText.substring(7);
-          else if (cleanText.startsWith("```")) cleanText = cleanText.substring(3);
-          if (cleanText.endsWith("```")) cleanText = cleanText.substring(0, cleanText.length - 3);
+          const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+              cleanText = jsonMatch[0];
+          } else {
+              if (cleanText.startsWith("```json")) cleanText = cleanText.substring(7);
+              else if (cleanText.startsWith("```")) cleanText = cleanText.substring(3);
+              if (cleanText.endsWith("```")) cleanText = cleanText.substring(0, cleanText.length - 3);
+          }
 
           const data = JSON.parse(cleanText.trim());
           if (data) {
