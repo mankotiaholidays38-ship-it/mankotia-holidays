@@ -4,11 +4,11 @@ import Hero from './components/Hero';
 import ServicesBookingHub from './components/ServicesBookingHub';
 import YatraSpecial from './components/YatraSpecial';
 import PackageCatalog from './components/PackageCatalog';
-import AiItineraryPlanner from './components/AiItineraryPlanner';
-import UttarakhandExplorer from './components/UttarakhandExplorer';
-import YatraGuide from './components/YatraGuide';
-import Testimonials from './components/Testimonials';
-import WhyChooseUs from './components/WhyChooseUs';
+const AiItineraryPlanner = React.lazy(() => import('./components/AiItineraryPlanner'));
+const UttarakhandExplorer = React.lazy(() => import('./components/UttarakhandExplorer'));
+const YatraGuide = React.lazy(() => import('./components/YatraGuide'));
+const Testimonials = React.lazy(() => import('./components/Testimonials'));
+const WhyChooseUs = React.lazy(() => import('./components/WhyChooseUs'));
 import InquiryModal from './components/InquiryModal';
 import AdminPortal from './components/AdminPortal';
 import AiConcierge from './components/AiConcierge';
@@ -72,20 +72,22 @@ export default function App() {
         {/* Full Domestic Package Catalog */}
         <PackageCatalog onOpenInquiry={handleOpenInquiry} />
 
-        {/* AI Smart Trip Generator & Google Maps Routing */}
-        <AiItineraryPlanner onOpenInquiry={handleOpenInquiry} />
+        <React.Suspense fallback={<div style={{ padding: '60px 20px', textAlign: 'center', color: '#94A3B8' }}>Loading...</div>}>
+          {/* AI Smart Trip Generator & Google Maps Routing */}
+          <AiItineraryPlanner onOpenInquiry={handleOpenInquiry} />
 
-        {/* Uttarakhand Explorer */}
-        <UttarakhandExplorer onOpenInquiry={handleOpenInquiry} />
+          {/* Uttarakhand Explorer */}
+          <UttarakhandExplorer onOpenInquiry={handleOpenInquiry} />
 
-        {/* Essential Yatra Guidelines & Biometric Pass Info */}
-        <YatraGuide onOpenInquiry={handleOpenInquiry} />
+          {/* Essential Yatra Guidelines & Biometric Pass Info */}
+          <YatraGuide onOpenInquiry={handleOpenInquiry} />
 
-        {/* Verified Pilgrim Testimonials */}
-        <Testimonials />
+          {/* Verified Pilgrim Testimonials */}
+          <Testimonials />
 
-        {/* Why Choose Mankotia Holidays */}
-        <WhyChooseUs />
+          {/* Why Choose Mankotia Holidays */}
+          <WhyChooseUs />
+        </React.Suspense>
       </main>
 
       {/* Footer */}

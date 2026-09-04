@@ -16,7 +16,9 @@ export default function AdminPortal({ isOpen, onClose }) {
   const fetchLeads = useCallback(async (authToken) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/leads?token=${encodeURIComponent(authToken)}`);
+      const res = await fetch(`/api/admin/leads`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
       const data = await res.json();
       if (data.success) {
         setLeads(data.leads || []);
@@ -91,7 +93,10 @@ export default function AdminPortal({ isOpen, onClose }) {
   const handleDeleteLead = async (lead) => {
     if (!window.confirm(`Delete the inquiry from ${lead.name}? This cannot be undone.`)) return;
     try {
-      const res = await fetch(`/api/admin/leads/${encodeURIComponent(lead.lead_id)}?token=${encodeURIComponent(token)}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/leads/${encodeURIComponent(lead.lead_id)}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.detail || 'Could not delete lead.');
       setLeads((currentLeads) => currentLeads.filter((currentLead) => currentLead.lead_id !== lead.lead_id));
@@ -123,9 +128,12 @@ export default function AdminPortal({ isOpen, onClose }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/leads/bulk-delete?token=${encodeURIComponent(token)}`, {
+      const res = await fetch(`/api/admin/leads/bulk-delete`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ lead_ids: selectedLeadIds })
       });
       const data = await res.json();

@@ -163,7 +163,8 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
     dest_key = (destination or "").lower().strip()
     
-    if GEMINI_API_KEY:
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if api_key:
         try:
             # Build agency context from predefined packages
             agency_context = ""
@@ -179,7 +180,7 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                     agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
                     
             data = generate_langchain_itinerary(
-                api_key=GEMINI_API_KEY,
+                api_key=api_key,
                 destination=destination,
                 days=days,
                 budget=budget,
@@ -266,6 +267,52 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     }
 
 
+async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None):
+    transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
+    dest_key = (destination or "").lower().strip()
+    
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        # Fallback if no API key, yield a static JSON response for the frontend to parse
+        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+        yield json.dumps(fallback_data)
+        return
+
+    # Build agency context from predefined packages
+    agency_context = ""
+    matched_packages = []
+    for p in PACKAGES:
+        search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
+        if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
+            matched_packages.append(p)
+            
+    if matched_packages:
+        agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
+        for p in matched_packages[:2]:
+            agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
+            
+    try:
+        async for chunk in generate_langchain_itinerary_stream(
+            api_key=api_key,
+            destination=destination,
+            days=days,
+            budget=budget,
+            travel_style=travel_style,
+            travelers=travelers,
+            special_requests=special_requests,
+            pickup_location=transit_info['pickup_location'],
+            drop_location=transit_info['drop_location'],
+            waypoints=transit_info['waypoints'],
+            agency_context=agency_context
+        ):
+            yield chunk
+    except Exception as e:
+        print(f"LangChain stream failed: {e}")
+        # Fallback if API call fails
+        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+        yield json.dumps(fallback_data)
+
+
 CONCIERGE_TOPICS = [
     (["golden triangle", "delhi agra jaipur"], f"🏛️ **Golden Triangle Specials:** We offer Golden Triangle Classic (6D/5N) and Delhi-Mathura-Agra (4D/3N) covering Taj Mahal, Agra Fort, Qutub Minar, and Amber Fort. Connect on WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE} for custom price quotes!"),
     (["agra", "taj mahal", "fatehpur sikri"], f"🕌 **Agra Taj Express:** Same Day Agra Taj Express & Mughal Marvels 2D/1N with Taj Mahal sunrise, Agra Fort, Mehtab Bagh, and approved guide. WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE}!"),
@@ -286,12 +333,13 @@ CONCIERGE_TOPICS = [
 
 
 def chat_travel_concierge(message: str, history: Optional[list] = None) -> str:
-    if GEMINI_API_KEY:
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if api_key:
         try:
             from google import genai
-            client = genai.Client(api_key=GEMINI_API_KEY)
+            client = genai.Client(api_key=api_key)
             prompt = f"System: You are 'Aria', AI Travel Concierge for {AGENCY_NAME} (+{AGENCY_WHATSAPP}, {AGENCY_PHONE}). Be polite and helpful.\nUser Query: {message}"
-            response = client.models.generate_content(model='gemini-1.5-flash', contents=prompt)
+            response = client.models.generate_content(model='gemini-3.6-flash', contents=prompt)
             return response.text.strip()
         except Exception:
             pass

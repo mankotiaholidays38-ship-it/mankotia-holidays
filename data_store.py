@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -602,3 +603,14 @@ PACKAGES = [
         "inclusions": ["3 Nights 4★ Hotel Stays (Delhi, Vrindavan, Agra)", "Daily Buffet Breakfast & Dinner", "Dedicated AC Chauffeur Driven Cab", "Tolls, Interstate Taxes & Parking"]
     }
 ]
+
+# Dynamically load parsed custom packages
+try:
+    custom_packages_path = os.path.join(os.path.dirname(__file__), "data", "custom_packages.json")
+    if os.path.exists(custom_packages_path):
+        with open(custom_packages_path, "r", encoding="utf-8") as f:
+            custom_packages = json.load(f)
+            if isinstance(custom_packages, list):
+                PACKAGES.extend(custom_packages)
+except Exception as e:
+    print(f"Failed to load custom packages from JSON: {e}")
