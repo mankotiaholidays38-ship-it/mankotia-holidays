@@ -339,7 +339,7 @@ def chat_travel_concierge(message: str, history: Optional[list] = None) -> str:
             from google import genai
             client = genai.Client(api_key=api_key)
             prompt = f"System: You are 'Aria', AI Travel Concierge for {AGENCY_NAME} (+{AGENCY_WHATSAPP}, {AGENCY_PHONE}). Be polite and helpful.\nUser Query: {message}"
-            response = client.models.generate_content(model='gemini-3.6-flash', contents=prompt)
+            response = client.models.generate_content(model='gemini-flash-lite-latest', contents=prompt)
             return response.text.strip()
         except Exception:
             pass
