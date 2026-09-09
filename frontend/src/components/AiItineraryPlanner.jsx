@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, 
   MapPin, 
@@ -20,6 +20,37 @@ import {
 import confetti from 'canvas-confetti';
 import { ALL_DESTINATION_CATEGORIES } from '../data/packagesData';
 
+const getDaysWarning = (dest, numDays) => {
+  if (!dest) return null;
+  const destLower = dest.toLowerCase();
+  const days = parseInt(numDays, 10);
+  
+  const thresholds = [
+    { keys: ['agra', 'taj mahal', 'fatehpur'], maxDays: 2, suggest: 'the Golden Triangle (Delhi, Jaipur) to explore nearby royal cities' },
+    { keys: ['jaipur', 'pink city'], maxDays: 3, suggest: 'a Complete Rajasthan Tour (Jodhpur, Udaipur, Jaisalmer)' },
+    { keys: ['delhi', 'new delhi'], maxDays: 3, suggest: 'the Golden Triangle (Agra, Jaipur)' },
+    { keys: ['kedarnath', 'badrinath', 'do dham', 'dodham'], maxDays: 6, suggest: 'the complete Char Dham Yatra' },
+    { keys: ['mathura', 'vrindavan'], maxDays: 3, suggest: 'adding Agra and the Taj Mahal' },
+    { keys: ['goa'], maxDays: 5, suggest: 'exploring both North and South Goa thoroughly' },
+    { keys: ['shimla', 'manali', 'kullu'], maxDays: 6, suggest: 'extending to Dharamshala or Spiti Valley' },
+    { keys: ['golden triangle'], maxDays: 6, suggest: 'exploring more of Rajasthan or extending to Varanasi' },
+  ];
+  
+  for (const rule of thresholds) {
+    if (rule.keys.some(k => destLower.includes(k))) {
+      if (days > rule.maxDays) {
+        return `💡 For ${dest.split('(')[0].trim()}, ${rule.maxDays} days is usually sufficient. Since you selected ${days} days, the AI will automatically add nearby destinations like ${rule.suggest}!`;
+      }
+      return null;
+    }
+  }
+  
+  if (days > 8) {
+    return `💡 You've selected a long trip (${days} days)! The AI will design a comprehensive multi-city circuit to cover the best regions around ${dest.split('(')[0].trim()}.`;
+  }
+  return null;
+};
+
 export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [destination, setDestination] = useState('');
   const [days, setDays] = useState(5);
@@ -38,6 +69,28 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [showDetailedSchedule, setShowDetailedSchedule] = useState(false);
   const [expandedDay, setExpandedDay] = useState(1);
   const [copied, setCopied] = useState(false);
+  
+  const loadingMessages = [
+    "Consulting local guides for hidden gems...",
+    "Mapping out the most scenic routes...",
+    "Finding the best local eateries & cafes...",
+    "Checking travel distances and times...",
+    "Curating the perfect day-by-day plan...",
+    "Adding some extra magic to your trip...",
+    "Almost ready! Finalizing your itinerary..."
+  ];
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+
+  useEffect(() => {
+    if (isStreaming || loading) {
+      const interval = setInterval(() => {
+        setLoadingMsgIdx(prev => (prev + 1) % loadingMessages.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    } else {
+      setLoadingMsgIdx(0);
+    }
+  }, [isStreaming, loading]);
 
   const quickPresets = [
     { 
@@ -344,7 +397,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                       transition: 'all 0.2s'
                     }}
                   >
-                    {preset.name} ({preset.days}D)
+                    {preset.name}
                   </button>
                 );
               })}
@@ -414,9 +467,15 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                     width: '100%',
                     accentColor: '#F59E0B',
                     height: '38px',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    marginBottom: getDaysWarning(destination, days) ? '8px' : '0'
                   }}
                 />
+                {getDaysWarning(destination, days) && (
+                  <div style={{ fontSize: '0.8rem', color: '#10B981', background: 'rgba(16, 185, 129, 0.1)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)', lineHeight: '1.5', animation: 'fadeIn 0.3s ease-out' }}>
+                    {getDaysWarning(destination, days)}
+                  </div>
+                )}
               </div>
 
               {/* Budget Tier */}
@@ -550,33 +609,46 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           </form>
         </div>
 
-        {isStreaming && !itinerary && (
-        <div className="glass-panel" style={{ maxWidth: '1050px', margin: '0 auto', padding: '36px', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '16px', background: '#0B1120', animation: 'fadeIn 0.3s ease-out' }}>
-            <h3 style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', fontSize: '1.2rem' }}>
-                <Sparkles className="spin-animation" size={20} /> AI is crafting your itinerary in real-time...
+        {(isStreaming || loading) && !itinerary && (
+        <div className="glass-panel" style={{ maxWidth: '1050px', margin: '0 auto', padding: '60px 36px', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '16px', background: '#0B1120', animation: 'fadeIn 0.3s ease-out', textAlign: 'center' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', marginBottom: '24px' }}>
+                <Compass className="spin-animation-slow" size={40} color="#10B981" />
+            </div>
+            
+            <h3 style={{ color: '#10B981', fontSize: '1.5rem', marginBottom: '16px', fontWeight: 700 }}>
+                Crafting Your Dream Journey...
             </h3>
-            <pre style={{ 
-                background: '#111827', 
-                color: '#34D399', 
-                padding: '20px', 
-                borderRadius: '8px', 
-                overflowX: 'auto', 
-                whiteSpace: 'pre-wrap', 
-                wordWrap: 'break-word',
-                fontFamily: 'monospace',
-                fontSize: '0.85rem',
-                border: '1px solid #1F2937',
-                maxHeight: '400px',
-                overflowY: 'auto'
-            }}>
-                {streamingText || "Connecting to AI server..."}
-                <span className="blink-cursor">_</span>
-            </pre>
+            
+            <div style={{ height: '30px', position: 'relative', overflow: 'hidden' }}>
+              <p key={loadingMsgIdx} style={{ 
+                  color: '#94A3B8', 
+                  fontSize: '1.1rem', 
+                  margin: 0,
+                  animation: 'slideUpFade 0.5s ease-out forwards'
+              }}>
+                  {loadingMessages[loadingMsgIdx]}
+              </p>
+            </div>
+
+            <div style={{ marginTop: '30px', width: '200px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '10px', margin: '30px auto 0', overflow: 'hidden' }}>
+                <div className="progress-bar-indeterminate" style={{ height: '100%', background: 'linear-gradient(90deg, #10B981, #06B6D4)', borderRadius: '10px' }}></div>
+            </div>
+            
             <style jsx>{`
-                .spin-animation { animation: spin 2s linear infinite; }
-                .blink-cursor { animation: blink 1s step-end infinite; font-weight: bold; }
-                @keyframes blink { 50% { opacity: 0; } }
+                .spin-animation-slow { animation: spin 4s linear infinite; }
                 @keyframes spin { 100% { transform: rotate(360deg); } }
+                @keyframes slideUpFade {
+                    0% { transform: translateY(20px); opacity: 0; }
+                    100% { transform: translateY(0); opacity: 1; }
+                }
+                .progress-bar-indeterminate {
+                    width: 50%;
+                    animation: indeterminate 1.5s ease-in-out infinite;
+                }
+                @keyframes indeterminate {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(200%); }
+                }
             `}</style>
         </div>
       )}

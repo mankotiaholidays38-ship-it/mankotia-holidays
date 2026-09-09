@@ -1,9 +1,9 @@
 import os
 import json
+import re
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,9 +16,11 @@ class ItineraryDay(BaseModel):
     morning: str = Field(description="Morning activities. MUST explicitly name specific sightseeing points, landmarks, and temples.")
     afternoon: str = Field(description="Afternoon activities. MUST explicitly name specific points of interest being covered.")
     evening: str = Field(description="Evening activities, markets, and sightseeing spots.")
+    waypoints_for_routing: List[str] = Field(description="An exact list of specific place names visited this day in logical order (e.g. ['Taj Mahal', 'Agra Fort']). Used for mapping.")
     stay_suggestion: str = Field(description="Suggested area or type of accommodation for the night")
     meal_recommendation: str = Field(description="Local dishes or specific types of meals to try this day")
     pro_tip: str = Field(description="A helpful tip related to the day's travel or locations")
+    travel_time_info: str = Field(default="", description="Leave empty. System will fill this with Google Maps driving info.")
 
 class ItineraryResponse(BaseModel):
     title: str = Field(description="A catchy title for the entire travel package")
@@ -51,8 +53,11 @@ SYSTEM_PROMPT = (
     "3. DAILY DESTINATION PROGRESSION: You must define the itinerary according to their daily destination point logically progressing through the requested route/waypoints: {waypoints}. Do not stay in one place if multiple locations are provided.\n"
     "4. EXPLICIT SIGHTSEEING EXPLANATION: For every day that involves sightseeing, you MUST explicitly name and EXPLAIN every single point of interest, temple, monument, valley, and landmark that will be visited. Explain what the customer will see and experience at each specific point. Do not use generic terms like 'explore local sights'.\n"
     "5. COVERED PLACES ARRAY: You MUST populate the top-level `covered_places` array with a comprehensive, comma-separated list of ALL the specific temples, landmarks, and tourist spots you included in the daily itineraries.\n"
-    "6. USE DATABASE/AGENCY DATA: If AGENCY CONTEXT is provided below, you MUST use the exact routing, highlights, and included places from those packages to form the itinerary. Adapt it to fit the requested days and pickup/drop constraints to exactly match the customer's requirement, but prioritize using the real data from the database.\n"
+    "5. COVERED PLACES ARRAY: You MUST populate the top-level `covered_places` array with a comprehensive, comma-separated list of ALL the specific temples, landmarks, and tourist spots you included in the daily itineraries.\n"
+    "6. USE REAL MAPS PLACES: You have been provided with real candidate places from Google Maps below (CANDIDATE PLACES). You MUST build the sightseeing around these specific real places and NEVER invent fake attractions.\n"
+    "7. USE DATABASE/AGENCY DATA: If AGENCY CONTEXT is provided below, you MUST use the exact routing, highlights, and included places from those packages to form the itinerary. Adapt it to fit the requested days and pickup/drop constraints to exactly match the customer's requirement, but prioritize using the real data from the database.\n"
     "Special customer constraints to obey: {special_requests}\n\n"
+    "CANDIDATE PLACES FROM GOOGLE MAPS:\n{candidate_places}\n\n"
     "AGENCY CONTEXT:\n{agency_context}\n\n"
     "OUTPUT FORMAT: You MUST return ONLY valid JSON matching this exact structure (no markdown, no extra text):\n"
     "{{\n"
@@ -71,17 +76,19 @@ SYSTEM_PROMPT = (
     '      "morning": "Morning activities (explicit places)",\n'
     '      "afternoon": "Afternoon activities (explicit places)",\n'
     '      "evening": "Evening activities",\n'
+    '      "waypoints_for_routing": ["Place 1", "Place 2"],\n'
     '      "stay_suggestion": "Accommodation suggestion",\n'
     '      "meal_recommendation": "Local dishes to try",\n'
-    '      "pro_tip": "Helpful tip"\n'
+    '      "pro_tip": "Helpful tip",\n'
+    '      "travel_time_info": ""\n'
     '    }}\n'
     '  ]\n'
     "}}"
 )
 
-# --- LangChain Invocation ---
+# --- Native Gemini Invocation ---
 
-def generate_langchain_itinerary(
+def generate_gemini_itinerary(
     api_key: str,
     destination: str, 
     days: int, 
@@ -92,69 +99,43 @@ def generate_langchain_itinerary(
     pickup_location: str, 
     drop_location: str, 
     waypoints: List[str],
+    candidate_places: str = "",
     agency_context: str = ""
 ) -> dict:
-    """Generates a highly structured itinerary using LangChain."""
+    """Generates a highly structured itinerary using native Gemini API."""
     
-    # Initialize the LLM
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash",
-        google_api_key=api_key,
-        temperature=0.7,
-        max_retries=0
+    genai.configure(api_key=api_key)
+    
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-pro-latest",
+        system_instruction=SYSTEM_PROMPT.format(
+            days=days, 
+            pickup_location=pickup_location,
+            drop_location=drop_location,
+            waypoints=", ".join(waypoints),
+            special_requests=special_requests if special_requests else "None",
+            candidate_places=candidate_places,
+            agency_context=agency_context
+        )
     )
-    
-    # Define the Chat Prompt
-    system_prompt = SYSTEM_PROMPT
     
     human_prompt = (
-        "Create a {days}-day itinerary for {destination}.\n"
-        "Budget: {budget}, Style: {travel_style}, Travelers: {travelers}."
+        f"Create a {days}-day itinerary for {destination}.\n"
+        f"Budget: {budget}, Style: {travel_style}, Travelers: {travelers}."
     )
     
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", human_prompt),
-    ])
-    
-    # Create the chain
-    chain = prompt | llm
-    
-    # Invoke the chain
-    result = chain.invoke({
-        "destination": destination,
-        "days": days,
-        "budget": budget,
-        "travel_style": travel_style,
-        "travelers": travelers,
-        "special_requests": special_requests if special_requests else "None",
-        "pickup_location": pickup_location,
-        "drop_location": drop_location,
-        "waypoints": ", ".join(waypoints),
-        "agency_context": agency_context
-    })
+    # Invoke the model
+    result = model.generate_content(human_prompt, generation_config=genai.GenerationConfig(temperature=0.7))
     
     # Parse JSON from LLM string output
-    text_content = result.content
-    if isinstance(text_content, list):
-        # Extract string if content is a list of blocks
-        text_content = text_content[0].get("text", "") if text_content else ""
-    elif not isinstance(text_content, str):
-        text_content = str(text_content)
+    text_content = result.text.strip()
+    match = re.search(r'\{[\s\S]*\}', text_content)
+    if match:
+        text_content = match.group(0)
         
-    text_content = text_content.strip()
-    
-    if text_content.startswith("```json"):
-        text_content = text_content[7:]
-    elif text_content.startswith("```"):
-        text_content = text_content[3:]
-        
-    if text_content.endswith("```"):
-        text_content = text_content[:-3]
-        
-    return json.loads(text_content.strip())
+    return json.loads(text_content)
 
-async def generate_langchain_itinerary_stream(
+async def generate_gemini_itinerary_stream(
     api_key: str,
     destination: str, 
     days: int, 
@@ -165,51 +146,38 @@ async def generate_langchain_itinerary_stream(
     pickup_location: str, 
     drop_location: str, 
     waypoints: List[str],
+    candidate_places: str = "",
     agency_context: str = ""
 ):
-    """Generates an itinerary using LangChain and yields text chunks asynchronously."""
+    """Generates an itinerary using native Gemini API and yields text chunks asynchronously."""
     
-    # Initialize the LLM
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash",
-        google_api_key=api_key,
-        temperature=0.7,
-        max_retries=0
+    genai.configure(api_key=api_key)
+    
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-pro-latest",
+        system_instruction=SYSTEM_PROMPT.format(
+            days=days, 
+            pickup_location=pickup_location,
+            drop_location=drop_location,
+            waypoints=", ".join(waypoints),
+            special_requests=special_requests if special_requests else "None",
+            candidate_places=candidate_places,
+            agency_context=agency_context
+        )
     )
-    
-    # Use the same prompt from generate_langchain_itinerary
-    # Define the Chat Prompt
-    system_prompt = SYSTEM_PROMPT
     
     human_prompt = (
-        "Create a {days}-day itinerary for {destination}.\n"
-        "Budget: {budget}, Style: {travel_style}, Travelers: {travelers}."
+        f"Create a {days}-day itinerary for {destination}.\n"
+        f"Budget: {budget}, Style: {travel_style}, Travelers: {travelers}."
     )
     
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", human_prompt),
-    ])
+    # We use generate_content_async to get chunks as they are generated
+    response = await model.generate_content_async(
+        human_prompt, 
+        generation_config=genai.GenerationConfig(temperature=0.7),
+        stream=True
+    )
     
-    chain = prompt | llm
-    
-    # We use astream to get chunks as they are generated
-    async for chunk in chain.astream({
-        "destination": destination,
-        "days": days,
-        "budget": budget,
-        "travel_style": travel_style,
-        "travelers": travelers,
-        "special_requests": special_requests if special_requests else "None",
-        "pickup_location": pickup_location,
-        "drop_location": drop_location,
-        "waypoints": ", ".join(waypoints),
-        "agency_context": agency_context
-    }):
-        if isinstance(chunk.content, list):
-            text_chunk = chunk.content[0].get("text", "") if chunk.content else ""
-        else:
-            text_chunk = str(chunk.content)
-            
-        if text_chunk:
-            yield text_chunk
+    async for chunk in response:
+        if chunk.text:
+            yield chunk.text

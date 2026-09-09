@@ -1,3 +1,5 @@
+from app.models.schemas import InquiryRequest, TicketInquiryRequest, TransportInquiryRequest, ItineraryRequest, ChatRequest, AdminLoginRequest, AdminQueryRequest, BulkDeleteRequest
+from app.config import *
 import os
 import smtplib
 import re
@@ -23,9 +25,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import excel_manager
-import ai_service
-from data_store import (
+from app.utils import excel_manager
+from app.services import ai_service
+from app.utils.data_store import (
     AGENCY_NAME,
     AGENCY_PHONE,
     AGENCY_WHATSAPP,
@@ -36,27 +38,7 @@ from data_store import (
     get_hotel_options_for_night,
 )
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
 
-DOCUMENTS_DIR = os.path.join(STATIC_DIR, "inquiry-documents")
-PRIVATE_HOTEL_PLANS_DIR = os.path.join(BASE_DIR, "data", "private-hotel-plans")
-
-FRONTEND_DIST_DIR = os.path.join(BASE_DIR, "frontend", "dist")
-FRONTEND_ASSETS_DIR = os.path.join(FRONTEND_DIST_DIR, "assets")
-FRONTEND_IMAGES_DIR = os.path.join(BASE_DIR, "frontend", "public", "images")
-
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "mankotia123")
-ADMIN_WHATSAPP = os.getenv("ADMIN_WHATSAPP", AGENCY_WHATSAPP)
-WHATSAPP_CLOUD_TOKEN = os.getenv("WHATSAPP_CLOUD_TOKEN", "")
-WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
-WHATSAPP_GRAPH_VERSION = os.getenv("WHATSAPP_GRAPH_VERSION", "v23.0")
-
-SMTP_HOST = os.getenv("SMTP_HOST", "")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-SMTP_FROM_EMAIL = os.getenv("SMTP_FROM_EMAIL", os.getenv("SMTP_USERNAME", AGENCY_EMAIL))
 
 app = FastAPI(
     title="Mankotia Holidays - AI Tour & Travel Platform",
@@ -84,129 +66,7 @@ if os.path.exists(FRONTEND_IMAGES_DIR):
 
 excel_manager.ensure_excel_file_exists()
 
-# ==========================================
-# PYDANTIC SCHEMAS
-# ==========================================
-
-class InquiryRequest(BaseModel):
-    name: str = Field(..., min_length=2, description="Customer full name")
-    phone: str = Field(..., description="Indian mobile number")
-    email: str = Field(..., min_length=3, description="Email address")
-    destination: str = Field(..., min_length=2)
-    travel_date: str = Field(..., min_length=2)
-    pickup: str = Field(default="Haridwar / Dehradun", min_length=2)
-    drop: str = Field(default="Haridwar / Dehradun", min_length=2)
-    days: int = Field(default=4, ge=1, le=60)
-    number_of_persons: int = Field(default=2, ge=1, le=1000)
-    children: int = Field(default=0, ge=0, le=1000)
-    child_ages: str = ""
-    vehicle_category: str = Field(default="Sedan Car", min_length=2)
-    rooms_required: int = Field(default=1, ge=1, le=500)
-    meal_plan: str = Field(default="Breakfast Only (CP)", min_length=2)
-    hotel_category: str = Field(default="3 Star", min_length=2)
-    itinerary_text: str = ""
-    travelers: Optional[str] = ""
-    budget: Optional[str] = "Standard"
-    notes: Optional[str] = ""
-    source: Optional[str] = "Website Booking Form"
-
-    @field_validator("phone")
-    @classmethod
-    def validate_indian_mobile(cls, value: str) -> str:
-        normalized = re.sub(r"[\s()-]", "", value)
-        if normalized.startswith("+91"):
-            normalized = normalized[3:]
-        if not re.fullmatch(r"[6-9]\d{9}", normalized):
-            raise ValueError("Enter a valid Indian mobile number with exactly 10 digits.")
-        return normalized
-
-    @field_validator("travel_date")
-    @classmethod
-    def validate_travel_date(cls, value: str) -> str:
-        if value:
-            clean = value.strip()
-            if re.match(r"^(\d{4})-(\d{2})-(\d{2})$", clean):
-                try:
-                    parsed = datetime.strptime(clean, "%Y-%m-%d").date()
-                    if parsed < datetime.now().date():
-                        raise ValueError("Selected travel date cannot be in the past.")
-                except ValueError as e:
-                    if "cannot be in the past" in str(e):
-                        raise
-        return value
-
-    @model_validator(mode="after")
-    def validate_child_ages(self):
-        if self.children > 0 and not self.child_ages.strip():
-            raise ValueError("Child ages are required when children are included.")
-        return self
-
-
-class TicketInquiryRequest(BaseModel):
-    name: str = Field(..., min_length=2)
-    phone: str = Field(..., description="Indian mobile number")
-    email: str = Field(..., min_length=3)
-    transit_type: str = Field(default="Domestic Flight")
-    origin: str = Field(..., min_length=2)
-    destination: str = Field(..., min_length=2)
-    travel_date: str = Field(..., min_length=2)
-    travel_class: str = Field(default="Economy")
-    passengers: int = Field(default=1, ge=1, le=100)
-    notes: Optional[str] = ""
-    source: Optional[str] = "Website Ticket Form"
-
-    @field_validator("phone")
-    @classmethod
-    def validate_phone(cls, value: str) -> str:
-        return InquiryRequest.validate_indian_mobile(value)
-
-
-class TransportInquiryRequest(BaseModel):
-    name: str = Field(..., min_length=2)
-    phone: str = Field(..., description="Indian mobile number")
-    email: str = Field(..., min_length=3)
-    vehicle_category: str = Field(default="Innova Crysta (7 Seater)")
-    rental_type: str = Field(default="Outstation Round-Trip")
-    pickup: str = Field(..., min_length=2)
-    drop: str = Field(..., min_length=2)
-    pickup_date: str = Field(..., min_length=2)
-    duration_days: int = Field(default=1, ge=1, le=60)
-    passengers: int = Field(default=2, ge=1, le=100)
-    notes: Optional[str] = ""
-    source: Optional[str] = "Website Transport & Cab Form"
-
-    @field_validator("phone")
-    @classmethod
-    def validate_phone(cls, value: str) -> str:
-        return InquiryRequest.validate_indian_mobile(value)
-
-
-class ItineraryRequest(BaseModel):
-    destination: str = Field(..., min_length=2)
-    days: int = Field(default=4, ge=1, le=30)
-    budget: Optional[str] = "Standard"
-    travel_style: Optional[str] = "Family & Leisure"
-    travelers: Optional[str] = "2 Adults"
-    special_requests: Optional[str] = ""
-    pickup_location: Optional[str] = None
-    drop_location: Optional[str] = None
-
-
-class ChatRequest(BaseModel):
-    message: str = Field(..., min_length=1)
-    history: Optional[List[dict]] = None
-
-
-class AdminLoginRequest(BaseModel):
-    password: str
-
-
-class BulkDeleteRequest(BaseModel):
-    lead_ids: List[str]
-
-
-# ==========================================
-# HELPER UTILITIES
+# ==========================================`n# HELPER UTILITIES
 # ==========================================
 
 def check_admin_authorized(request: Request, token: Optional[str] = None) -> bool:
@@ -898,3 +758,4 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
 # Trigger reload
+

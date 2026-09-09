@@ -6,10 +6,12 @@ import requests
 from typing import Optional, Dict
 from dotenv import load_dotenv
 
-from data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
-from itinerary_templates import POPULAR_DESTINATIONS
-from gemini_service import generate_gemini_itinerary, generate_gemini_itinerary_stream
-from maps_service import maps_service
+from app.utils.data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
+from app.utils.itinerary_templates import POPULAR_DESTINATIONS
+from app.services.gemini_service import generate_gemini_itinerary, generate_gemini_itinerary_stream
+from app.services.geocoding import geocode_location, is_configured
+from app.services.places import get_candidate_places
+from app.services.directions import calculate_route_distances
 
 load_dotenv()
 
@@ -202,15 +204,15 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     if api_key:
         try:
             # 1. Geocode pickup & drop
-            pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
-            drop_geo = maps_service.geocode_location(transit_info['drop_location'])
+            pickup_geo = geocode_location(transit_info['pickup_location'])
+            drop_geo = geocode_location(transit_info['drop_location'])
             if pickup_geo:
                 transit_info['pickup_location'] = pickup_geo['formatted_address']
             if drop_geo:
                 transit_info['drop_location'] = drop_geo['formatted_address']
                 
             # 2. Get candidate places/attractions near route
-            candidate_places_list = maps_service.get_candidate_places(destination)
+            candidate_places_list = get_candidate_places(destination)
             candidate_places_str = ""
             if candidate_places_list:
                 candidate_places_str = "\n".join([f"- {p['name']} ({p.get('rating', 'N/A')}⭐) - {p.get('formatted_address', '')}" for p in candidate_places_list])
@@ -249,7 +251,7 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                 data["days"] = data["days"][:days]
                 
             # 4. Validate/enrich with real distances -> Google Directions API
-            if maps_service.is_configured():
+            if is_configured():
                 for idx, day in enumerate(data.get("days", [])):
                     wp = day.get("waypoints_for_routing", [])
                     if len(wp) >= 2:
@@ -265,7 +267,7 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                             dest = transit_info['drop_location']
                             intermediate = wp[1:] if len(wp) > 1 else []
 
-                        dist_info = maps_service.calculate_route_distances(origin, dest, intermediate)
+                        dist_info = calculate_route_distances(origin, dest, intermediate)
                         if dist_info:
                             day["travel_time_info"] = f"Total driving: {dist_info['total_distance_km']} km (~{dist_info['total_duration_mins']} mins)"
 
@@ -387,15 +389,15 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
         return
 
     # 1. Geocode pickup & drop
-    if maps_service.is_configured():
-        pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
-        drop_geo = maps_service.geocode_location(transit_info['drop_location'])
+    if is_configured():
+        pickup_geo = geocode_location(transit_info['pickup_location'])
+        drop_geo = geocode_location(transit_info['drop_location'])
         if pickup_geo:
             transit_info['pickup_location'] = pickup_geo['formatted_address']
         if drop_geo:
             transit_info['drop_location'] = drop_geo['formatted_address']
             
-        candidate_places_list = maps_service.get_candidate_places(destination)
+        candidate_places_list = get_candidate_places(destination)
         candidate_places_str = ""
         if candidate_places_list:
             candidate_places_str = "\n".join([f"- {p['name']} ({p.get('rating', 'N/A')}⭐) - {p.get('formatted_address', '')}" for p in candidate_places_list])
