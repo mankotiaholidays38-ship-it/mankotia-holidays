@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -98,7 +99,7 @@ def generate_langchain_itinerary(
     
     # Initialize the LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash",
+        model="gemini-1.5-pro-latest",
         google_api_key=api_key,
         temperature=0.7,
         max_retries=0
@@ -143,16 +144,11 @@ def generate_langchain_itinerary(
         text_content = str(text_content)
         
     text_content = text_content.strip()
-    
-    if text_content.startswith("```json"):
-        text_content = text_content[7:]
-    elif text_content.startswith("```"):
-        text_content = text_content[3:]
+    match = re.search(r'\{[\s\S]*\}', text_content)
+    if match:
+        text_content = match.group(0)
         
-    if text_content.endswith("```"):
-        text_content = text_content[:-3]
-        
-    return json.loads(text_content.strip())
+    return json.loads(text_content)
 
 async def generate_langchain_itinerary_stream(
     api_key: str,
@@ -171,7 +167,7 @@ async def generate_langchain_itinerary_stream(
     
     # Initialize the LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-3.5-flash",
+        model="gemini-1.5-pro-latest",
         google_api_key=api_key,
         temperature=0.7,
         max_retries=0
