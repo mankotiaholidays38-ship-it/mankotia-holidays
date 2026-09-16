@@ -274,10 +274,8 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             data["google_maps_route_url"] = transit_info["google_maps_route_url"]
             data["route_summary"] = transit_info["route_summary"]
             return data
-        except Exception as e:
-            print(f"Gemini API itinerary call failed: {e}")
-            with open("scratch/error.log", "w") as f:
-                f.write(str(e))
+        except Exception as error:
+            print(f"Gemini API itinerary call failed: {error}")
 
     # Fallback preset template matching
     match_key = None
@@ -434,8 +432,6 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
                 yield chunk
         except Exception as e:
             print(f"Gemini stream failed: {e}")
-            with open("scratch/stream_error.log", "w") as f:
-                f.write(str(e))
             # Fallback if API call fails
             fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
             yield json.dumps(fallback_data)
