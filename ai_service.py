@@ -236,7 +236,7 @@ def _generate_gemini_itinerary(api_key: str, prompt: str, days: int) -> dict:
 
     client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
     response = client.models.generate_content(
-        model="gemini-3.6-flash",
+        model="gemini-1.5-flash",
         contents=prompt,
         config=_gemini_config(days),
     )
@@ -359,27 +359,31 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
 
 
 async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None):
-    transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if api_key:
-        try:
-            from google import genai
-
-            client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
-            stream = client.models.generate_content_stream(
-                model="gemini-3.6-flash",
-                contents=_gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
-                config=_gemini_config(days),
-            )
-            for chunk in stream:
-                if chunk.text:
-                    yield chunk.text
-            return
-        except Exception as error:
-            print(f"Gemini itinerary stream failed; using local fallback: {error}")
-
-    fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
-    yield json.dumps(fallback_data)
+    try:
+        transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if api_key:
+            try:
+                from google import genai
+    
+                client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
+                stream = client.models.generate_content_stream(
+                    model="gemini-1.5-flash",
+                    contents=_gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
+                    config=_gemini_config(days),
+                )
+                for chunk in stream:
+                    if chunk.text:
+                        yield chunk.text
+                return
+            except Exception as error:
+                print(f"Gemini itinerary stream failed; using local fallback: {error}")
+    
+        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+        yield json.dumps(fallback_data)
+    except Exception as fatal_error:
+        print(f"Fatal error in itinerary stream: {fatal_error}")
+        yield json.dumps({"error": str(fatal_error)})
 
 
 CONCIERGE_TOPICS = [

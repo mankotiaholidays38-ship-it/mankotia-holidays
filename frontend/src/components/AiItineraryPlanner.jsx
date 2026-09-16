@@ -273,7 +273,9 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           }
 
           const data = JSON.parse(cleanText.trim());
-          if (data) {
+          if (data && data.error) {
+              alert("Error from AI Planner: " + data.error);
+          } else if (data) {
             setItinerary(data);
             setExpandedDay(1);
             confetti({
