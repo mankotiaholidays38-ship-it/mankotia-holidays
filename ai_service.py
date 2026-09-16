@@ -371,73 +371,77 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
 
 
 async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None):
-    extended_dest, extension_notes = extend_destination_for_extra_days(destination, days)
-    if extension_notes:
-        special_requests = f"{special_requests}\n\n{extension_notes}".strip()
-        destination = extended_dest
-
-    transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
-    dest_key = (destination or "").lower().strip()
-    
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not api_key:
-        # Fallback if no API key, yield a static JSON response for the frontend to parse
-        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
-        yield json.dumps(fallback_data)
-        return
-
-    # 1. Geocode pickup & drop
-    if maps_service.is_configured():
-        pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
-        drop_geo = maps_service.geocode_location(transit_info['drop_location'])
-        if pickup_geo:
-            transit_info['pickup_location'] = pickup_geo['formatted_address']
-        if drop_geo:
-            transit_info['drop_location'] = drop_geo['formatted_address']
-            
-        candidate_places_list = maps_service.get_candidate_places(destination)
-        candidate_places_str = ""
-        if candidate_places_list:
-            candidate_places_str = "\n".join([f"- {p['name']} ({p.get('rating', 'N/A')}⭐) - {p.get('formatted_address', '')}" for p in candidate_places_list])
-    else:
-        candidate_places_str = ""
-
-    # Build agency context from predefined packages
-    agency_context = ""
-    matched_packages = []
-    for p in PACKAGES:
-        search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
-        if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
-            matched_packages.append(p)
-            
-    if matched_packages:
-        agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
-        for p in matched_packages[:2]:
-            agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
-            
     try:
-        async for chunk in generate_gemini_itinerary_stream(
-            api_key=api_key,
-            destination=destination,
-            days=days,
-            budget=budget,
-            travel_style=travel_style,
-            travelers=travelers,
-            special_requests=special_requests,
-            pickup_location=transit_info['pickup_location'],
-            drop_location=transit_info['drop_location'],
-            waypoints=transit_info['waypoints'],
-            candidate_places=candidate_places_str,
-            agency_context=agency_context
-        ):
-            yield chunk
-    except Exception as e:
-        print(f"Gemini stream failed: {e}")
-        with open("scratch/stream_error.log", "w") as f:
-            f.write(str(e))
-        # Fallback if API call fails
-        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
-        yield json.dumps(fallback_data)
+        extended_dest, extension_notes = extend_destination_for_extra_days(destination, days)
+        if extension_notes:
+            special_requests = f"{special_requests}\n\n{extension_notes}".strip()
+            destination = extended_dest
+    
+        transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
+        dest_key = (destination or "").lower().strip()
+        
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if not api_key:
+            # Fallback if no API key, yield a static JSON response for the frontend to parse
+            fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+            yield json.dumps(fallback_data)
+            return
+    
+        # 1. Geocode pickup & drop
+        if maps_service.is_configured():
+            pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
+            drop_geo = maps_service.geocode_location(transit_info['drop_location'])
+            if pickup_geo:
+                transit_info['pickup_location'] = pickup_geo['formatted_address']
+            if drop_geo:
+                transit_info['drop_location'] = drop_geo['formatted_address']
+                
+            candidate_places_list = maps_service.get_candidate_places(destination)
+            candidate_places_str = ""
+            if candidate_places_list:
+                candidate_places_str = "\n".join([f"- {p['name']} ({p.get('rating', 'N/A')}⭐) - {p.get('formatted_address', '')}" for p in candidate_places_list])
+        else:
+            candidate_places_str = ""
+    
+        # Build agency context from predefined packages
+        agency_context = ""
+        matched_packages = []
+        for p in PACKAGES:
+            search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
+            if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
+                matched_packages.append(p)
+                
+        if matched_packages:
+            agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
+            for p in matched_packages[:2]:
+                agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
+                
+        try:
+            async for chunk in generate_gemini_itinerary_stream(
+                api_key=api_key,
+                destination=destination,
+                days=days,
+                budget=budget,
+                travel_style=travel_style,
+                travelers=travelers,
+                special_requests=special_requests,
+                pickup_location=transit_info['pickup_location'],
+                drop_location=transit_info['drop_location'],
+                waypoints=transit_info['waypoints'],
+                candidate_places=candidate_places_str,
+                agency_context=agency_context
+            ):
+                yield chunk
+        except Exception as e:
+            print(f"Gemini stream failed: {e}")
+            with open("scratch/stream_error.log", "w") as f:
+                f.write(str(e))
+            # Fallback if API call fails
+            fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+            yield json.dumps(fallback_data)
+    except Exception as fatal_error:
+        print(f"Fatal error in itinerary stream: {fatal_error}")
+        yield json.dumps({"error": str(fatal_error)})
 
 
 CONCIERGE_TOPICS = [
