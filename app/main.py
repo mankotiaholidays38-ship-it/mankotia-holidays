@@ -558,10 +558,10 @@ def create_inquiry(inquiry: InquiryRequest):
             pass
             
         admin_email_sent = False
-        try:
-            admin_email_sent = send_inquiry_email(inquiry, doc_fn, pdf_fn)
-        except Exception as err:
-            print(f"Inquiry admin email sending failed: {err}")
+        # try:
+        #     admin_email_sent = send_inquiry_email(inquiry, doc_fn, pdf_fn)
+        # except Exception as err:
+        #     print(f"Inquiry admin email sending failed: {err}")
 
         wa_msg = f"Hi {AGENCY_NAME}! Travel inquiry submitted.\nName: {inquiry.name}\nDestination: {inquiry.destination}\nDate: {inquiry.travel_date}\nDays: {inquiry.days}"
         return {
@@ -591,10 +591,10 @@ def create_ticket_inquiry(inquiry: TicketInquiryRequest):
         doc_fn = create_ticket_document(inquiry, saved_lead["lead_id"])
         
         admin_email_sent = False
-        try:
-            admin_email_sent = send_ticket_email(inquiry, doc_fn)
-        except Exception as err:
-            print(f"Ticket admin email sending failed: {err}")
+        # try:
+        #     admin_email_sent = send_ticket_email(inquiry, doc_fn)
+        # except Exception as err:
+        #     print(f"Ticket admin email sending failed: {err}")
 
         wa_msg = f"Hi {AGENCY_NAME}! Ticket booking inquiry: {inquiry.transit_type} from {inquiry.origin} to {inquiry.destination} for {inquiry.name}."
         return {
@@ -622,10 +622,10 @@ def create_transport_inquiry(inquiry: TransportInquiryRequest):
         doc_fn = create_transport_document(inquiry, saved_lead["lead_id"])
         
         admin_email_sent = False
-        try:
-            admin_email_sent = send_transport_email(inquiry, doc_fn)
-        except Exception as err:
-            print(f"Transport admin email sending failed: {err}")
+        # try:
+        #     admin_email_sent = send_transport_email(inquiry, doc_fn)
+        # except Exception as err:
+        #     print(f"Transport admin email sending failed: {err}")
 
         wa_msg = f"Hi {AGENCY_NAME}! Cab rental inquiry: {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop}) for {inquiry.name}."
         return {
