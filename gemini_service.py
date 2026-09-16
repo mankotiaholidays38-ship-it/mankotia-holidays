@@ -104,7 +104,7 @@ def generate_gemini_itinerary(
 ) -> dict:
     """Generates a highly structured itinerary using native Gemini API."""
     
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=api_key, client_options={"api_endpoint": "generativelanguage.googleapis.com"})
     
     model = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
@@ -151,7 +151,7 @@ async def generate_gemini_itinerary_stream(
 ):
     """Generates an itinerary using native Gemini API and yields text chunks asynchronously."""
     
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=api_key, client_options={"api_endpoint": "generativelanguage.googleapis.com"})
     
     model = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
