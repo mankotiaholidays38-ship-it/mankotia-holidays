@@ -312,9 +312,42 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
 
     if match_key and match_key in POPULAR_DESTINATIONS:
         data_copy = json.loads(json.dumps(POPULAR_DESTINATIONS[match_key]))
-        if len(data_copy["days"]) > days:
+        current_len = len(data_copy["days"])
+        if current_len > days:
             data_copy["days"] = data_copy["days"][:days]
-            data_copy["duration"] = f"{days} Days / {max(1, days-1)} Nights"
+        elif current_len < days:
+            dest_name = data_copy["destination"]
+            old_last = data_copy["days"][-1]
+            if "depart" in old_last["theme"].lower() or "drop" in old_last["theme"].lower():
+                old_last["theme"] = f"Day {current_len}: Extended Sightseeing in {dest_name}"
+                old_last["morning"] = f"Enjoy a relaxed morning and explore remaining attractions in {dest_name}."
+                old_last["afternoon"] = "Local cafe hopping or shopping for souvenirs."
+                old_last["evening"] = "Relax at the resort or take an evening stroll."
+                old_last["stay_suggestion"] = f"Resort in {dest_name}"
+            
+            for i in range(current_len + 1, days + 1):
+                if i == days:
+                    theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
+                    morning = f"Hearty breakfast in {dest_name}. Complete checkout formalities."
+                    afternoon = "Begin return road journey with scenic photo stops."
+                    evening = f"Chauffeur drops you off at {transit_info['drop_location']}."
+                    stay = f"Drop at {transit_info['drop_location']} / Onward Journey"
+                else:
+                    activities = ["Cultural Heritage Tour", "Nature Walk", "Local Markets", "Temple Visit", "Leisure Day"]
+                    activity = activities[(i - 2) % len(activities)]
+                    theme = f"Day {i}: {activity} in {dest_name}"
+                    morning = f"Start Day {i} with a delightful breakfast. Explore popular spots for {activity.lower()}."
+                    afternoon = f"Enjoy lunch at a renowned local restaurant. Continue sightseeing."
+                    evening = "Witness a breathtaking sunset at a premier viewpoint or relax at the hotel."
+                    stay = f"Resort in {dest_name}"
+                
+                data_copy["days"].append({
+                    "day_number": i, "theme": theme, "morning": morning, "afternoon": afternoon,
+                    "evening": evening, "meal_recommendation": f"Signature authentic delicacies of {dest_name}.",
+                    "stay_suggestion": stay, "pro_tip": "Check live traffic before excursion."
+                })
+                
+        data_copy["duration"] = f"{days} Days / {max(1, days-1)} Nights"
         data_copy["pickup_location"] = transit_info["pickup_location"]
         data_copy["drop_location"] = transit_info["drop_location"]
         data_copy["google_maps_route_url"] = transit_info["google_maps_route_url"]
