@@ -234,7 +234,7 @@ Include these route fields exactly in the JSON-compatible itinerary content: pic
 def _generate_gemini_itinerary(api_key: str, prompt: str, days: int) -> dict:
     from google import genai
 
-    client = genai.Client(api_key=api_key)
+    client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
     response = client.models.generate_content(
         model="gemini-3.6-flash",
         contents=prompt,
@@ -365,7 +365,7 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
         try:
             from google import genai
 
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
             stream = client.models.generate_content_stream(
                 model="gemini-3.6-flash",
                 contents=_gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
