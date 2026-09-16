@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 
 from data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
 from itinerary_templates import POPULAR_DESTINATIONS
-from langchain_service import generate_langchain_itinerary, generate_langchain_itinerary_stream
 
 load_dotenv()
 
@@ -131,6 +130,119 @@ DEFAULT_TRANSIT_HUBS: Dict[str, Dict] = {
 }
 
 
+ITINERARY_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "title": {"type": "STRING"},
+        "destination": {"type": "STRING"},
+        "duration": {"type": "STRING"},
+        "estimated_cost_inr": {"type": "STRING"},
+        "best_season": {"type": "STRING"},
+        "covered_places": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "packing_essentials": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "highlights": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "pickup_location": {"type": "STRING"},
+        "drop_location": {"type": "STRING"},
+        "google_maps_route_url": {"type": "STRING"},
+        "route_summary": {"type": "STRING"},
+        "days": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "day_number": {"type": "INTEGER"},
+                    "theme": {"type": "STRING"},
+                    "morning": {"type": "STRING"},
+                    "afternoon": {"type": "STRING"},
+                    "evening": {"type": "STRING"},
+                    "stay_suggestion": {"type": "STRING"},
+                    "meal_recommendation": {"type": "STRING"},
+                    "pro_tip": {"type": "STRING"}
+                },
+                "required": ["day_number", "theme", "morning", "afternoon", "evening", "stay_suggestion", "meal_recommendation", "pro_tip"]
+            }
+        }
+    },
+    "required": ["title", "destination", "duration", "estimated_cost_inr", "best_season", "covered_places", "packing_essentials", "highlights", "pickup_location", "drop_location", "google_maps_route_url", "route_summary", "days"]
+}
+
+
+def lookup_places(destination: str, query: str = "top tourist places") -> dict:
+    """Look up current place names and coordinates for itinerary planning."""
+    search_query = f"{query} in {destination}"
+    try:
+        response = requests.get(
+            "https://nominatim.openstreetmap.org/search",
+            params={"q": search_query, "format": "jsonv2", "limit": 8},
+            headers={"User-Agent": "MankotiaHolidays/1.0"},
+            timeout=5,
+        )
+        response.raise_for_status()
+        places = response.json()
+        return {
+            "query": search_query,
+            "places": [
+                {"name": place.get("display_name", ""), "latitude": place.get("lat"), "longitude": place.get("lon")}
+                for place in places
+            ],
+        }
+    except requests.RequestException:
+        return {"query": search_query, "places": []}
+
+
+def _gemini_config(days: int):
+    from google.genai import types
+
+    return types.GenerateContentConfig(
+        temperature=0.7,
+        response_mime_type="application/json",
+        response_schema=ITINERARY_SCHEMA,
+        tools=[lookup_places],
+        system_instruction=(
+            "You are an expert travel planner. Create exactly the requested number of days. "
+            "Use the lookup_places tool to verify current place names when useful. "
+            "Return only the requested JSON structure."
+        ),
+    )
+
+
+def _gemini_prompt(destination: str, days: int, budget: str, travel_style: str, travelers: str, special_requests: str, transit_info: dict) -> str:
+    matched_packages = []
+    destination_text = (destination or "").lower()
+    for package in PACKAGES:
+        search_text = f"{package['title']} {package['destination']} {package['category']}".lower()
+        if destination_text in search_text or any(word in search_text for word in destination_text.split() if len(word) > 3):
+            matched_packages.append(package)
+    package_context = "\n".join(
+        f"Preferred package: {package['title']} | Route: {package['destination']} | Highlights: {', '.join(package['highlights'])}"
+        for package in matched_packages[:2]
+    ) or "No preferred package matched."
+    return f"""Create a {days}-day itinerary for {destination}.
+Budget: {budget}
+Travel style: {travel_style}
+Travelers: {travelers}
+Special requests: {special_requests or 'None'}
+Pickup: {transit_info['pickup_location']}
+Drop-off: {transit_info['drop_location']}
+Waypoints: {', '.join(transit_info['waypoints'])}
+Preferred agency data:
+{package_context}
+
+Include these route fields exactly in the JSON-compatible itinerary content: pickup_location, drop_location, google_maps_route_url, and route_summary."""
+
+
+def _generate_gemini_itinerary(api_key: str, prompt: str, days: int) -> dict:
+    from google import genai
+
+    client = genai.Client(api_key=api_key)
+    response = client.models.generate_content(
+        model="gemini-3.6-flash",
+        contents=prompt,
+        config=_gemini_config(days),
+    )
+    return json.loads(response.text)
+
+
 def resolve_transit_and_maps(destination: str, pickup_location: Optional[str] = None, drop_location: Optional[str] = None, days: int = 4) -> dict:
     dest_lower = (destination or "").lower().strip()
     dest_normalized = dest_lower.replace(" ", "").replace("-", "")
@@ -162,45 +274,22 @@ def resolve_transit_and_maps(destination: str, pickup_location: Optional[str] = 
 def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None) -> dict:
     transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
     dest_key = (destination or "").lower().strip()
-    
+
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     if api_key:
         try:
-            # Build agency context from predefined packages
-            agency_context = ""
-            matched_packages = []
-            for p in PACKAGES:
-                search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
-                if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
-                    matched_packages.append(p)
-                    
-            if matched_packages:
-                agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
-                for p in matched_packages[:2]:
-                    agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
-                    
-            data = generate_langchain_itinerary(
-                api_key=api_key,
-                destination=destination,
-                days=days,
-                budget=budget,
-                travel_style=travel_style,
-                travelers=travelers,
-                special_requests=special_requests,
-                pickup_location=transit_info['pickup_location'],
-                drop_location=transit_info['drop_location'],
-                waypoints=transit_info['waypoints'],
-                agency_context=agency_context
+            generated = _generate_gemini_itinerary(
+                api_key,
+                _gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
+                days,
             )
-            data["pickup_location"] = transit_info["pickup_location"]
-            data["drop_location"] = transit_info["drop_location"]
-            data["google_maps_route_url"] = transit_info["google_maps_route_url"]
-            data["route_summary"] = transit_info["route_summary"]
-            return data
-        except Exception as e:
-            print(f"LangChain API itinerary call failed: {e}")
-            with open("scratch/error.log", "w") as f:
-                f.write(str(e))
+            generated["pickup_location"] = transit_info["pickup_location"]
+            generated["drop_location"] = transit_info["drop_location"]
+            generated["google_maps_route_url"] = transit_info["google_maps_route_url"]
+            generated["route_summary"] = transit_info["route_summary"]
+            return generated
+        except Exception as error:
+            print(f"Gemini itinerary generation failed; using local fallback: {error}")
 
     # Fallback preset template matching
     match_key = None
@@ -271,50 +360,26 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
 
 async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None):
     transit_info = resolve_transit_and_maps(destination, pickup_location, drop_location, days)
-    dest_key = (destination or "").lower().strip()
-    
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not api_key:
-        # Fallback if no API key, yield a static JSON response for the frontend to parse
-        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
-        yield json.dumps(fallback_data)
-        return
+    if api_key:
+        try:
+            from google import genai
 
-    # Build agency context from predefined packages
-    agency_context = ""
-    matched_packages = []
-    for p in PACKAGES:
-        search_text = (p['title'] + " " + p['destination'] + " " + p['category']).lower()
-        if dest_key in search_text or any(word in search_text for word in dest_key.split() if len(word) > 3):
-            matched_packages.append(p)
-            
-    if matched_packages:
-        agency_context = "AGENCY'S PREFERRED DATA FOR THIS DESTINATION:\n"
-        for p in matched_packages[:2]:
-            agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
-            
-    try:
-        async for chunk in generate_langchain_itinerary_stream(
-            api_key=api_key,
-            destination=destination,
-            days=days,
-            budget=budget,
-            travel_style=travel_style,
-            travelers=travelers,
-            special_requests=special_requests,
-            pickup_location=transit_info['pickup_location'],
-            drop_location=transit_info['drop_location'],
-            waypoints=transit_info['waypoints'],
-            agency_context=agency_context
-        ):
-            yield chunk
-    except Exception as e:
-        print(f"LangChain stream failed: {e}")
-        with open("scratch/stream_error.log", "w") as f:
-            f.write(str(e))
-        # Fallback if API call fails
-        fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
-        yield json.dumps(fallback_data)
+            client = genai.Client(api_key=api_key)
+            stream = client.models.generate_content_stream(
+                model="gemini-3.6-flash",
+                contents=_gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
+                config=_gemini_config(days),
+            )
+            for chunk in stream:
+                if chunk.text:
+                    yield chunk.text
+            return
+        except Exception as error:
+            print(f"Gemini itinerary stream failed; using local fallback: {error}")
+
+    fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+    yield json.dumps(fallback_data)
 
 
 CONCIERGE_TOPICS = [
