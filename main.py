@@ -1,4 +1,4 @@
-import os
+﻿import os
 import smtplib
 import re
 import urllib.parse
@@ -56,6 +56,7 @@ SMTP_HOST = os.getenv("SMTP_HOST", "")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
 SMTP_FROM_EMAIL = os.getenv("SMTP_FROM_EMAIL", os.getenv("SMTP_USERNAME", AGENCY_EMAIL))
 
 app = FastAPI(
@@ -258,7 +259,7 @@ def ensure_ai_itinerary_generated(inquiry: InquiryRequest) -> str:
                 lines.append(f"Best Season: {generated.get('best_season')}")
             if generated.get("highlights"):
                 lines.append("Highlights:")
-                lines.extend(f"• {h}" for h in generated.get("highlights", []))
+                lines.extend(f"GÇó {h}" for h in generated.get("highlights", []))
             lines.append("")
             for day in generated.get("days", []):
                 lines.append(f"Day {day.get('day_number', 1)}: {day.get('theme', '')}")
@@ -277,7 +278,7 @@ def ensure_ai_itinerary_generated(inquiry: InquiryRequest) -> str:
                 lines.append("")
             if generated.get("packing_essentials"):
                 lines.append("Packing Essentials:")
-                lines.extend(f"• {item}" for item in generated.get("packing_essentials", []))
+                lines.extend(f"GÇó {item}" for item in generated.get("packing_essentials", []))
             inquiry.itinerary_text = "\n".join(lines).strip()
     except Exception as err:
         print(f"Auto AI itinerary generation skipped: {err}")
@@ -342,7 +343,7 @@ def create_inquiry_document(inquiry: InquiryRequest, lead_id: str) -> str:
             if re.match(r"^(?:Day\s+\d+|Title:|Destination:|Duration:|Estimated Cost:|Best Season:|Highlights:|Packing Essentials:)", trimmed, re.IGNORECASE):
                 p = document.add_paragraph()
                 p.add_run(trimmed).bold = True
-            elif trimmed.startswith("- ") or trimmed.startswith("• "):
+            elif trimmed.startswith("- ") or trimmed.startswith("GÇó "):
                 document.add_paragraph(trimmed[2:], style="List Bullet")
             else:
                 document.add_paragraph(trimmed)
@@ -471,6 +472,7 @@ def create_private_hotel_pdf(inquiry: InquiryRequest, lead_id: str) -> str:
     return filename
 
 
+
 def send_email_via_brevo(subject: str, text_content: str, to_email: str, attachments: list = None) -> bool:
     import requests
     url = "https://api.brevo.com/v3/smtp/email"
@@ -493,10 +495,9 @@ def send_email_via_brevo(subject: str, text_content: str, to_email: str, attachm
         return False
     return True
 
-
 def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pdf_fn: Optional[str] = None) -> bool:
     """Sends full holiday inquiry to admin email."""
-    if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
+    if not BREVO_API_KEY and not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
         print("SMTP missing configuration. Email dispatch skipped.")
         return False
     try:
@@ -523,18 +524,6 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
             f"TOUR ITINERARY\n{inquiry.itinerary_text.strip() if inquiry.itinerary_text else 'No AI itinerary was selected.'}\n\n"
             f"Customer Word document and Hotel PDF are attached.\n"
         )
-        if BREVO_API_KEY:
-            subject = f"New Customer Inquiry - {inquiry.destination or \'General Inquiry\'} [{inquiry.source or \'Website\'}]"
-            body = msg.get_content()
-            brevo_atts = []
-            import base64
-            for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
-                if fn and os.path.exists(os.path.join(directory, fn)):
-                    with open(os.path.join(directory, fn), "rb") as bf:
-                        b64 = base64.b64encode(bf.read()).decode("utf-8")
-                        brevo_atts.append({"name": fn, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
-
         for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
             if fn:
                 filepath = os.path.join(directory, fn)
@@ -547,20 +536,23 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
                         else:
                             subtype = "octet-stream"
                         msg.add_attachment(f.read(), maintype="application", subtype=subtype, filename=fn)
-        if SMTP_PORT == 465:
-            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
-        else:
-            if SMTP_PORT == 465:
-            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
-        else:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.starttls()
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
+        if BREVO_API_KEY:
+            subject = f"New Customer Inquiry - {inquiry.destination or 'General Inquiry'} [{inquiry.source or 'Website'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            import os
+            for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
+                if fn and os.path.exists(os.path.join(directory, fn)):
+                    with open(os.path.join(directory, fn), "rb") as bf:
+                        b64 = base64.b64encode(bf.read()).decode("utf-8")
+                        brevo_atts.append({"name": fn, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+            smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send inquiry email to {ADMIN_EMAIL}: {err}")
@@ -569,7 +561,7 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
 
 def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional[str] = None) -> bool:
     """Sends flight/train/bus ticket query from Travel Services Hub to admin email."""
-    if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
+    if not BREVO_API_KEY and not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
         print("SMTP missing configuration. Ticket email dispatch skipped.")
         return False
     try:
@@ -591,28 +583,6 @@ def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional
             f"Notes: {inquiry.notes or 'None'}\n\n"
             f"Ticket query Word document is attached.\n"
         )
-        if BREVO_API_KEY:
-            subject = f"New Ticket Booking Query ({inquiry.transit_type}) - {inquiry.origin} to {inquiry.destination} [{inquiry.source or \'Travel Services Hub\'}]"
-            body = msg.get_content()
-            brevo_atts = []
-            import base64
-            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
-                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
-                    b64 = base64.b64encode(bf.read()).decode("utf-8")
-                    brevo_atts.append({"name": document_filename, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
-
-        if BREVO_API_KEY:
-            subject = f"New Transport & Cab Rental Query - {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop}) [{inquiry.source or \'Travel Services Hub\'}]"
-            body = msg.get_content()
-            brevo_atts = []
-            import base64
-            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
-                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
-                    b64 = base64.b64encode(bf.read()).decode("utf-8")
-                    brevo_atts.append({"name": document_filename, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
-
         if document_filename:
             attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
             if os.path.exists(attachment_path):
@@ -623,15 +593,10 @@ def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional
                         subtype="vnd.openxmlformats-officedocument.wordprocessingml.document",
                         filename=document_filename
                     )
-        if SMTP_PORT == 465:
-            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
-        else:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.starttls()
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+            smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send ticket query email to {ADMIN_EMAIL}: {err}")
@@ -640,7 +605,7 @@ def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional
 
 def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Optional[str] = None) -> bool:
     """Sends cab/taxi/volvo rental query from Travel Services Hub to admin email."""
-    if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
+    if not BREVO_API_KEY and not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
         print("SMTP missing configuration. Transport email dispatch skipped.")
         return False
     try:
@@ -663,28 +628,6 @@ def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Op
             f"Notes: {inquiry.notes or 'None'}\n\n"
             f"Transport query Word document is attached.\n"
         )
-        if BREVO_API_KEY:
-            subject = f"New Ticket Booking Query ({inquiry.transit_type}) - {inquiry.origin} to {inquiry.destination} [{inquiry.source or \'Travel Services Hub\'}]"
-            body = msg.get_content()
-            brevo_atts = []
-            import base64
-            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
-                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
-                    b64 = base64.b64encode(bf.read()).decode("utf-8")
-                    brevo_atts.append({"name": document_filename, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
-
-        if BREVO_API_KEY:
-            subject = f"New Transport & Cab Rental Query - {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop}) [{inquiry.source or \'Travel Services Hub\'}]"
-            body = msg.get_content()
-            brevo_atts = []
-            import base64
-            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
-                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
-                    b64 = base64.b64encode(bf.read()).decode("utf-8")
-                    brevo_atts.append({"name": document_filename, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
-
         if document_filename:
             attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
             if os.path.exists(attachment_path):
@@ -695,15 +638,10 @@ def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Op
                         subtype="vnd.openxmlformats-officedocument.wordprocessingml.document",
                         filename=document_filename
                     )
-        if SMTP_PORT == 465:
-            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
-        else:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-                smtp.starttls()
-                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                smtp.send_message(msg)
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+            smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send transport query email to {ADMIN_EMAIL}: {err}")
@@ -1009,38 +947,4 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
-@app.get("/api/debug-smtp")
-def debug_smtp():
-    import smtplib, os
-    from email.message import EmailMessage
-    
-    host = os.getenv("SMTP_HOST")
-    user = os.getenv("SMTP_USERNAME")
-    pwd = os.getenv("SMTP_PASSWORD")
-    
-    if not all([host, user, pwd]):
-        return {"status": "error", "message": f"Missing config. HOST={bool(host)}, USER={bool(user)}, PWD={bool(pwd)}"}
-        
-    msg = EmailMessage()
-    msg['Subject'] = 'Debug SMTP'
-    msg['From'] = user
-    msg['To'] = user
-    msg.set_content('Testing from Render.')
-    
-    try:
-        port = int(os.getenv("SMTP_PORT", "587"))
-        if port == 465:
-            with smtplib.SMTP_SSL(host, port, timeout=15) as smtp:
-                smtp.login(user, pwd)
-                smtp.send_message(msg)
-        else:
-            with smtplib.SMTP(host, port, timeout=15) as smtp:
-                smtp.starttls()
-                smtp.login(user, pwd)
-                smtp.send_message(msg)
-        return {"status": "success", "message": "Email sent"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-
 # Trigger reload
-
