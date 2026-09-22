@@ -910,4 +910,31 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
+@app.get("/api/debug-smtp")
+def debug_smtp():
+    import smtplib, os
+    from email.message import EmailMessage
+    
+    host = os.getenv("SMTP_HOST")
+    user = os.getenv("SMTP_USERNAME")
+    pwd = os.getenv("SMTP_PASSWORD")
+    
+    if not all([host, user, pwd]):
+        return {"status": "error", "message": f"Missing config. HOST={bool(host)}, USER={bool(user)}, PWD={bool(pwd)}"}
+        
+    msg = EmailMessage()
+    msg['Subject'] = 'Debug SMTP'
+    msg['From'] = user
+    msg['To'] = user
+    msg.set_content('Testing from Render.')
+    
+    try:
+        with smtplib.SMTP(host, int(os.getenv("SMTP_PORT", "587")), timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(user, pwd)
+            smtp.send_message(msg)
+        return {"status": "success", "message": "Email sent"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 # Trigger reload
