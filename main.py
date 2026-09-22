@@ -948,3 +948,10 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
 # Trigger reload
+
+@app.get("/api/debug-env")
+def debug_env():
+    return {
+        "has_brevo": bool(BREVO_API_KEY),
+        "brevo_prefix": BREVO_API_KEY[:7] if BREVO_API_KEY else None
+    }
