@@ -819,6 +819,14 @@ def chat_concierge_endpoint(req: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Concierge response failed: {str(e)}")
 
 
+@app.get("/api/autocorrect-location")
+def autocorrect_location_endpoint(query: str):
+    if not query:
+        return {"corrected": ""}
+    corrected = ai_service.autocorrect_location_name(query)
+    return {"corrected": corrected}
+
+
 @app.get("/api/resolve-pincode/{pincode}")
 def resolve_pincode_endpoint(pincode: str):
     resolved = ai_service.resolve_location_from_pincode_or_text(pincode)

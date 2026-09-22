@@ -36,6 +36,41 @@ def resolve_location_from_pincode_or_text(text: str) -> str:
     return text
 
 
+def autocorrect_location_name(location: str) -> str:
+    """Uses Gemini to identify and correct spelling mistakes in a location name."""
+    if not location or not location.strip():
+        return location
+        
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return location
+        
+    try:
+        from google import genai
+        client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
+        
+        prompt = (
+            f"You are a location validator. A user entered the following location: '{location}'.\n"
+            "If there are any spelling mistakes (e.g. 'Himalchal Predash'), correct them to the standard valid spelling (e.g. 'Himachal Pradesh').\n"
+            "Return ONLY the corrected location name, and absolutely nothing else. Do not add any punctuation or explanation. "
+            "If it is already correct, return it exactly as is."
+        )
+        
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+        )
+        corrected = response.text.strip()
+        # Clean up any potential markdown formatting the model might mistakenly add
+        if corrected.startswith('**') and corrected.endswith('**'):
+            corrected = corrected[2:-2].strip()
+            
+        return corrected if corrected else location
+    except Exception:
+        return location
+
+
+
 DEFAULT_TRANSIT_HUBS: Dict[str, Dict] = {
     "chardham": {
         "pickup": "Haridwar Railway Station / Dehradun Airport",
@@ -228,7 +263,11 @@ Waypoints: {', '.join(transit_info['waypoints'])}
 Preferred agency data:
 {package_context}
 
-Include these route fields exactly in the JSON-compatible itinerary content: pickup_location, drop_location, google_maps_route_url, and route_summary."""
+IMPORTANT INSTRUCTIONS:
+1. Identify if the user entered any locations (pickup, drop-off, destination) with spelling mistakes (e.g. "Himalchal Predash" instead of "Himachal Pradesh").
+2. Automatically correct these spelling mistakes and ALWAYS use the valid, correctly spelled names for all itinerary details (pickup_location, drop_location, destination, and route).
+3. Ensure valid day destinations are planned according to the corrected locations.
+4. Include these route fields exactly in the JSON-compatible itinerary content: pickup_location, drop_location, google_maps_route_url, and route_summary."""
 
 
 def _generate_gemini_itinerary(api_key: str, prompt: str, days: int) -> dict:
@@ -236,7 +275,7 @@ def _generate_gemini_itinerary(api_key: str, prompt: str, days: int) -> dict:
 
     client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
     response = client.models.generate_content(
-        model="gemini-1.5-flash",
+        model="gemini-3.6-flash",
         contents=prompt,
         config=_gemini_config(days),
     )
@@ -368,7 +407,7 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
     
                 client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
                 stream = client.models.generate_content_stream(
-                    model="gemini-1.5-flash",
+                    model="gemini-3.6-flash",
                     contents=_gemini_prompt(destination, days, budget, travel_style, travelers, special_requests, transit_info),
                     config=_gemini_config(days),
                 )
