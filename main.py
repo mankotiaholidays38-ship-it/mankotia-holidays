@@ -804,7 +804,12 @@ async def generate_itinerary_stream_endpoint(req: ItineraryRequest):
                 special_requests=req.special_requests or "", pickup_location=req.pickup_location,
                 drop_location=req.drop_location
             ),
-            media_type="text/event-stream"
+            media_type="text/event-stream",
+            headers={
+                "X-Accel-Buffering": "no",
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive"
+            }
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI stream generation failed: {str(e)}")
