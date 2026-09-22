@@ -538,7 +538,7 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
                         msg.add_attachment(f.read(), maintype="application", subtype=subtype, filename=fn)
         if BREVO_API_KEY:
             subject = f"New Customer Inquiry - {inquiry.destination or 'General Inquiry'} [{inquiry.source or 'Website'}]"
-            body = msg.get_content()
+            body = msg.get_body(preferencelist=('plain',)).get_content() if msg.is_multipart() else msg.get_content()
             brevo_atts = []
             import base64
             import os
