@@ -62,6 +62,20 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [dropLocation, setDropLocation] = useState('');
   const [sameAsPickup, setSameAsPickup] = useState(true);
 
+  const handleLocationBlur = async (locationValue, setterFunction) => {
+    if (!locationValue || locationValue.trim() === '') return;
+    try {
+      const res = await fetch(`/api/autocorrect-location?query=${encodeURIComponent(locationValue)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.corrected && data.corrected !== locationValue) {
+          setterFunction(data.corrected);
+        }
+      }
+    } catch (e) {
+      console.error("Autocorrect failed", e);
+    }
+  };
   const [loading, setLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingText, setStreamingText] = useState('');
@@ -544,6 +558,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                   placeholder="e.g. Haridwar Railway Station / Dehradun Airport / Delhi"
                   value={pickupLocation}
                   onChange={(e) => setPickupLocation(e.target.value)}
+                  onBlur={(e) => handleLocationBlur(e.target.value, setPickupLocation)}
                   required
                 />
               </div>
@@ -579,6 +594,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                     setDropLocation(e.target.value);
                     setSameAsPickup(false);
                   }}
+                  onBlur={(e) => !sameAsPickup && handleLocationBlur(e.target.value, setDropLocation)}
                   disabled={sameAsPickup}
                   required
                 />

@@ -107,7 +107,7 @@ def generate_gemini_itinerary(
     genai.configure(api_key=api_key, client_options={"api_endpoint": "generativelanguage.googleapis.com"})
     
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-3.6-flash",
         system_instruction=SYSTEM_PROMPT.format(
             days=days, 
             pickup_location=pickup_location,
@@ -154,7 +154,7 @@ async def generate_gemini_itinerary_stream(
     genai.configure(api_key=api_key, client_options={"api_endpoint": "generativelanguage.googleapis.com"})
     
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-3.6-flash",
         system_instruction=SYSTEM_PROMPT.format(
             days=days, 
             pickup_location=pickup_location,

@@ -15,6 +15,39 @@ load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
+def autocorrect_location_name(location: str) -> str:
+    """Uses Gemini to identify and correct spelling mistakes in a location name."""
+    if not location or not location.strip():
+        return location
+        
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return location
+        
+    try:
+        from google import genai
+        client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
+        
+        prompt = (
+            f"You are a location validator. A user entered the following location: '{location}'.\n"
+            "If there are any spelling mistakes (e.g. 'Himalchal Predash'), correct them to the standard valid spelling (e.g. 'Himachal Pradesh').\n"
+            "Return ONLY the corrected location name, and absolutely nothing else. Do not add any punctuation or explanation. "
+            "If it is already correct, return it exactly as is."
+        )
+        
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt,
+        )
+        corrected = response.text.strip()
+        # Clean up any potential markdown formatting the model might mistakenly add
+        if corrected.startswith('**') and corrected.endswith('**'):
+            corrected = corrected[2:-2].strip()
+            
+        return corrected if corrected else location
+    except Exception:
+        return location
+
 def resolve_location_from_pincode_or_text(text: str) -> str:
     """If text contains a 6-digit Indian PIN code, resolves Area, District and State."""
     if not text:
