@@ -471,6 +471,29 @@ def create_private_hotel_pdf(inquiry: InquiryRequest, lead_id: str) -> str:
     return filename
 
 
+def send_email_via_brevo(subject: str, text_content: str, to_email: str, attachments: list = None) -> bool:
+    import requests
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": AGENCY_NAME, "email": SMTP_FROM_EMAIL},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "textContent": text_content
+    }
+    if attachments:
+        payload["attachment"] = attachments
+    resp = requests.post(url, json=payload, headers=headers, timeout=15)
+    if resp.status_code not in (200, 201, 202):
+        print(f"Brevo Error: {resp.text}")
+        return False
+    return True
+
+
 def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pdf_fn: Optional[str] = None) -> bool:
     """Sends full holiday inquiry to admin email."""
     if not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
@@ -500,6 +523,18 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
             f"TOUR ITINERARY\n{inquiry.itinerary_text.strip() if inquiry.itinerary_text else 'No AI itinerary was selected.'}\n\n"
             f"Customer Word document and Hotel PDF are attached.\n"
         )
+        if BREVO_API_KEY:
+            subject = f"New Customer Inquiry - {inquiry.destination or \'General Inquiry\'} [{inquiry.source or \'Website\'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
+                if fn and os.path.exists(os.path.join(directory, fn)):
+                    with open(os.path.join(directory, fn), "rb") as bf:
+                        b64 = base64.b64encode(bf.read()).decode("utf-8")
+                        brevo_atts.append({"name": fn, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
         for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
             if fn:
                 filepath = os.path.join(directory, fn)
@@ -556,6 +591,28 @@ def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional
             f"Notes: {inquiry.notes or 'None'}\n\n"
             f"Ticket query Word document is attached.\n"
         )
+        if BREVO_API_KEY:
+            subject = f"New Ticket Booking Query ({inquiry.transit_type}) - {inquiry.origin} to {inquiry.destination} [{inquiry.source or \'Travel Services Hub\'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
+                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
+                    b64 = base64.b64encode(bf.read()).decode("utf-8")
+                    brevo_atts.append({"name": document_filename, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
+        if BREVO_API_KEY:
+            subject = f"New Transport & Cab Rental Query - {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop}) [{inquiry.source or \'Travel Services Hub\'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
+                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
+                    b64 = base64.b64encode(bf.read()).decode("utf-8")
+                    brevo_atts.append({"name": document_filename, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
         if document_filename:
             attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
             if os.path.exists(attachment_path):
@@ -606,6 +663,28 @@ def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Op
             f"Notes: {inquiry.notes or 'None'}\n\n"
             f"Transport query Word document is attached.\n"
         )
+        if BREVO_API_KEY:
+            subject = f"New Ticket Booking Query ({inquiry.transit_type}) - {inquiry.origin} to {inquiry.destination} [{inquiry.source or \'Travel Services Hub\'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
+                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
+                    b64 = base64.b64encode(bf.read()).decode("utf-8")
+                    brevo_atts.append({"name": document_filename, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
+        if BREVO_API_KEY:
+            subject = f"New Transport & Cab Rental Query - {inquiry.vehicle_category} ({inquiry.pickup} to {inquiry.drop}) [{inquiry.source or \'Travel Services Hub\'}]"
+            body = msg.get_content()
+            brevo_atts = []
+            import base64
+            if document_filename and os.path.exists(os.path.join(DOCUMENTS_DIR, document_filename)):
+                with open(os.path.join(DOCUMENTS_DIR, document_filename), "rb") as bf:
+                    b64 = base64.b64encode(bf.read()).decode("utf-8")
+                    brevo_atts.append({"name": document_filename, "content": b64})
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+
         if document_filename:
             attachment_path = os.path.join(DOCUMENTS_DIR, document_filename)
             if os.path.exists(attachment_path):
