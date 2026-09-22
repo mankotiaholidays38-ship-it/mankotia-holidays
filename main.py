@@ -512,10 +512,20 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
                         else:
                             subtype = "octet-stream"
                         msg.add_attachment(f.read(), maintype="application", subtype=subtype, filename=fn)
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-            smtp.starttls()
-            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-            smtp.send_message(msg)
+        if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
+        else:
+            if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
+        else:
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.starttls()
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send inquiry email to {ADMIN_EMAIL}: {err}")
@@ -556,10 +566,15 @@ def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional
                         subtype="vnd.openxmlformats-officedocument.wordprocessingml.document",
                         filename=document_filename
                     )
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-            smtp.starttls()
-            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-            smtp.send_message(msg)
+        if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
+        else:
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.starttls()
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send ticket query email to {ADMIN_EMAIL}: {err}")
@@ -601,10 +616,15 @@ def send_transport_email(inquiry: TransportInquiryRequest, document_filename: Op
                         subtype="vnd.openxmlformats-officedocument.wordprocessingml.document",
                         filename=document_filename
                     )
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
-            smtp.starttls()
-            smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-            smtp.send_message(msg)
+        if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
+        else:
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
+                smtp.starttls()
+                smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
+                smtp.send_message(msg)
         return True
     except Exception as err:
         print(f"Failed to send transport query email to {ADMIN_EMAIL}: {err}")
@@ -929,12 +949,19 @@ def debug_smtp():
     msg.set_content('Testing from Render.')
     
     try:
-        with smtplib.SMTP(host, int(os.getenv("SMTP_PORT", "587")), timeout=15) as smtp:
-            smtp.starttls()
-            smtp.login(user, pwd)
-            smtp.send_message(msg)
+        port = int(os.getenv("SMTP_PORT", "587"))
+        if port == 465:
+            with smtplib.SMTP_SSL(host, port, timeout=15) as smtp:
+                smtp.login(user, pwd)
+                smtp.send_message(msg)
+        else:
+            with smtplib.SMTP(host, port, timeout=15) as smtp:
+                smtp.starttls()
+                smtp.login(user, pwd)
+                smtp.send_message(msg)
         return {"status": "success", "message": "Email sent"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
 # Trigger reload
+
