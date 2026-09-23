@@ -325,7 +325,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
   const handleWhatsAppShare = () => {
     if (!itinerary) return;
     const resolvedDrop = itinerary.drop_location || (sameAsPickup ? pickupLocation : dropLocation);
-    const itineraryText = `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`;
+    const itineraryText = `Title: ${itinerary.title || ''}\nDestination: ${itinerary.destination || ''}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration || itinerary.total_days + ' Days'}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme || day.base_location}\nMorning: ${day.morning || day.activities}\nAfternoon: ${day.afternoon || ''}\nEvening: ${day.evening || ''}\nStay: ${day.stay_suggestion || day.overnight_stay}`).join('\n\n')}`;
     onOpenInquiry({
       destination: itinerary.destination || destination,
       days: parseInt(days, 10),
@@ -348,7 +348,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
       budget,
       pickup: itinerary.pickup_location || pickupLocation,
       drop: resolvedDrop,
-      itinerary_text: `Title: ${itinerary.title}\nDestination: ${itinerary.destination}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nDuration: ${itinerary.duration}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme}\nMorning: ${day.morning}\nAfternoon: ${day.afternoon}\nEvening: ${day.evening}\nStay: ${day.stay_suggestion}`).join('\n\n')}`,
+      itinerary_text: `Title: ${itinerary.title || ''}\nDestination: ${itinerary.destination || ''}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nDuration: ${itinerary.duration || itinerary.total_days + ' Days'}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme || day.base_location}\nMorning: ${day.morning || day.activities}\nAfternoon: ${day.afternoon || ''}\nEvening: ${day.evening || ''}\nStay: ${day.stay_suggestion || day.overnight_stay}`).join('\n\n')}`,
       notes: `Selected AI itinerary: ${itinerary.title} | Destination: ${itinerary.destination} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: Price On Request`
     });
   };
@@ -939,7 +939,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                     padding: '3px 8px',
                     borderRadius: '6px'
                   }}>
-                    <strong style={{ color: '#FCD34D' }}>D{day.day_number}:</strong> {day.theme ? day.theme.split('&')[0].trim() : `Day ${day.day_number}`}
+                    <strong style={{ color: '#FCD34D' }}>D{day.day_number}:</strong> {(day.theme || day.base_location) ? (day.theme || day.base_location).split('&')[0].trim() : `Day ${day.day_number}`}
                   </span>
                 ))}
               </div>
@@ -1018,7 +1018,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                           )}
 
                           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
-                            {day.theme}
+                            {day.theme || `Explore ${day.base_location}`}
                           </span>
                         </div>
 
@@ -1034,30 +1034,34 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                             
                             <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
                               <div style={{ fontSize: '0.8rem', color: '#F59E0B', fontWeight: 700, marginBottom: '4px' }}>
-                                🌅 Morning:
+                                ☀️ <strong>Morning/Activities:</strong>
                               </div>
                               <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                                {day.morning}
+                                {day.morning || day.activities}
                               </div>
                             </div>
 
-                            <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
-                              <div style={{ fontSize: '0.8rem', color: '#06B6D4', fontWeight: 700, marginBottom: '4px' }}>
-                                ☀️ Afternoon:
+                            {day.afternoon && (
+                              <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#06B6D4', fontWeight: 700, marginBottom: '4px' }}>
+                                  ☀️ Afternoon:
+                                </div>
+                                <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
+                                  {day.afternoon}
+                                </div>
                               </div>
-                              <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                                {day.afternoon}
-                              </div>
-                            </div>
+                            )}
 
-                            <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
-                              <div style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 700, marginBottom: '4px' }}>
-                                🌙 Evening & Night:
+                            {day.evening && (
+                              <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 700, marginBottom: '4px' }}>
+                                  🌙 Evening & Night:
+                                </div>
+                                <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
+                                  {day.evening}
+                                </div>
                               </div>
-                              <div style={{ fontSize: '0.88rem', color: '#E2E8F0', lineHeight: 1.5 }}>
-                                {day.evening}
-                              </div>
-                            </div>
+                            )}
 
                           </div>
 
@@ -1077,8 +1081,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                               {day.meal_recommendation && (
                                 <div>🍽️ <strong>Meal:</strong> {day.meal_recommendation}</div>
                               )}
-                              {day.stay_suggestion && (
-                                <div>🏨 <strong>Stay:</strong> {day.stay_suggestion}</div>
+                              {(day.stay_suggestion || day.overnight_stay) && (
+                                <div>🏨 <strong>Stay:</strong> {day.stay_suggestion || day.overnight_stay}</div>
                               )}
                             </div>
                             {day.pro_tip && (
@@ -1087,7 +1091,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                           </div>
 
                           <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(day.location_name || day.stay_suggestion || day.theme)}`}
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(day.location_name || day.stay_suggestion || day.overnight_stay || day.theme || day.base_location || '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{

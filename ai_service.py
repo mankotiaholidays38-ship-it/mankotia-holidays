@@ -262,7 +262,7 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                     agency_context += f"Package: {p['title']}\nRoute: {p['destination']}\nHighlights: {', '.join(p['highlights'])}\n\n"
             
             # 3. Feed structured data + user prefs -> Gemini
-            data = generate_gemini_itinerary(
+            raw_data = generate_gemini_itinerary(
                 api_key=api_key,
                 destination=destination,
                 days=days,
@@ -276,6 +276,26 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                 candidate_places=candidate_places_str,
                 agency_context=agency_context
             )
+            
+            # Map strict schema back to rich format for frontend
+            data = {
+                "title": f"{days}-Day Trip to {destination}",
+                "destination": destination,
+                "duration": f"{days} Days",
+                "estimated_cost_inr": "Price On Request",
+                "days": []
+            }
+            
+            for d in raw_data.get("days", []):
+                data["days"].append({
+                    "day_number": d.get("day_number"),
+                    "theme": f"Explore {d.get('base_location')}",
+                    "morning": d.get("activities"),
+                    "afternoon": "Continue exploring the destinations.",
+                    "evening": "Relax and explore local markets.",
+                    "stay_suggestion": d.get("overnight_stay"),
+                    "waypoints_for_routing": d.get("destinations", [])
+                })
             
             # Day-count enforcement
             if len(data.get("days", [])) > days:
@@ -495,11 +515,44 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
                 candidate_places=candidate_places_str,
                 agency_context=agency_context
             ):
-                yield chunk
+                # Parse the raw chunk
+                try:
+                    data = json.loads(chunk)
+                    # Enrich with missing fields
+                    data["title"] = f"{days} Days {destination.title()} Trip"
+                    data["destination"] = destination
+                    data["duration"] = f"{days} Days / {max(1, days-1)} Nights"
+                    data["estimated_cost_inr"] = "As per actuals"
+                    data["best_season"] = "Year Round"
+                    data["pickup_location"] = transit_info["pickup_location"]
+                    data["drop_location"] = transit_info["drop_location"]
+                    data["google_maps_route_url"] = transit_info["google_maps_route_url"]
+                    data["route_summary"] = transit_info["route_summary"]
+                    
+                    # Validate/enrich with real distances
+                    if maps_service.is_configured():
+                        for idx, day in enumerate(data.get("days", [])):
+                            wp = day.get("destinations", [])
+                            if len(wp) >= 2:
+                                origin = wp[0]
+                                dest = wp[-1]
+                                intermediate = wp[1:-1]
+                                dist_info = maps_service.calculate_route_distances(origin, dest, intermediate)
+                                if dist_info:
+                                    day["travel_time_info"] = f"Total driving: {dist_info['total_distance_km']} km (~{dist_info['total_duration_mins']} mins)"
+
+                    yield json.dumps(data)
+                except Exception as parse_err:
+                    print(f"Error enriching stream chunk: {parse_err}")
+                    yield chunk
+
         except Exception as e:
+            import traceback
+            with open("gemini_error.txt", "w") as err_f:
+                err_f.write(traceback.format_exc())
             print(f"Gemini stream failed: {e}")
             # Fallback if API call fails
-            fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, pickup_location, drop_location)
+            fallback_data = generate_ai_itinerary(destination, days, budget, travel_style, travelers, special_requests, transit_info['pickup_location'], transit_info['drop_location'])
             yield json.dumps(fallback_data)
     except Exception as fatal_error:
         print(f"Fatal error in itinerary stream: {fatal_error}")
