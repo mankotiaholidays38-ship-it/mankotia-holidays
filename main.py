@@ -1,4 +1,4 @@
-﻿import os
+import os
 import smtplib
 import re
 import urllib.parse
@@ -495,11 +495,10 @@ def send_email_via_brevo(subject: str, text_content: str, to_email: str, attachm
         return False
     return True
 
-def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pdf_fn: Optional[str] = None) -> bool:
+def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pdf_fn: Optional[str] = None) -> tuple[bool, str]:
     """Sends full holiday inquiry to admin email."""
     if not BREVO_API_KEY and not all([SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]):
-        print("SMTP missing configuration. Email dispatch skipped.")
-        return False
+        return False, f"SMTP config missing. Host: {SMTP_HOST}, User: {SMTP_USERNAME}, Pass Set: {bool(SMTP_PASSWORD)}"
     try:
         msg = EmailMessage()
         msg["Subject"] = f"New Customer Inquiry - {inquiry.destination or 'General Inquiry'} [{inquiry.source or 'Website'}]"
@@ -547,16 +546,15 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
                     with open(os.path.join(directory, fn), "rb") as bf:
                         b64 = base64.b64encode(bf.read()).decode("utf-8")
                         brevo_atts.append({"name": fn, "content": b64})
-            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts)
+            return send_email_via_brevo(subject, body, ADMIN_EMAIL, brevo_atts), "Sent via Brevo"
 
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as smtp:
             smtp.starttls()
             smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
             smtp.send_message(msg)
-        return True
+        return True, "Success"
     except Exception as err:
-        print(f"Failed to send inquiry email to {ADMIN_EMAIL}: {err}")
-        return False
+        return False, f"Exception: {str(err)}"
 
 
 def send_ticket_email(inquiry: TicketInquiryRequest, document_filename: Optional[str] = None) -> bool:
@@ -735,10 +733,11 @@ def create_inquiry(inquiry: InquiryRequest):
             pass
             
         admin_email_sent = False
+        email_debug = ""
         try:
-            admin_email_sent = send_inquiry_email(inquiry, doc_fn, pdf_fn)
+            admin_email_sent, email_debug = send_inquiry_email(inquiry, doc_fn, pdf_fn)
         except Exception as err:
-            print(f"Inquiry admin email sending failed: {err}")
+            email_debug = f"Crash inside send_inquiry_email: {str(err)}"
 
         wa_msg = f"Hi {AGENCY_NAME}! Travel inquiry submitted.\nName: {inquiry.name}\nDestination: {inquiry.destination}\nDate: {inquiry.travel_date}\nDays: {inquiry.days}"
         return {
@@ -746,6 +745,7 @@ def create_inquiry(inquiry: InquiryRequest):
             "message": "Inquiry recorded successfully.",
             "lead_id": saved_lead["lead_id"],
             "admin_email_sent": admin_email_sent,
+            "email_debug": email_debug,
             "whatsapp_redirect_url": f"https://wa.me/{AGENCY_WHATSAPP}?text={urllib.parse.quote(wa_msg)}",
             "call_link": f"tel:{AGENCY_PHONE}"
         }
