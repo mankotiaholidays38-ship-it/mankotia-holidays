@@ -1,4 +1,5 @@
 import os
+import base64
 import smtplib
 import re
 import urllib.parse
@@ -539,8 +540,6 @@ def send_inquiry_email(inquiry: InquiryRequest, doc_fn: Optional[str] = None, pd
             subject = f"New Customer Inquiry - {inquiry.destination or 'General Inquiry'} [{inquiry.source or 'Website'}]"
             body = msg.get_body(preferencelist=('plain',)).get_content() if msg.is_multipart() else msg.get_content()
             brevo_atts = []
-            import base64
-            import os
             for fn, directory in [(doc_fn, DOCUMENTS_DIR), (pdf_fn, PRIVATE_HOTEL_PLANS_DIR)]:
                 if fn and os.path.exists(os.path.join(directory, fn)):
                     with open(os.path.join(directory, fn), "rb") as bf:
