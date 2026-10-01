@@ -47,14 +47,14 @@ def autocorrect_location_name(location: str) -> str:
             model="gemini-3.6-flash",
             contents=prompt,
         )
-        corrected = response.text.strip()
+        corrected = response.text.strip().strip("'\"`")
         # Clean up any potential markdown formatting the model might mistakenly add
         if corrected.startswith('**') and corrected.endswith('**'):
-            corrected = corrected[2:-2].strip()
+            corrected = corrected[2:-2].strip().strip("'\"`")
             
-        return corrected if corrected else location
+        return corrected if corrected else location.strip().strip("'\"`")
     except Exception:
-        return location
+        return location.strip().strip("'\"`")
 
 def resolve_location_from_pincode_or_text(text: str) -> str:
     """If text contains a 6-digit Indian PIN code, resolves Area, District and State."""
@@ -182,8 +182,10 @@ def resolve_transit_and_maps(destination: str, pickup_location: Optional[str] = 
             matched_hub = data
             break
             
-    resolved_pickup = resolve_location_from_pincode_or_text(pickup_location or "") or (matched_hub["pickup"] if matched_hub else f"{destination.title()} Airport / Station")
-    resolved_drop = resolve_location_from_pincode_or_text(drop_location or "") or (matched_hub["drop"] if matched_hub else resolved_pickup)
+    raw_pickup = resolve_location_from_pincode_or_text(pickup_location or "") or (matched_hub["pickup"] if matched_hub else f"{destination.title()} Airport / Station")
+    raw_drop = resolve_location_from_pincode_or_text(drop_location or "") or (matched_hub["drop"] if matched_hub else raw_pickup)
+    resolved_pickup = raw_pickup.strip().strip("'\"`")
+    resolved_drop = raw_drop.strip().strip("'\"`")
     waypoints_list = matched_hub["waypoints"] if matched_hub else [destination.title()]
     
     encoded_origin = urllib.parse.quote_plus(resolved_pickup)
@@ -201,10 +203,62 @@ def resolve_transit_and_maps(destination: str, pickup_location: Optional[str] = 
     }
 
 
+def _generate_dynamic_route(data: dict, transit_info: dict) -> tuple:
+    import urllib.parse
+    actual_waypoints = []
+    for d in data.get("days", []):
+        bl = d.get("base_location") or d.get("stay_suggestion")
+        if bl and bl not in actual_waypoints:
+            actual_waypoints.append(bl)
+            
+    dyn_origin = transit_info.get("pickup_location", "")
+    dyn_dest = transit_info.get("drop_location", "")
+    
+    filtered_wps = [wp for wp in actual_waypoints if wp.lower() not in dyn_origin.lower() and wp.lower() not in dyn_dest.lower()]
+    
+    encoded_origin = urllib.parse.quote_plus(dyn_origin)
+    encoded_dest = urllib.parse.quote_plus(dyn_dest)
+    encoded_wps = urllib.parse.quote_plus("|".join(filtered_wps[:8]))
+    
+    dyn_url = f"https://www.google.com/maps/dir/?api=1&origin={encoded_origin}&destination={encoded_dest}"
+    if encoded_wps:
+        dyn_url += f"&waypoints={encoded_wps}"
+        
+    summary_list = [dyn_origin] + filtered_wps[:4] + [dyn_dest]
+    route_summary = " -> ".join([s for s in summary_list if s])
+    return dyn_url, route_summary
+
+
 def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str, str]:
     """Returns (extended_destination_name, extension_notes)."""
-    dest_lower = (destination or "").lower()
+    if not destination or not destination.strip():
+        return destination, ""
+        
+    dest_lower = destination.lower()
+    primary_dest = destination.split('(')[0].strip().lower()
     
+    # If the destination is already a multi-destination package/circuit, do not extend or duplicate
+    is_multi_circuit = (
+        '•' in destination or 
+        ',' in destination or 
+        ' & ' in destination or
+        'complete' in primary_dest or
+        'circuit' in primary_dest or
+        'tour' in primary_dest or
+        'yatra' in primary_dest or
+        'package' in primary_dest or
+        'rajasthan' in primary_dest or
+        'char dham' in primary_dest or
+        'chardham' in primary_dest or
+        'golden triangle' in primary_dest or
+        'uttarakhand' in primary_dest or
+        'himachal' in primary_dest or
+        'kashmir' in primary_dest or
+        'kerala' in primary_dest
+    )
+    if is_multi_circuit:
+        return destination, ""
+
     thresholds = [
         {"keys": ['agra', 'taj mahal', 'fatehpur'], "maxDays": 2, "suggest": 'the Golden Triangle (Delhi, Jaipur)'},
         {"keys": ['jaipur', 'pink city'], "maxDays": 3, "suggest": 'a Complete Rajasthan Tour (Jodhpur, Udaipur, Jaisalmer)'},
@@ -217,7 +271,9 @@ def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str,
     ]
     
     for rule in thresholds:
-        if any(k in dest_lower for k in rule["keys"]):
+        if any(k in primary_dest for k in rule["keys"]):
+            if any(s in dest_lower for s in ['rajasthan', 'golden triangle', 'char dham', 'chardham']):
+                return destination, ""
             if days > rule["maxDays"]:
                 return (f"{destination} & {rule['suggest']}", 
                         f"CRITICAL INSTRUCTION: The user originally requested {destination}, but selected {days} days, which is too long for just that location. You MUST extend the itinerary to include {rule['suggest']} to logically fill the {days} days.")
@@ -231,6 +287,7 @@ def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str,
 
 
 def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None) -> dict:
+    original_destination = destination
     extended_dest, extension_notes = extend_destination_for_extra_days(destination, days)
     if extension_notes:
         special_requests = f"{special_requests}\n\n{extension_notes}".strip()
@@ -246,9 +303,9 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
             drop_geo = maps_service.geocode_location(transit_info['drop_location'])
             if pickup_geo:
-                transit_info['pickup_location'] = pickup_geo['formatted_address']
+                transit_info['pickup_location'] = pickup_geo['formatted_address'].strip().strip("'\"`")
             if drop_geo:
-                transit_info['drop_location'] = drop_geo['formatted_address']
+                transit_info['drop_location'] = drop_geo['formatted_address'].strip().strip("'\"`")
                 
             # 2. Get candidate places/attractions near route
             candidate_places_list = maps_service.get_candidate_places(destination)
@@ -286,24 +343,36 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             )
             
             # Map strict schema back to rich format for frontend
+            clean_display_dest = original_destination.strip()
             data = {
-                "title": f"{days}-Day Trip to {destination}",
-                "destination": destination,
+                "title": f"{days}-Day Trip to {clean_display_dest}",
+                "destination": clean_display_dest,
                 "duration": f"{days} Days",
                 "estimated_cost_inr": "Price On Request",
                 "days": []
             }
             
             total_days_in_raw = len(raw_data.get("days", []))
+            clean_pickup = transit_info["pickup_location"].strip().strip("'\"`")
+            clean_drop = transit_info["drop_location"].strip().strip("'\"`")
             for i, d in enumerate(raw_data.get("days", [])):
+                is_first_day = (i == 0)
                 is_last_day = (i == total_days_in_raw - 1)
+                if is_first_day:
+                    day_theme = f"Pickup from {clean_pickup}"
+                elif is_last_day:
+                    day_theme = "Departure"
+                else:
+                    raw_theme = d.get("theme") or f"Explore {d.get('base_location')}"
+                    day_theme = raw_theme.strip().strip("'\"`")
+
                 data["days"].append({
                     "day_number": d.get("day_number"),
-                    "theme": f"Explore {d.get('base_location')}",
+                    "theme": day_theme,
                     "morning": d.get("activities"),
                     "afternoon": "" if is_last_day else "Continue exploring the destinations.",
                     "evening": "" if is_last_day else "Relax and explore local markets.",
-                    "stay_suggestion": d.get("overnight_stay"),
+                    "stay_suggestion": "" if is_last_day else d.get("overnight_stay"),
                     "waypoints_for_routing": d.get("destinations", [])
                 })
             
@@ -332,10 +401,11 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                         if dist_info:
                             day["travel_time_info"] = f"Total driving: {dist_info['total_distance_km']} km (~{dist_info['total_duration_mins']} mins)"
 
-            data["pickup_location"] = transit_info["pickup_location"]
-            data["drop_location"] = transit_info["drop_location"]
-            data["google_maps_route_url"] = transit_info["google_maps_route_url"]
-            data["route_summary"] = transit_info["route_summary"]
+            data["pickup_location"] = clean_pickup
+            data["drop_location"] = clean_drop
+            dyn_url, dyn_summary = _generate_dynamic_route(data, transit_info)
+            data["google_maps_route_url"] = dyn_url
+            data["route_summary"] = dyn_summary
             return data
         except Exception as error:
             print(f"Gemini API itinerary call failed: {error}")
@@ -354,6 +424,10 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
         match_key = "auli_chopta"
     elif any(k in dest_key for k in ["kashmir", "srinagar", "gulmarg", "pahalgam"]):
         match_key = "kashmir"
+    elif any(k in dest_key for k in ["royal rajasthan", "rajasthan"]):
+        match_key = "rajasthan"
+    elif any(k in dest_key for k in ["golden triangle", "delhi agra jaipur"]):
+        match_key = "golden_triangle"
     elif any(k in dest_key for k in ["delhi capital", "delhi"]):
         match_key = "delhi"
     elif any(k in dest_key for k in ["agra taj mahal", "agra"]):
@@ -362,9 +436,7 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
         match_key = "jaipur"
     elif any(k in dest_key for k in ["mathura vrindavan", "mathura", "vrindavan"]):
         match_key = "mathura"
-    elif any(k in dest_key for k in ["golden triangle", "delhi agra jaipur"]):
-        match_key = "golden_triangle"
-    elif any(k in dest_key for k in ["royal rajasthan", "jodhpur", "udaipur", "jaisalmer", "rajasthan"]):
+    elif any(k in dest_key for k in ["jodhpur", "udaipur", "jaisalmer"]):
         match_key = "rajasthan"
     elif any(k in dest_key for k in ["goa"]):
         match_key = "goa"
@@ -372,6 +444,9 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
         match_key = "kerala"
     elif any(k in dest_key for k in ["shimla", "manali", "kullu", "chandigarh", "himachal"]):
         match_key = "shimla_manali"
+
+    clean_pickup = transit_info['pickup_location'].strip().strip("'\"`")
+    clean_drop = transit_info['drop_location'].strip().strip("'\"`")
 
     if match_key and match_key in POPULAR_DESTINATIONS:
         data_copy = json.loads(json.dumps(POPULAR_DESTINATIONS[match_key]))
@@ -390,11 +465,11 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             
             for i in range(current_len + 1, days + 1):
                 if i == days:
-                    theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
-                    morning = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+                    theme = "Departure"
+                    morning = f"After checkout, start journey for {clean_drop} and end of the tour."
                     afternoon = ""
                     evening = ""
-                    stay = f"Drop at {transit_info['drop_location']} / Onward Journey"
+                    stay = f"Drop at {clean_drop} / Onward Journey"
                 else:
                     activities = ["Cultural Heritage Tour", "Nature Walk", "Local Markets", "Temple Visit", "Leisure Day"]
                     activity = activities[(i - 2) % len(activities)]
@@ -411,20 +486,22 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                 })
                 
         # Forcefully enforce pickup and drop on the template
-        data_copy["days"][0]["morning"] = f"Chauffeur meets you at {transit_info['pickup_location']}. Commence journey."
+        data_copy["days"][0]["theme"] = f"Pickup from {clean_pickup}"
+        data_copy["days"][0]["morning"] = f"Chauffeur meets you at {clean_pickup}. Commence journey."
         
         last_day = data_copy["days"][-1]
-        last_day["theme"] = f"Departure & Drop-off at {transit_info['drop_location']}"
-        last_day["morning"] = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+        last_day["theme"] = "Departure"
+        last_day["morning"] = f"After checkout, start journey for {clean_drop} and end of the tour."
         last_day["afternoon"] = ""
         last_day["evening"] = ""
         last_day["stay_suggestion"] = ""
         
         data_copy["duration"] = f"{days} Days / {max(1, days-1)} Nights"
-        data_copy["pickup_location"] = transit_info["pickup_location"]
-        data_copy["drop_location"] = transit_info["drop_location"]
-        data_copy["google_maps_route_url"] = transit_info["google_maps_route_url"]
-        data_copy["route_summary"] = transit_info["route_summary"]
+        data_copy["pickup_location"] = clean_pickup
+        data_copy["drop_location"] = clean_drop
+        dyn_url, dyn_summary = _generate_dynamic_route(data_copy, transit_info)
+        data_copy["google_maps_route_url"] = dyn_url
+        data_copy["route_summary"] = dyn_summary
         return data_copy
 
     # Dynamic fallback generator
@@ -432,14 +509,14 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     generated_days = []
     for i in range(1, days + 1):
         if i == 1:
-            theme = f"Pickup from {transit_info['pickup_location']} & Scenic Drive to {dest_name}"
-            morning = f"Chauffeur meets you at {transit_info['pickup_location']}. Commence scenic journey to {dest_name}."
+            theme = f"Pickup from {clean_pickup}"
+            morning = f"Chauffeur meets you at {clean_pickup}. Commence scenic journey to {dest_name}."
             afternoon = f"En-route lunch stop. Arrive and check-in at hotel in {dest_name}."
             evening = f"Freshen up and enjoy an evening stroll around local markets."
             stay = f"Deluxe 4-Star Resort in {dest_name}"
         elif i == days:
-            theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
-            morning = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+            theme = "Departure"
+            morning = f"After checkout, start journey for {clean_drop} and end of the tour."
             afternoon = ""
             evening = ""
             stay = ""
@@ -462,20 +539,21 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
         "title": f"Divine & Scenic {dest_name} Getaway",
         "destination": dest_name,
         "duration": f"{days} Days / {max(1, days-1)} Nights",
-        "pickup_location": transit_info["pickup_location"],
-        "drop_location": transit_info["drop_location"],
-        "google_maps_route_url": transit_info["google_maps_route_url"],
-        "route_summary": transit_info["route_summary"],
+        "pickup_location": clean_pickup,
+        "drop_location": clean_drop,
+        "google_maps_route_url": _generate_dynamic_route({"days": generated_days}, transit_info)[0],
+        "route_summary": _generate_dynamic_route({"days": generated_days}, transit_info)[1],
         "estimated_cost_inr": "Price On Request",
         "best_season": "Year-round (Best: Spring, Summer & Autumn)",
         "packing_essentials": ["Comfortable walking shoes", "Mobile charger & power bank", "Gov ID cards & travel vouchers"],
-        "highlights": [f"Seamless pickup from {transit_info['pickup_location']} and drop at {transit_info['drop_location']}", f"Curated private tour of {dest_name}", "Handpicked accommodation"],
+        "highlights": [f"Seamless pickup from {clean_pickup} and drop at {clean_drop}", f"Curated private tour of {dest_name}", "Handpicked accommodation"],
         "days": generated_days
     }
 
 
 async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None):
     try:
+        original_destination = destination
         extended_dest, extension_notes = extend_destination_for_extra_days(destination, days)
         if extension_notes:
             special_requests = f"{special_requests}\n\n{extension_notes}".strip()
@@ -496,9 +574,9 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
             pickup_geo = maps_service.geocode_location(transit_info['pickup_location'])
             drop_geo = maps_service.geocode_location(transit_info['drop_location'])
             if pickup_geo:
-                transit_info['pickup_location'] = pickup_geo['formatted_address']
+                transit_info['pickup_location'] = pickup_geo['formatted_address'].strip().strip("'\"`")
             if drop_geo:
-                transit_info['drop_location'] = drop_geo['formatted_address']
+                transit_info['drop_location'] = drop_geo['formatted_address'].strip().strip("'\"`")
                 
             candidate_places_list = maps_service.get_candidate_places(destination)
             candidate_places_str = ""
@@ -539,16 +617,35 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
                 try:
                     data = json.loads(chunk)
                     # Enrich with missing fields
-                    data["title"] = f"{days} Days {destination.title()} Trip"
-                    data["destination"] = destination
+                    clean_display_dest = original_destination.strip()
+                    clean_pickup = transit_info["pickup_location"].strip().strip("'\"`")
+                    clean_drop = transit_info["drop_location"].strip().strip("'\"`")
+                    data["title"] = f"{days} Days {clean_display_dest} Trip"
+                    data["destination"] = clean_display_dest
                     data["duration"] = f"{days} Days / {max(1, days-1)} Nights"
                     data["estimated_cost_inr"] = "As per actuals"
                     data["best_season"] = "Year Round"
-                    data["pickup_location"] = transit_info["pickup_location"]
-                    data["drop_location"] = transit_info["drop_location"]
-                    data["google_maps_route_url"] = transit_info["google_maps_route_url"]
-                    data["route_summary"] = transit_info["route_summary"]
+                    data["pickup_location"] = clean_pickup
+                    data["drop_location"] = clean_drop
+                    dyn_url, dyn_summary = _generate_dynamic_route(data, transit_info)
+                    data["google_maps_route_url"] = dyn_url
+                    data["route_summary"] = dyn_summary
                     
+                    # Ensure proper themes: 'Pickup from <pickup_location>' for day 1, and 'Departure' for last day
+                    days_list = data.get("days", [])
+                    total_days = len(days_list)
+                    for idx, day in enumerate(days_list):
+                        is_first = (idx == 0)
+                        is_last = (idx == total_days - 1)
+                        if is_first:
+                            day["theme"] = f"Pickup from {clean_pickup}"
+                        elif is_last:
+                            day["theme"] = "Departure"
+                            day["stay_suggestion"] = ""
+                        else:
+                            raw_theme = day.get("theme") or f"Explore {day.get('base_location') or destination}"
+                            day["theme"] = raw_theme.strip().strip("'\"`")
+
                     # Validate/enrich with real distances
                     if maps_service.is_configured():
                         for idx, day in enumerate(data.get("days", [])):
@@ -601,17 +698,17 @@ NO FIXED RATES / SEASONAL PRICING POLICY (STRICT RULE):
   3. Always include '📋 Book Now' and 'Connect on WhatsApp' in your follow-up OPTIONS.
 
 CRITICAL INSTRUCTIONS:
-1. BREVITY & FORMAT: Keep answers SHORT (2-4 bullet points or 3-4 sentences). No long essays.
-2. TONE: Genuine, polite, professional, and transparent.
+1. BREVITY & FORMAT: Keep answers concise, highly structured, and crisp (2-4 bullet points or 3-4 sentences). Avoid long essays.
+2. TONE & DECORUM: Executive, distinguished, polite, and formal hospitality concierge tone (like a five-star luxury travel desk). Maintain professional etiquette and clear, authoritative guidance. Avoid casual internet slang, emojis overload, or informal colloquialisms.
 3. NO PAYMENT OPTIONS: Never mention payment details, bank accounts, UPI, or advance deposits. Mankotia Holidays handles bookings directly via WhatsApp/phone after the query form is submitted.
 4. BOOKING FORM: If a traveler wants to book or get a quotation, tell them to click the **Book Now** button in the chat to fill the booking form. Always include '📋 Book Now' in options.
-5. POLICIES: If asked about cancellation, refund, or Terms & Conditions, provide accurate information from the policy data below.
+5. POLICIES: If asked about cancellation, refund, or Terms & Conditions, provide accurate information from the policy data below, and ALWAYS include '🔙 Back to Menu' as the first option in OPTIONS.
 6. INTERACTIVE OPTIONS: At the END of every response, output exactly 4-6 follow-up options:
 OPTIONS: [Choice 1 | Choice 2 | Choice 3 | Choice 4 | Choice 5]
 
 AGENCY CONTEXT:
 - Agency: {AGENCY_NAME} (GST: 07AGQPM4637F1Z4)
-- Helplines: +91 9811485028 / +91 8627068616 | WhatsApp: +91 9811485028
+- Helplines: +91 9816461616 / +91 9811485028 / +91 8627068616 | WhatsApp: +91 9816461616
 - Offices: New Delhi (Pitampura), Manali (Hadimba Rd), Una (HP)
 - Packages offered: Char Dham Yatra (10N/11D), Do Dham Yatra (5N/6D), Kedarnath Helicopter, Nainital & Jim Corbett, Mussoorie & Rishikesh, Shimla & Manali, Kashmir Paradise (Srinagar, Gulmarg, Pahalgam), Golden Triangle & Rajasthan.
 - Pricing model: Dynamic seasonal pricing based on travel dates, hotel category, vehicle selection, and group size.
@@ -691,9 +788,9 @@ def get_formal_concierge_response(message: str, history: Optional[list] = None) 
     if any(k in msg for k in ["hello", "hi", "namaste", "good morning", "good evening", "good afternoon", "greetings", "hey", "who are you", "what can you do"]):
         return {
             "reply": (
-                "**Namaste! 🙏** Welcome to **Mankotia Holidays**.\n\n"
-                "I am **Yatra Mitra**, your Travel Assistant. We specialize in sacred Himalayan pilgrimages and customized tours across India with verified hotels, 100% pure vegetarian Satvik food, and private mountain vehicles.\n\n"
-                "Please select your destination or travel preference below:"
+                "**Namaste & Welcome to Mankotia Holidays.** 🙏\n\n"
+                "I am **Yatra Mitra**, your Senior Travel Concierge. We specialize in sacred Himalayan pilgrimages, VIP helicopter reservations, and bespoke holiday journeys across India with handpicked deluxe accommodations, pure vegetarian Satvik cuisine, and dedicated mountain chauffeurs.\n\n"
+                "Please select your destination or travel preference below, or enter your travel dates for a personalized itinerary quote:"
             ),
             "options": [
                 "Char Dham Yatra 2026",
@@ -1031,18 +1128,18 @@ def get_formal_concierge_response(message: str, history: Optional[list] = None) 
         return {
             "reply": (
                 "**Mankotia Holidays Contact Coordinates**:\n\n"
-                "• **Central Helpline:** +91 9811485028 / +91 8627068616\n"
+                "• **Central Helpline:** +91 9816461616 / +91 9811485028 / +91 8627068616\n"
                 f"• **24/7 WhatsApp:** +{AGENCY_WHATSAPP}\n"
                 f"• **Email:** {AGENCY_EMAIL}\n"
                 "• **Offices:** Delhi (Pitampura), Manali (Hadimba Rd), and Una (HP).\n"
                 "• **GSTIN:** 07AGQPM4637F1Z4 (Govt. Registered Operator)."
             ),
             "options": [
-                "Open WhatsApp Chat",
-                "Call +91 9811485028",
-                "Delhi Office Address",
-                "Manali Office Address",
-                "Send Email Inquiry"
+                "Connect on WhatsApp",
+                "📞 Contact Us",
+                "Call +91 9816461616",
+                "Send Email Inquiry",
+                "📋 Book Now"
             ],
             "allow_multiselect": True
         }
@@ -1061,11 +1158,11 @@ def get_formal_concierge_response(message: str, history: Optional[list] = None) 
                 "• **Force Majeure:** Full credit note or free rescheduling offered."
             ),
             "options": [
-                "Terms & Conditions",
-                "Reschedule My Trip",
-                "Contact Support Team",
-                "📋 Book Now",
-                "View Packages"
+                "🔙 Back to Menu",
+                "📜 Terms & Conditions",
+                "💬 Connect on WhatsApp",
+                "📞 Contact Us",
+                "📋 Book Now"
             ],
             "allow_multiselect": True
         }
@@ -1084,21 +1181,43 @@ def get_formal_concierge_response(message: str, history: Optional[list] = None) 
                 "• Disputes subject to jurisdiction of New Delhi courts."
             ),
             "options": [
-                "Cancellation Policy",
-                "What's Included in Packages",
-                "Hotel & Meal Standards",
-                "Contact Support Team",
+                "🔙 Back to Menu",
+                "📋 Cancellation Policy",
+                "💬 Connect on WhatsApp",
+                "📞 Contact Us",
                 "📋 Book Now"
             ],
             "allow_multiselect": True
         }
 
-    # 21. General Formal Reception
+    # 21. Back to Menu / Main Menu
+    if any(k in msg for k in ["back to menu", "main menu", "menu", "home", "start again", "shuru"]):
+        return {
+            "reply": (
+                "**Main Menu** 🧭\n\n"
+                "Welcome back! How would you like to plan your journey with Mankotia Holidays?\n\n"
+                "Select an itinerary, connect directly with our experts, or submit a booking request:"
+            ),
+            "options": [
+                "Char Dham Yatra 2026",
+                "Kedarnath Helicopter Shuttle",
+                "Do Dham (Kedarnath-Badrinath)",
+                "Uttarakhand Family Tours",
+                "Himachal & Manali Packages",
+                "💬 Connect on WhatsApp",
+                "📞 Contact Us",
+                "📋 Cancellation Policy",
+                "📜 Terms & Conditions"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 22. General Formal Reception
     return {
         "reply": (
-            "**Namaste from Mankotia Holidays!**\n\n"
-            "I am **Yatra Mitra**, your travel assistant. I can help you with Char Dham Yatra, Kedarnath Helicopter passes, family tours in Uttarakhand/Himachal/Kashmir, and private cab bookings.\n\n"
-            "Please select any option below:"
+            "**Namaste & Welcome to Mankotia Holidays.** 🙏\n\n"
+            "I am **Yatra Mitra**, your Senior Travel Concierge. I am at your service to assist with custom Himalayan pilgrimages, VIP Kedarnath helicopter arrangements, and bespoke holiday packages across India.\n\n"
+            "Please select an itinerary below or enter your destination and preferred travel dates:"
         ),
         "options": [
             "Char Dham Yatra 2026",
@@ -1106,8 +1225,10 @@ def get_formal_concierge_response(message: str, history: Optional[list] = None) 
             "Do Dham (Kedarnath-Badrinath)",
             "Uttarakhand Family Tours",
             "Himachal & Manali Packages",
-            "Cancellation & Refund Policy",
-            "Terms & Conditions"
+            "💬 Connect on WhatsApp",
+            "📞 Contact Us",
+            "📋 Cancellation Policy",
+            "📜 Terms & Conditions"
         ],
         "allow_multiselect": True
     }

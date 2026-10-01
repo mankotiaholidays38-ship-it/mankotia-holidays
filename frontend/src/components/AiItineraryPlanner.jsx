@@ -23,7 +23,34 @@ import { ALL_DESTINATION_CATEGORIES } from '../data/packagesData';
 const getDaysWarning = (dest, numDays) => {
   if (!dest) return null;
   const destLower = dest.toLowerCase();
+  const primaryDest = dest.split('(')[0].trim().toLowerCase();
   const days = parseInt(numDays, 10);
+  
+  // If destination is already a multi-destination package/circuit, do not warn about single city duration
+  const isMultiCircuit = (
+    dest.includes('•') ||
+    dest.includes(',') ||
+    dest.includes(' & ') ||
+    primaryDest.includes('complete') ||
+    primaryDest.includes('circuit') ||
+    primaryDest.includes('tour') ||
+    primaryDest.includes('yatra') ||
+    primaryDest.includes('package') ||
+    primaryDest.includes('rajasthan') ||
+    primaryDest.includes('char dham') ||
+    primaryDest.includes('chardham') ||
+    primaryDest.includes('golden triangle') ||
+    primaryDest.includes('uttarakhand') ||
+    primaryDest.includes('himachal') ||
+    primaryDest.includes('kashmir') ||
+    primaryDest.includes('kerala')
+  );
+  if (isMultiCircuit) {
+    if (days > 12) {
+      return `💡 You've selected an extended ${days}-day grand vacation! The AI will curate a comprehensive, relaxed itinerary with in-depth local experiences.`;
+    }
+    return null;
+  }
   
   const thresholds = [
     { keys: ['agra', 'taj mahal', 'fatehpur'], maxDays: 2, suggest: 'the Golden Triangle (Delhi, Jaipur) to explore nearby royal cities' },
@@ -37,7 +64,10 @@ const getDaysWarning = (dest, numDays) => {
   ];
   
   for (const rule of thresholds) {
-    if (rule.keys.some(k => destLower.includes(k))) {
+    if (rule.keys.some(k => primaryDest.includes(k))) {
+      if (['rajasthan', 'golden triangle', 'char dham', 'chardham'].some(s => destLower.includes(s))) {
+        return null;
+      }
       if (days > rule.maxDays) {
         return `💡 For ${dest.split('(')[0].trim()}, ${rule.maxDays} days is usually sufficient. Since you selected ${days} days, the AI will automatically add nearby destinations like ${rule.suggest}!`;
       }
@@ -50,6 +80,8 @@ const getDaysWarning = (dest, numDays) => {
   }
   return null;
 };
+
+const cleanQuote = (s) => (s || '').replace(/['"`]/g, '').trim();
 
 export default function AiItineraryPlanner({ onOpenInquiry }) {
   const [destination, setDestination] = useState('');
@@ -69,7 +101,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
       if (res.ok) {
         const data = await res.json();
         if (data.corrected && data.corrected !== locationValue) {
-          setterFunction(data.corrected);
+          setterFunction(cleanQuote(data.corrected));
         }
       }
     } catch (e) {
@@ -238,7 +270,8 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
     setIsStreaming(true);
     setStreamingText("");
 
-    const resolvedDrop = sameAsPickup ? pickupLocation : (dropLocation || pickupLocation);
+    const cleanPickup = cleanQuote(pickupLocation);
+    const resolvedDrop = cleanQuote(sameAsPickup ? pickupLocation : (dropLocation || pickupLocation));
 
     try {
       const res = await fetch('/api/generate-itinerary-stream', {
@@ -251,7 +284,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           travel_style: travelStyle,
           travelers,
           special_requests: specialRequests,
-          pickup_location: pickupLocation,
+          pickup_location: cleanPickup,
           drop_location: resolvedDrop
         })
       });
@@ -290,6 +323,17 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
           if (data && data.error) {
               alert("Error from AI Planner: " + data.error);
           } else if (data) {
+            if (data.days && Array.isArray(data.days) && data.days.length > 0) {
+              const pickupLabel = cleanQuote(data.pickup_location || pickupLocation || 'Pickup Point');
+              data.days[0].theme = `Pickup from ${pickupLabel}`;
+              data.days[data.days.length - 1].theme = "Departure";
+              data.days.forEach((d, idx) => {
+                if (idx === 0) d.theme = `Pickup from ${pickupLabel}`;
+                else if (idx === data.days.length - 1) d.theme = "Departure";
+                else if (d.theme) d.theme = cleanQuote(d.theme);
+                if (d.base_location) d.base_location = cleanQuote(d.base_location);
+              });
+            }
             setItinerary(data);
             setExpandedDay(1);
             confetti({
@@ -313,8 +357,14 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
   const handleCopy = () => {
     if (!itinerary) return;
-    const text = `🌴 ${itinerary.title}\n📍 Destination: ${itinerary.destination}\n🚗 Pickup: ${itinerary.pickup_location || pickupLocation}\n🏁 Drop: ${itinerary.drop_location || dropLocation}\n🗺️ Route: ${itinerary.route_summary || 'Custom Highway Route'}\n⏱️ Duration: ${itinerary.duration}\n💰 Cost: Price On Request\n\n` +
-      itinerary.days.map(d => `Day ${d.day_number}: ${d.theme}\n- Morning: ${d.morning}\n- Afternoon: ${d.afternoon}\n- Evening: ${d.evening}\n- Stay: ${d.stay_suggestion}\n`).join('\n') +
+    const pickupLabel = cleanQuote(itinerary.pickup_location || pickupLocation || 'Pickup Point');
+    const text = `🌴 ${itinerary.title}\n📍 Destination: ${itinerary.destination}\n🚗 Pickup: ${cleanQuote(itinerary.pickup_location || pickupLocation)}\n🏁 Drop: ${cleanQuote(itinerary.drop_location || dropLocation)}\n🗺️ Route: ${itinerary.route_summary || 'Custom Highway Route'}\n⏱️ Duration: ${itinerary.duration}\n💰 Cost: Price On Request\n\n` +
+      itinerary.days.map((d, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === itinerary.days.length - 1;
+        const theme = isFirst ? `Pickup from ${pickupLabel}` : (isLast ? 'Departure' : cleanQuote(d.theme || `Explore ${d.base_location}`));
+        return `Day ${d.day_number}: ${theme}\n- Morning: ${d.morning || d.activities || ''}\n- Afternoon: ${d.afternoon || ''}\n- Evening: ${d.evening || ''}\n- Stay: ${d.stay_suggestion || ''}\n`;
+      }).join('\n') +
       `\n🗺️ Google Maps Directions: ${itinerary.google_maps_route_url || ''}\nCurated by Mankotia Holidays (Call/WhatsApp: +919816461616)`;
     
     navigator.clipboard.writeText(text);
@@ -324,17 +374,23 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
 
   const handleWhatsAppShare = () => {
     if (!itinerary) return;
-    const resolvedDrop = itinerary.drop_location || (sameAsPickup ? pickupLocation : dropLocation);
-    const itineraryText = `Title: ${itinerary.title || ''}\nDestination: ${itinerary.destination || ''}\nPickup: ${itinerary.pickup_location || pickupLocation}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration || itinerary.total_days + ' Days'}\nEstimated cost: Price On Request\n\n${itinerary.days.map(day => `Day ${day.day_number}: ${day.theme || day.base_location}\nMorning: ${day.morning || day.activities}\nAfternoon: ${day.afternoon || ''}\nEvening: ${day.evening || ''}\nStay: ${day.stay_suggestion || day.overnight_stay}`).join('\n\n')}`;
+    const resolvedDrop = cleanQuote(itinerary.drop_location || (sameAsPickup ? pickupLocation : dropLocation));
+    const pickupLabel = cleanQuote(itinerary.pickup_location || pickupLocation || 'Pickup Point');
+    const itineraryText = `Title: ${itinerary.title || ''}\nDestination: ${itinerary.destination || ''}\nPickup: ${pickupLabel}\nDrop: ${resolvedDrop}\nRoute: ${itinerary.route_summary || 'Google Maps Verified'}\nDuration: ${itinerary.duration || itinerary.total_days + ' Days'}\nEstimated cost: Price On Request\n\n${itinerary.days.map((day, idx) => {
+      const isFirst = idx === 0;
+      const isLast = idx === itinerary.days.length - 1;
+      const theme = isFirst ? `Pickup from ${pickupLabel}` : (isLast ? 'Departure' : cleanQuote(day.theme || day.base_location));
+      return `Day ${day.day_number}: ${theme}\nMorning: ${day.morning || day.activities || ''}\nAfternoon: ${day.afternoon || ''}\nEvening: ${day.evening || ''}\nStay: ${day.stay_suggestion || day.overnight_stay || ''}`;
+    }).join('\n\n')}`;
     onOpenInquiry({
       destination: itinerary.destination || destination,
       days: parseInt(days, 10),
       travelers,
       budget,
-      pickup: itinerary.pickup_location || pickupLocation,
+      pickup: pickupLabel,
       drop: resolvedDrop,
       itinerary_text: itineraryText,
-      notes: `Selected AI itinerary: ${itinerary.title} | Pickup: ${itinerary.pickup_location || pickupLocation} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: Price On Request | Style: ${travelStyle} | Requests: ${specialRequests || 'None'}`
+      notes: `Selected AI itinerary: ${itinerary.title} | Pickup: ${pickupLabel} | Drop: ${resolvedDrop} | Duration: ${itinerary.duration} | Estimated cost: Price On Request | Style: ${travelStyle} | Requests: ${specialRequests || 'None'}`
     });
   };
 
@@ -763,7 +819,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.85rem', color: '#67E8F9', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    Google Maps Road Route & Transit
+                    Google Maps Road Route & Transit {destination ? `for ${destination}` : ''}
                   </div>
                   <div style={{ fontSize: '0.98rem', color: '#F1F5F9', fontWeight: 600, marginTop: '2px' }}>
                     🚗 <strong>Start:</strong> {itinerary.pickup_location || pickupLocation}
@@ -805,80 +861,88 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
             </div>
 
             {/* Highlights & Packing Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '20px',
-              marginBottom: '32px'
-            }}>
-              {/* Trip Highlights */}
+            {((itinerary.highlights && itinerary.highlights.length > 0) || 
+              (itinerary.covered_places && itinerary.covered_places.length > 0) || 
+              (itinerary.packing_essentials && itinerary.packing_essentials.length > 0)) && (
               <div style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                padding: '20px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-light)'
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '20px',
+                marginBottom: '32px'
               }}>
-                <h4 style={{ fontSize: '0.95rem', color: '#FCD34D', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  ✨ Trip Highlights:
-                </h4>
-                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0, margin: 0 }}>
-                  {itinerary.highlights?.map((hl, i) => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', color: '#CBD5E1' }}>
-                      <CheckCircle2 size={14} color="#10B981" style={{ marginTop: '2px', flexShrink: 0 }} />
-                      <span>{hl}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Covered Places */}
-              {itinerary.covered_places && itinerary.covered_places.length > 0 && (
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  padding: '20px',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-light)'
-                }}>
-                  <h4 style={{ fontSize: '0.95rem', color: '#10B981', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    📍 Covered Places:
-                  </h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {itinerary.covered_places.map((place, i) => (
-                      <span key={i} style={{ 
-                        background: 'rgba(16, 185, 129, 0.1)', 
-                        color: '#34D399', 
-                        padding: '4px 10px', 
-                        borderRadius: '4px', 
-                        fontSize: '0.8rem',
-                        border: '1px solid rgba(16, 185, 129, 0.2)'
-                      }}>
-                        {place}
-                      </span>
-                    ))}
+                {/* Trip Highlights */}
+                {itinerary.highlights && itinerary.highlights.length > 0 && (
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    padding: '20px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-light)'
+                  }}>
+                    <h4 style={{ fontSize: '0.95rem', color: '#FCD34D', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      ✨ Trip Highlights:
+                    </h4>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0, margin: 0 }}>
+                      {itinerary.highlights.map((hl, i) => (
+                        <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', color: '#CBD5E1' }}>
+                          <CheckCircle2 size={14} color="#10B981" style={{ marginTop: '2px', flexShrink: 0 }} />
+                          <span>{hl}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Packing Essentials */}
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                padding: '20px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-light)'
-              }}>
-                <h4 style={{ fontSize: '0.95rem', color: '#67E8F9', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  🎒 Packing Essentials:
-                </h4>
-                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0, margin: 0 }}>
-                  {itinerary.packing_essentials?.map((item, i) => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', color: '#CBD5E1' }}>
-                      <span style={{ color: '#06B6D4' }}>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Covered Places */}
+                {itinerary.covered_places && itinerary.covered_places.length > 0 && (
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    padding: '20px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-light)'
+                  }}>
+                    <h4 style={{ fontSize: '0.95rem', color: '#10B981', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      📍 Covered Places:
+                    </h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {itinerary.covered_places.map((place, i) => (
+                        <span key={i} style={{ 
+                          background: 'rgba(16, 185, 129, 0.1)', 
+                          color: '#34D399', 
+                          padding: '4px 10px', 
+                          borderRadius: '4px', 
+                          fontSize: '0.8rem',
+                          border: '1px solid rgba(16, 185, 129, 0.2)'
+                        }}>
+                          {place}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Packing Essentials */}
+                {itinerary.packing_essentials && itinerary.packing_essentials.length > 0 && (
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    padding: '20px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-light)'
+                  }}>
+                    <h4 style={{ fontSize: '0.95rem', color: '#67E8F9', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      🎒 Packing Essentials:
+                    </h4>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0, margin: 0 }}>
+                      {itinerary.packing_essentials.map((item, i) => (
+                        <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.85rem', color: '#CBD5E1' }}>
+                          <span style={{ color: '#06B6D4' }}>•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             {/* Collapsible Day-by-Day Schedule Header Toggle */}
             <div style={{
@@ -930,18 +994,24 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                 <span style={{ fontSize: '0.76rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>
                   Route Summary:
                 </span>
-                {itinerary.days?.map((day) => (
-                  <span key={day.day_number} style={{
-                    fontSize: '0.76rem',
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    color: '#CBD5E1',
-                    padding: '3px 8px',
-                    borderRadius: '6px'
-                  }}>
-                    <strong style={{ color: '#FCD34D' }}>D{day.day_number}:</strong> {(day.theme || day.base_location) ? (day.theme || day.base_location).split('&')[0].trim() : `Day ${day.day_number}`}
-                  </span>
-                ))}
+                {itinerary.days?.map((day, idx) => {
+                  const isFirstDay = idx === 0;
+                  const isLastDay = idx === itinerary.days.length - 1;
+                  const pickupLabel = cleanQuote(itinerary.pickup_location || pickupLocation || day.base_location || 'Pickup Point');
+                  const shortPickup = cleanQuote(pickupLabel.split('/')[0].split(',')[0]);
+                  return (
+                    <span key={day.day_number} style={{
+                      fontSize: '0.76rem',
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      color: '#CBD5E1',
+                      padding: '3px 8px',
+                      borderRadius: '6px'
+                    }}>
+                      <strong style={{ color: '#FCD34D' }}>D{day.day_number}:</strong> {isFirstDay ? `Pickup from ${shortPickup}` : (isLastDay ? 'Departure' : cleanQuote((day.theme || day.base_location) ? (day.theme || day.base_location).split('&')[0] : `Day ${day.day_number}`))}
+                    </span>
+                  );
+                })}
               </div>
             )}
 
@@ -952,6 +1022,7 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                   const isExpanded = expandedDay === day.day_number;
                   const isFirstDay = idx === 0;
                   const isLastDay = idx === itinerary.days.length - 1;
+                  const pickupLabel = cleanQuote(itinerary.pickup_location || pickupLocation || day.base_location || 'Pickup Point');
 
                   return (
                     <div
@@ -1018,7 +1089,9 @@ export default function AiItineraryPlanner({ onOpenInquiry }) {
                           )}
 
                           <span style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
-                            {day.theme || `Explore ${day.base_location}`}
+                            {isFirstDay 
+                              ? `Pickup from ${pickupLabel}`
+                              : (isLastDay ? 'Departure' : cleanQuote(day.theme || `Explore ${day.base_location}`))}
                           </span>
                         </div>
 

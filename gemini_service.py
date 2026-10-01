@@ -13,6 +13,7 @@ load_dotenv()
 
 class ItineraryDay(BaseModel):
     day_number: int = Field(description="The day number in the sequence, e.g. 1")
+    theme: Optional[str] = Field(default="", description="The theme or heading for the day without quotes (e.g. Pickup from Chandigarh or Departure).")
     base_location: str = Field(description="The primary base location for this day")
     destinations: List[str] = Field(description="List of specific destinations visited on this day")
     activities: str = Field(description="Detailed activities for the day")
@@ -30,11 +31,12 @@ SYSTEM_PROMPT = (
     "extremely detailed, realistic, and highly customized travel itineraries.\n"
     "CRITICAL ROUTING RULES:\n"
     "1. The itinerary MUST have exactly {days} days. This is a strict requirement.\n"
-    "2. Day 1's base_location MUST exactly equal the user's pickup point: '{pickup_location}'.\n"
-    "3. The last day MUST end at the user's drop point: '{drop_location}'. Its base_location or activities must reflect this.\n"
+    "2. DAY 1 HEADING MUST BE: Pickup from {pickup_location}. Day 1's heading/theme MUST be Pickup from {pickup_location} without any single quotes, quotation marks, or apostrophes, and its base_location MUST equal {pickup_location}.\n"
+    "3. The last day MUST end at the user's drop point: {drop_location}. Its base_location or activities must reflect this.\n"
     "4. DAILY DESTINATION PROGRESSION: You must define the itinerary according to their daily destination point logically progressing through the requested route/waypoints: {waypoints}. Do not stay in one place if multiple locations are provided.\n"
     "5. USE REAL MAPS PLACES: You have been provided with real candidate places from Google Maps below (CANDIDATE PLACES). You MUST build the sightseeing around these specific real places and NEVER invent fake attractions.\n"
     "6. USE DATABASE/AGENCY DATA: If AGENCY CONTEXT is provided below, you MUST use the exact routing, highlights, and included places from those packages to form the itinerary. Adapt it to fit the requested days and pickup/drop constraints to exactly match the customer's requirement, but prioritize using the real data from the database.\n"
+    "7. LAST DAY HEADING MUST BE: Departure. The heading/theme for the final day MUST be Departure without any quotes. The activities should focus on checkout and drop-off at {drop_location}.\n"
     "Special customer constraints to obey: {special_requests}\n\n"
     "CANDIDATE PLACES FROM GOOGLE MAPS:\n{candidate_places}\n\n"
     "AGENCY CONTEXT:\n{agency_context}\n"
@@ -139,8 +141,14 @@ def generate_gemini_itinerary(
                 if attempt < max_retries:
                     continue  # Retry
                 else:
+                    for d in data.get("days", []):
+                        if d.get("theme"):
+                            d["theme"] = d["theme"].strip().strip("'\"`")
                     return data # Return as is if max retries exceeded
             
+            for d in data.get("days", []):
+                if d.get("theme"):
+                    d["theme"] = d["theme"].strip().strip("'\"`")
             return data
             
         except Exception as e:
@@ -213,6 +221,11 @@ async def generate_gemini_itinerary_stream(
                 raise Exception("Invalid itinerary format: 'days' array is missing.")
             if len(data["days"]) != days:
                 raise Exception(f"Expected {days} days, got {len(data['days'])}.")
-            yield full_text
+            for d in data.get("days", []):
+                if d.get("theme"):
+                    d["theme"] = d["theme"].strip().strip("'\"`")
+                if d.get("base_location"):
+                    d["base_location"] = d["base_location"].strip().strip("'\"`")
+            yield json.dumps(data)
         except json.JSONDecodeError as e:
             raise Exception(f"Gemini returned truncated or invalid JSON: {e}")

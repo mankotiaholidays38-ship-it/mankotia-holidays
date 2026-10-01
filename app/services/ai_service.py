@@ -172,8 +172,34 @@ def resolve_transit_and_maps(destination: str, pickup_location: Optional[str] = 
 
 def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str, str]:
     """Returns (extended_destination_name, extension_notes)."""
-    dest_lower = (destination or "").lower()
+    if not destination or not destination.strip():
+        return destination, ""
+        
+    dest_lower = destination.lower()
+    primary_dest = destination.split('(')[0].strip().lower()
     
+    # If the destination is already a multi-destination package/circuit, do not extend or duplicate
+    is_multi_circuit = (
+        '•' in destination or 
+        ',' in destination or 
+        ' & ' in destination or
+        'complete' in primary_dest or
+        'circuit' in primary_dest or
+        'tour' in primary_dest or
+        'yatra' in primary_dest or
+        'package' in primary_dest or
+        'rajasthan' in primary_dest or
+        'char dham' in primary_dest or
+        'chardham' in primary_dest or
+        'golden triangle' in primary_dest or
+        'uttarakhand' in primary_dest or
+        'himachal' in primary_dest or
+        'kashmir' in primary_dest or
+        'kerala' in primary_dest
+    )
+    if is_multi_circuit:
+        return destination, ""
+
     thresholds = [
         {"keys": ['agra', 'taj mahal', 'fatehpur'], "maxDays": 2, "suggest": 'the Golden Triangle (Delhi, Jaipur)'},
         {"keys": ['jaipur', 'pink city'], "maxDays": 3, "suggest": 'a Complete Rajasthan Tour (Jodhpur, Udaipur, Jaisalmer)'},
@@ -186,7 +212,9 @@ def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str,
     ]
     
     for rule in thresholds:
-        if any(k in dest_lower for k in rule["keys"]):
+        if any(k in primary_dest for k in rule["keys"]):
+            if any(s in dest_lower for s in ['rajasthan', 'golden triangle', 'char dham', 'chardham']):
+                return destination, ""
             if days > rule["maxDays"]:
                 return (f"{destination} & {rule['suggest']}", 
                         f"CRITICAL INSTRUCTION: The user originally requested {destination}, but selected {days} days, which is too long for just that location. You MUST extend the itinerary to include {rule['suggest']} to logically fill the {days} days.")
@@ -200,6 +228,7 @@ def extend_destination_for_extra_days(destination: str, days: int) -> tuple[str,
 
 
 def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standard", travel_style: str = "Family", travelers: str = "2 Adults", special_requests: str = "", pickup_location: Optional[str] = None, drop_location: Optional[str] = None) -> dict:
+    original_destination = destination
     extended_dest, extension_notes = extend_destination_for_extra_days(destination, days)
     if extension_notes:
         special_requests = f"{special_requests}\n\n{extension_notes}".strip()
@@ -338,13 +367,13 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
     generated_days = []
     for i in range(1, days + 1):
         if i == 1:
-            theme = f"Pickup from {transit_info['pickup_location']} & Scenic Drive to {dest_name}"
+            theme = f"Pickup from {transit_info['pickup_location']}"
             morning = f"Chauffeur meets you at {transit_info['pickup_location']}. Commence scenic journey to {dest_name}."
             afternoon = f"En-route lunch stop. Arrive and check-in at hotel in {dest_name}."
             evening = f"Freshen up and enjoy an evening stroll around local markets."
             stay = f"Deluxe 4-Star Resort in {dest_name}"
         elif i == days:
-            theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
+            theme = "Departure"
             morning = f"Hearty breakfast in {dest_name}. Complete checkout formalities."
             afternoon = f"Begin return road journey with scenic photo stops."
             evening = f"Chauffeur drops you off at {transit_info['drop_location']}."
