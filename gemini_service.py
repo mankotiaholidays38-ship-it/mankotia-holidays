@@ -16,7 +16,7 @@ class ItineraryDay(BaseModel):
     base_location: str = Field(description="The primary base location for this day")
     destinations: List[str] = Field(description="List of specific destinations visited on this day")
     activities: str = Field(description="Detailed activities for the day")
-    overnight_stay: Optional[str] = Field(default="", description="The location or town for the overnight stay")
+    overnight_stay: str = Field(description="The location or town for the overnight stay")
 
 class ItineraryResponse(BaseModel):
     total_days: int = Field(description="The total number of days in the itinerary")
@@ -28,14 +28,13 @@ class ItineraryResponse(BaseModel):
 SYSTEM_PROMPT = (
     "You are an expert, highly experienced travel planner. Your job is to create "
     "extremely detailed, realistic, and highly customized travel itineraries.\n"
-    "CRITICAL ROUTING RULES (DO NOT VIOLATE):\n"
+    "CRITICAL ROUTING RULES:\n"
     "1. The itinerary MUST have exactly {days} days. This is a strict requirement.\n"
-    "2. PICKUP OVERRIDE: The tour MUST start from the user's exact pickup point: '{pickup_location}'. If the AGENCY CONTEXT starts somewhere else, you MUST rewrite the first day to start from '{pickup_location}'. Day 1's base_location MUST be '{pickup_location}'.\n"
-    "3. DROP OVERRIDE: The tour MUST end at the user's exact drop point: '{drop_location}'. The final day's routing MUST bring the customer to '{drop_location}'.\n"
+    "2. Day 1's base_location MUST exactly equal the user's pickup point: '{pickup_location}'.\n"
+    "3. The last day MUST end at the user's drop point: '{drop_location}'. Its base_location or activities must reflect this.\n"
     "4. DAILY DESTINATION PROGRESSION: You must define the itinerary according to their daily destination point logically progressing through the requested route/waypoints: {waypoints}. Do not stay in one place if multiple locations are provided.\n"
     "5. USE REAL MAPS PLACES: You have been provided with real candidate places from Google Maps below (CANDIDATE PLACES). You MUST build the sightseeing around these specific real places and NEVER invent fake attractions.\n"
-    "6. USE DATABASE/AGENCY DATA: If AGENCY CONTEXT is provided, use its highlights, but you MUST ADAPT the routing to strictly obey the '{pickup_location}' and '{drop_location}' constraints above. Do not blindly copy the database if the pickup/drop differs.\n"
-    "7. LAST DAY FORMAT: On the final day, ONLY mention the morning. Do NOT include any afternoon, evening, or night activities. The 'activities' description for the last day MUST only say something like: 'After breakfast and check-out, start the journey towards {drop_location}. Drop at {drop_location} and end of the tour.' Leave the overnight_stay completely empty.\n"
+    "6. USE DATABASE/AGENCY DATA: If AGENCY CONTEXT is provided below, you MUST use the exact routing, highlights, and included places from those packages to form the itinerary. Adapt it to fit the requested days and pickup/drop constraints to exactly match the customer's requirement, but prioritize using the real data from the database.\n"
     "Special customer constraints to obey: {special_requests}\n\n"
     "CANDIDATE PLACES FROM GOOGLE MAPS:\n{candidate_places}\n\n"
     "AGENCY CONTEXT:\n{agency_context}\n"
