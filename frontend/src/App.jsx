@@ -98,7 +98,7 @@ export default function App() {
       />
 
       {/* Floating 24/7 AI Concierge (Aria) */}
-      <AiConcierge />
+      <AiConcierge onOpenInquiry={handleOpenInquiry} />
 
       {/* Booking & Quote Modal */}
       <InquiryModal 

@@ -6,7 +6,15 @@ import requests
 from typing import Optional, Dict
 from dotenv import load_dotenv
 
-from data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
+from data_store import (
+    AGENCY_NAME,
+    AGENCY_PHONE,
+    AGENCY_WHATSAPP,
+    AGENCY_EMAIL,
+    AGENCY_OFFICES,
+    AGENCY_PHONES,
+    PACKAGES
+)
 from itinerary_templates import POPULAR_DESTINATIONS
 from gemini_service import generate_gemini_itinerary, generate_gemini_itinerary_stream
 from maps_service import maps_service
@@ -286,13 +294,15 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                 "days": []
             }
             
-            for d in raw_data.get("days", []):
+            total_days_in_raw = len(raw_data.get("days", []))
+            for i, d in enumerate(raw_data.get("days", [])):
+                is_last_day = (i == total_days_in_raw - 1)
                 data["days"].append({
                     "day_number": d.get("day_number"),
                     "theme": f"Explore {d.get('base_location')}",
                     "morning": d.get("activities"),
-                    "afternoon": "Continue exploring the destinations.",
-                    "evening": "Relax and explore local markets.",
+                    "afternoon": "" if is_last_day else "Continue exploring the destinations.",
+                    "evening": "" if is_last_day else "Relax and explore local markets.",
                     "stay_suggestion": d.get("overnight_stay"),
                     "waypoints_for_routing": d.get("destinations", [])
                 })
@@ -381,9 +391,9 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             for i in range(current_len + 1, days + 1):
                 if i == days:
                     theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
-                    morning = f"Hearty breakfast in {dest_name}. Complete checkout formalities."
-                    afternoon = "Begin return road journey with scenic photo stops."
-                    evening = f"Chauffeur drops you off at {transit_info['drop_location']}."
+                    morning = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+                    afternoon = ""
+                    evening = ""
                     stay = f"Drop at {transit_info['drop_location']} / Onward Journey"
                 else:
                     activities = ["Cultural Heritage Tour", "Nature Walk", "Local Markets", "Temple Visit", "Leisure Day"]
@@ -400,6 +410,16 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
                     "stay_suggestion": stay, "pro_tip": "Check live traffic before excursion."
                 })
                 
+        # Forcefully enforce pickup and drop on the template
+        data_copy["days"][0]["morning"] = f"Chauffeur meets you at {transit_info['pickup_location']}. Commence journey."
+        
+        last_day = data_copy["days"][-1]
+        last_day["theme"] = f"Departure & Drop-off at {transit_info['drop_location']}"
+        last_day["morning"] = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+        last_day["afternoon"] = ""
+        last_day["evening"] = ""
+        last_day["stay_suggestion"] = ""
+        
         data_copy["duration"] = f"{days} Days / {max(1, days-1)} Nights"
         data_copy["pickup_location"] = transit_info["pickup_location"]
         data_copy["drop_location"] = transit_info["drop_location"]
@@ -419,10 +439,10 @@ def generate_ai_itinerary(destination: str, days: int = 4, budget: str = "Standa
             stay = f"Deluxe 4-Star Resort in {dest_name}"
         elif i == days:
             theme = f"Farewell Departure & Drop-off at {transit_info['drop_location']}"
-            morning = f"Hearty breakfast in {dest_name}. Complete checkout formalities."
-            afternoon = f"Begin return road journey with scenic photo stops."
-            evening = f"Chauffeur drops you off at {transit_info['drop_location']}."
-            stay = f"Drop at {transit_info['drop_location']} / Onward Journey"
+            morning = f"After checkout, start journey for {transit_info['drop_location']} and end of the tour."
+            afternoon = ""
+            evening = ""
+            stay = ""
         else:
             activities = ["Cultural Heritage Tour", "Nature Walk & Viewpoints", "Local Markets & Shopping", "Temple & Monuments Visit", "Adventure & Leisure Day"]
             activity = activities[(i - 2) % len(activities)]
@@ -559,40 +579,619 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
         yield json.dumps({"error": str(fatal_error)})
 
 
-CONCIERGE_TOPICS = [
-    (["golden triangle", "delhi agra jaipur"], f"🏛️ **Golden Triangle Specials:** We offer Golden Triangle Classic (6D/5N) and Delhi-Mathura-Agra (4D/3N) covering Taj Mahal, Agra Fort, Qutub Minar, and Amber Fort. Connect on WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE} for custom price quotes!"),
-    (["agra", "taj mahal", "fatehpur sikri"], f"🕌 **Agra Taj Express:** Same Day Agra Taj Express & Mughal Marvels 2D/1N with Taj Mahal sunrise, Agra Fort, Mehtab Bagh, and approved guide. WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE}!"),
-    (["delhi", "akshardham", "qutub minar"], f"🏛️ **Delhi Capital Sightseeing:** Same Day Delhi Express and 2D/1N Capital Heritage covering Red Fort, Chandni Chowk rickshaw ride, Qutub Minar, and Akshardham. WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["mathura", "vrindavan", "banke bihari", "prem mandir"], f"🦚 **Sacred Mathura & Vrindavan:** Same Day Braj Darshan and 3D/2N Complete Braj Dham covering Krishna Janmasthan, Banke Bihari Ji, Prem Mandir Light Show, and Gokul. Call {AGENCY_PHONE}!"),
-    (["jaipur", "amber fort", "chokhi dhani"], f"👑 **Royal Jaipur Tours:** Same Day Jaipur, Weekend Heritage 2D/1N, and Grand Forts 3D/2N with Amber Fort Jeep ascent and Chokhi Dhani dinner. Call {AGENCY_PHONE}!"),
-    (["char dham", "chardham", "yamunotri", "gangotri"], f"🕉️ **Char Dham Yatra 2026:** All-inclusive 10N/11D package covering Yamunotri, Gangotri, Kedarnath, and Badrinath with pickup/drop from Haridwar/Dehradun. WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE} for dates and best quote!"),
-    (["do dham", "dodham", "kedar badri"], f"🙏 **Do Dham Yatra (Kedarnath & Badrinath Ji):** Popular 5N/6D spiritual circuit with optional Helicopter shuttle at Phata/Sirsi. Message on WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["helicopter", "heli", "flight to kedarnath"], f"🚁 **Kedarnath Helicopter Express:** Same-day / next-day heli-shuttle from Phata/Sirsi directly to Kedarnath Helipad with VIP priority darshan. Contact us at {AGENCY_PHONE} or WhatsApp (+{AGENCY_WHATSAPP}) to secure tickets."),
-    (["uttarakhand", "nainital", "mussoorie", "corbett", "auli"], f"🏔️ **Uttarakhand Specials:** Nainital Lakes, Corbett Safari, Mussoorie, Auli Skiing, and Chopta Trek. WhatsApp (+{AGENCY_WHATSAPP}) for family custom quotes!"),
-    (["himachal", "manali", "shimla"], f"🏔️ **Himachal Escapes:** Packages covering Manali, Solang Valley, Atal Tunnel, Rohtang Pass, and Shimla. Connect on WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["kashmir", "gulmarg", "pahalgam", "srinagar"], f"🌸 **Kashmir Heaven on Earth:** Airport transfers, Dal Lake houseboats, Gulmarg Gondola rides, and Pahalgam. Call {AGENCY_PHONE} or WhatsApp (+{AGENCY_WHATSAPP})."),
-    (["pickup", "drop", "map", "route"], f"🗺️ **Pickup & Drop Navigation:** Dedicated chauffeur transfers from your chosen airport, railway station, or hotel with real-time Google Maps route guidance!"),
-    (["phone", "call", "contact"], f"📞 Call our travel planners directly at **{AGENCY_PHONE}** for instant booking assistance!"),
-    (["whatsapp", "chat"], f"💬 We are available 24/7 on WhatsApp! Message us directly at **+{AGENCY_WHATSAPP}** for instant quotes."),
-    (["book", "price", "cost", "quote"], f"✨ Fill out our quick **Inquiry Form** on this page or message our team on WhatsApp at **+{AGENCY_WHATSAPP}** for an exact quote!")
-]
+# --- Yatra Mitra: Mankotia Holidays Travel Assistant ---
+
+CONCIERGE_SYSTEM_PROMPT = f"""You are 'Yatra Mitra', the Senior Travel Assistant for {AGENCY_NAME}.
+You are multilingual and serve travelers in English, Hindi (Devanagari), and Hinglish (Hindi written in Roman script).
+
+LANGUAGE DETECTION (CRITICAL):
+- Detect the language of EVERY user message before responding.
+- If the user explicitly types in Hindi Devanagari script (e.g., 'नमस्ते', 'मुझे बुकिंग करनी है'), reply ENTIRELY in Hindi Devanagari.
+- If the user explicitly types in Hinglish/Roman Hindi (e.g., 'mujhe booking karni hai', 'kya rate hai'), reply ENTIRELY in Hinglish.
+- For ALL other messages — including option chips, quick buttons, or English queries — reply ONLY in English.
+- DEFAULT LANGUAGE IS ENGLISH. Only switch when the user clearly types in Hindi or Hinglish themselves.
+- NEVER mix scripts in a single response.
+
+NO FIXED RATES / SEASONAL PRICING POLICY (STRICT RULE):
+- CRITICAL: DO NOT QUOTE ANY FIXED RATES, NUMERICAL PRICES, OR SPECIFIC TARIFFS (e.g., never say ₹34,999, ₹22,500, or any fixed amount).
+- Reason: Package rates change significantly across seasons (peak pilgrimage months, summer holiday peak, festival dates, and off-season), hotel tier, vehicle type, and number of travelers.
+- Whenever a user asks for rates, prices, costs, budget, discount, or package tariffs in ANY language:
+  1. Politely explain that tour package rates are not fixed because they vary based on the travel season, exact travel dates, choice of hotels, and group size.
+  2. Tell the traveler to click the **📋 Book Now** button or connect on WhatsApp/phone so the Mankotia Holidays team can provide the best customized seasonal quote tailored to their exact schedule.
+  3. Always include '📋 Book Now' and 'Connect on WhatsApp' in your follow-up OPTIONS.
+
+CRITICAL INSTRUCTIONS:
+1. BREVITY & FORMAT: Keep answers SHORT (2-4 bullet points or 3-4 sentences). No long essays.
+2. TONE: Genuine, polite, professional, and transparent.
+3. NO PAYMENT OPTIONS: Never mention payment details, bank accounts, UPI, or advance deposits. Mankotia Holidays handles bookings directly via WhatsApp/phone after the query form is submitted.
+4. BOOKING FORM: If a traveler wants to book or get a quotation, tell them to click the **Book Now** button in the chat to fill the booking form. Always include '📋 Book Now' in options.
+5. POLICIES: If asked about cancellation, refund, or Terms & Conditions, provide accurate information from the policy data below.
+6. INTERACTIVE OPTIONS: At the END of every response, output exactly 4-6 follow-up options:
+OPTIONS: [Choice 1 | Choice 2 | Choice 3 | Choice 4 | Choice 5]
+
+AGENCY CONTEXT:
+- Agency: {AGENCY_NAME} (GST: 07AGQPM4637F1Z4)
+- Helplines: +91 9811485028 / +91 8627068616 | WhatsApp: +91 9811485028
+- Offices: New Delhi (Pitampura), Manali (Hadimba Rd), Una (HP)
+- Packages offered: Char Dham Yatra (10N/11D), Do Dham Yatra (5N/6D), Kedarnath Helicopter, Nainital & Jim Corbett, Mussoorie & Rishikesh, Shimla & Manali, Kashmir Paradise (Srinagar, Gulmarg, Pahalgam), Golden Triangle & Rajasthan.
+- Pricing model: Dynamic seasonal pricing based on travel dates, hotel category, vehicle selection, and group size.
+- Fleet: Dzire/Etios (2-4 pax), Ertiga/Innova Crysta (4-6 pax), 12/17/26-seater Tempo Travellers.
+- Food: 100% Pure Vegetarian / Satvik meals (daily breakfast & dinner).
+
+CANCELLATION & REFUND POLICY:
+- 30+ days before departure: 10% cancellation charge.
+- 15-29 days before departure: 25% cancellation charge.
+- 7-14 days before departure: 50% cancellation charge.
+- Less than 7 days / No-show: 100% cancellation charge (no refund).
+- Helicopter bookings: Non-refundable as per IRCTC/operator norms.
+- Refunds processed within 7-10 working days after deductions.
+- Force Majeure (natural disaster, border closure, government orders): Full credit note or rescheduling offered; cash refund at company's discretion.
+
+TERMS & CONDITIONS (KEY POINTS):
+- Rates vary by season, hotel category, and number of passengers on twin/double sharing basis.
+- Prices do NOT include airfare, train tickets, personal expenses, tips, camera fees, or adventure activity charges.
+- Hotel check-in 12:00 PM / check-out 10:00 AM standard; early/late check-in subject to availability.
+- Mankotia Holidays acts as a tour organizer; not liable for delays due to weather, road conditions, or government restrictions.
+- Itinerary may be modified due to safety, weather, or force majeure without prior notice.
+- Travel insurance is strongly recommended but not included in package price.
+- Disputes subject to jurisdiction of New Delhi courts.
+"""
 
 
-def chat_travel_concierge(message: str, history: Optional[list] = None) -> str:
+
+def extract_reply_and_options(raw_text: str, default_options: Optional[list] = None) -> dict:
+    """Extracts clean reply text and options list from raw LLM text, strictly excluding payment options."""
+    options = []
+    clean_text = raw_text.strip()
+
+    # Check for OPTIONS: [Option 1 | Option 2]
+    match = re.search(r"OPTIONS:\s*\[(.*?)\]", raw_text, re.IGNORECASE | re.DOTALL)
+    if match:
+        raw_opts = match.group(1).split("|")
+        options = [o.strip() for o in raw_opts if o.strip()]
+        clean_text = raw_text[:match.start()].strip()
+    else:
+        # Check for OPTIONS:\n- Option 1
+        match_lines = re.search(r"OPTIONS:\s*\n((?:[•\-\*\d\.]+\s*.*(?:\n|$))+)", raw_text, re.IGNORECASE)
+        if match_lines:
+            raw_lines = match_lines.group(1).split("\n")
+            options = [re.sub(r"^[•\-\*\d\.\)]+\s*", "", l).strip() for l in raw_lines if l.strip()]
+            clean_text = raw_text[:match_lines.start()].strip()
+
+    # Filter out any payment or deposit options
+    PAYMENT_KEYWORDS = ["pay", "payment", "bank", "upi", "deposit", "advance", "gateway", "transfer money"]
+    options = [
+        o for o in options
+        if not any(pk in o.lower() for pk in PAYMENT_KEYWORDS)
+    ]
+
+    if not options and default_options:
+        options = [
+            o for o in default_options
+            if not any(pk in o.lower() for pk in PAYMENT_KEYWORDS)
+        ]
+
+    return {
+        "reply": clean_text,
+        "options": options[:6] if options else [
+            "Char Dham Yatra 2026",
+            "Kedarnath Helicopter Shuttle",
+            "Do Dham (Kedar-Badri)",
+            "Get Custom Price Quote"
+        ],
+        "allow_multiselect": True
+    }
+
+
+def get_formal_concierge_response(message: str, history: Optional[list] = None) -> dict:
+    """Provides short, genuine, formal, and interactive travel consultation responses."""
+    msg = message.lower().strip()
+
+    # 1. Greetings & Formal Introductions
+    if any(k in msg for k in ["hello", "hi", "namaste", "good morning", "good evening", "good afternoon", "greetings", "hey", "who are you", "what can you do"]):
+        return {
+            "reply": (
+                "**Namaste! 🙏** Welcome to **Mankotia Holidays**.\n\n"
+                "I am **Yatra Mitra**, your Travel Assistant. We specialize in sacred Himalayan pilgrimages and customized tours across India with verified hotels, 100% pure vegetarian Satvik food, and private mountain vehicles.\n\n"
+                "Please select your destination or travel preference below:"
+            ),
+            "options": [
+                "Char Dham Yatra 2026",
+                "Kedarnath Helicopter Shuttle",
+                "Do Dham (Kedar-Badri) 6D",
+                "Uttarakhand Family Tours",
+                "Himachal & Manali Packages",
+                "Kashmir Paradise Packages",
+                "Vehicle Fleet & Private Cabs",
+                "Get Custom Seasonal Quote"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 2. Char Dham Yatra 2026
+    if any(k in msg for k in ["char dham", "chardham", "yamunotri", "gangotri", "4 dham", "four dham", "char dham yatra", "chardham yatra", "yatra 2026"]):
+        return {
+            "reply": (
+                "**Sacred Char Dham Yatra 2026** (10N/11D):\n\n"
+                "• **Circuit:** Yamunotri, Gangotri, Shri Kedarnath Ji, and Shri Badrinath Ji.\n"
+                "• **Seasonal Pricing:** Rates fluctuate across seasons (peak May-June vs. crisp autumn Sept-Oct), hotel preference, and group size. Click **📋 Book Now** for your customized quote.\n"
+                "• **Inclusions:** Verified deluxe stays, daily 100% pure veg breakfast & dinner, dedicated mountain vehicle, tolls, and biometric registration support.\n"
+                "• **Portals Open:** Early May 2026 (Akshaya Tritiya) through Diwali."
+            ),
+            "options": [
+                "📋 Book Now",
+                "Kedarnath Helicopter Option",
+                "Day-Wise Route & Itinerary",
+                "Best Season & Weather",
+                "Biometric e-Pass Rules",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 3. Do Dham Yatra (Kedarnath & Badrinath)
+    if any(k in msg for k in ["do dham", "dodham", "kedar badri", "kedarnath badrinath", "two dham", "2 dham"]):
+        return {
+            "reply": (
+                "**Do Dham Yatra (Kedarnath & Badrinath Ji)** (5N/6D):\n\n"
+                "• **Circuit:** Haridwar/Rishikesh → Guptkashi → Kedarnath Dham → Joshimath → Badrinath Ji → Return.\n"
+                "• **Seasonal Pricing:** Customized dynamic rates based on travel month, vehicle choice, and hotel category.\n"
+                "• **Inclusions:** Deluxe hotel accommodation, MAP meal plan (pure veg), dedicated private vehicle, and all mountain permits.\n"
+                "• **Heli Shuttle:** Direct helicopter flights from Phata or Sirsi can be included."
+            ),
+            "options": [
+                "📋 Book Now",
+                "Add Kedarnath Helicopter",
+                "Trek / Pony Options",
+                "Mana First Village Visit",
+                "Innova Crysta Upgrade",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 4. Kedarnath Helicopter Service
+    if any(k in msg for k in ["helicopter", "heli", "chopper", "flight to kedarnath", "phata", "sirsi", "heliyatra", "heli ticket"]):
+        return {
+            "reply": (
+                "**Kedarnath Helicopter Shuttle Guidelines**:\n\n"
+                "• **Helipads:** Flights operate from Phata, Sirsi, and Guptkashi (8-10 mins one-way flight).\n"
+                "• **Booking Rule:** Centralized officially via IRCTC (`heliyatra.irctc.co.in`) with mandatory Uttarakhand biometric registration.\n"
+                "• **Mankotia Support:** We coordinate your helipad arrival, lodging in Guptkashi, VIP darshan assistance, and ground transport."
+            ),
+            "options": [
+                "Same-Day Return Flight",
+                "Night Stay at Kedarnath",
+                "IRCTC Slot Assistance",
+                "Trek / Palki Alternative",
+                "Get Heli Yatra Quote"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 5. Kedarnath Trekking Route, Pony & Palki
+    if any(k in msg for k in ["trek", "walking", "pony", "palki", "pitthu", "gaurikund", "distance to kedarnath", "how to climb"]):
+        return {
+            "reply": (
+                "**Kedarnath Trekking & Traditional Transport**:\n\n"
+                "• **Trail:** 16 km paved mountain trail from Gaurikund base (approx. 6-8 hours walking).\n"
+                "• **Transport Available:** Government-authorized Ponies/Mules, Palki (palanquins for seniors), and Pitthu carriers at fixed base rates.\n"
+                "• **Recommendation:** Start early morning (5:00 AM) and plan an overnight stay at Kedarnath base for evening & morning Aarti."
+            ),
+            "options": [
+                "Helicopter Booking Instead",
+                "Palki Booking for Seniors",
+                "Kedarnath Night Stay Cottages",
+                "High-Altitude Packing Tips",
+                "Get Kedarnath Package Quote"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 6. Biometric Yatra Registration & e-Pass
+    if any(k in msg for k in ["registration", "biometric", "epass", "e-pass", "permit", "yatra pass", "qr slip"]):
+        return {
+            "reply": (
+                "**Uttarakhand Biometric Yatra e-Pass**:\n\n"
+                "• **Mandatory Rule:** Required for all pilgrims visiting Yamunotri, Gangotri, Kedarnath, and Badrinath.\n"
+                "• **Portal:** Registration is conducted via `registrationandtouristcare.uk.gov.in` with Aadhaar / Government ID.\n"
+                "• **Complimentary Service:** Mankotia Holidays provides complete free registration and QR pass issuance for all our confirmed guests."
+            ),
+            "options": [
+                "Documents Required",
+                "Char Dham Packages",
+                "Helicopter Slot Linking",
+                "Medical Fitness Guidelines",
+                "Speak with Yatra Specialist"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 7. Weather & Best Time to Visit
+    if any(k in msg for k in ["weather", "best time", "season", "climate", "temperature", "when to visit", "when to go", "monsoon", "snow"]):
+        return {
+            "reply": (
+                "**Best Seasons to Travel**:\n\n"
+                "• **Char Dham / Himalayas:** May-June (pleasant daytime 12-18°C, freshly opened) & September-October (crisp skies, low rush, chilly nights). Avoid peak monsoon (July-August) for high passes.\n"
+                "• **Himachal & Kashmir:** April-June (valley flowers, cool breeze) & December-February (snowfall & skiing).\n"
+                "• **Golden Triangle / Rajasthan:** October through March."
+            ),
+            "options": [
+                "Char Dham in May-June",
+                "Char Dham in Sept-Oct",
+                "Snow in Manali / Kashmir",
+                "Monsoon Travel Safety",
+                "Custom Itinerary for My Dates"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 8. Packing Essentials & High-Altitude Health
+    if any(k in msg for k in ["packing", "what to pack", "what to carry", "luggage", "clothes", "medical", "fitness", "altitude", "medicine", "oxygen", "diamox"]):
+        return {
+            "reply": (
+                "**High-Altitude Packing & Health Essentials**:\n\n"
+                "• **Layering:** 3 layers (thermal inners, fleece, wind/waterproof down jacket) and rain poncho.\n"
+                "• **Footwear:** Sturdy broken-in trekking boots with deep rubber treads and woolen socks.\n"
+                "• **Health Kit:** Consult physician for Diamox (altitude sickness), personal meds, camphor pouch, pain spray, and insulated thermos flask.\n"
+                "• **Note:** Our tour cabs carry emergency first-aid and portable oxygen."
+            ),
+            "options": [
+                "Elderly Pilgrim Precautions",
+                "Pony / Palki Availability",
+                "Weather for My Month",
+                "View Yatra Packages"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 9. Uttarakhand Leisure Tours
+    if any(k in msg for k in ["uttarakhand", "nainital", "jim corbett", "corbett", "mussoorie", "auli", "chopta", "rishikesh"]):
+        return {
+            "reply": (
+                "**Uttarakhand Holiday Specials**:\n\n"
+                "• **Nainital & Jim Corbett (4N/5D):** Boating in Naini Lake + Jungle Jeep Tiger Safari.\n"
+                "• **Mussoorie & Rishikesh (4N/5D):** Kempty Falls, Dhanaulti & Ganga Aarti river retreat.\n"
+                "• **Auli Skiing & Chopta Trek (5N/6D):** Cable car & Himalayan panorama.\n"
+                "• **Seasonal Pricing:** Rates vary by season and travel dates. Includes private dedicated cab, deluxe resort stays, breakfast & dinner."
+            ),
+            "options": [
+                "📋 Book Now",
+                "Nainital & Jim Corbett 4N/5D",
+                "Mussoorie & Rishikesh 4N/5D",
+                "Auli & Chopta Valley 5N/6D",
+                "Jim Corbett Safari Booking",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 10. Himachal Pradesh Packages
+    if any(k in msg for k in ["himachal", "manali", "shimla", "spiti", "dharamshala", "dalhousie", "rohtang", "solang", "atal tunnel"]):
+        return {
+            "reply": (
+                "**Himachal Pradesh Escapes**:\n\n"
+                "• **Shimla & Manali (5N/6D or 6N/7D):** Kufri, Kullu river rafting, Solang Valley adventure, and Atal Tunnel to Sissu.\n"
+                "• **Dharamshala & Dalhousie (4N/5D):** Dalai Lama Temple & Khajjiar (Mini Switzerland).\n"
+                "• **Seasonal Pricing:** Rates depend on season (summer holidays, winter snow, or autumn). Includes private vehicle with chauffeur, deluxe hotels with valley views, and daily breakfast & dinner."
+            ),
+            "options": [
+                "📋 Book Now",
+                "5N/6D Shimla & Manali",
+                "Solang Valley & Atal Tunnel",
+                "Dharamshala & Dalhousie",
+                "Private Innova / Dzire",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 11. Kashmir Paradise Packages
+    if any(k in msg for k in ["kashmir", "srinagar", "gulmarg", "pahalgam", "sonmarg", "dal lake", "shikara", "gondola"]):
+        return {
+            "reply": (
+                "**Kashmir Paradise on Earth (5N/6D)**:\n\n"
+                "• **Highlights:** Srinagar Dal Lake Shikara ride & Luxury Houseboat stay, Gulmarg Gondola Cable Car, and Pahalgam Betaab Valley.\n"
+                "• **Seasonal Pricing:** Rates vary according to season (tulip bloom, summer rush, autumn, or winter snow) and hotel category.\n"
+                "• **Inclusions:** Srinagar airport pickup/drop, houseboat & 4-star hotels, breakfast & dinner daily, and dedicated private chauffeur."
+            ),
+            "options": [
+                "📋 Book Now",
+                "Dal Lake Houseboat Details",
+                "Gulmarg Gondola Ride",
+                "Pahalgam Betaab Valley",
+                "Connect on WhatsApp",
+                "Get Custom Seasonal Quote"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 12. Golden Triangle & Rajasthan Heritage
+    if any(k in msg for k in ["golden triangle", "delhi agra jaipur", "taj mahal", "agra", "rajasthan", "udaipur", "jodhpur", "jaipur"]):
+        return {
+            "reply": (
+                "**Golden Triangle & Royal Rajasthan**:\n\n"
+                "• **Golden Triangle (5N/6D):** Delhi, Agra Taj Mahal sunrise, Amber Fort Jaipur.\n"
+                "• **Royal Rajasthan (7N/8D):** Jaipur, Jodhpur Mehrangarh Fort & Udaipur Lake Palace.\n"
+                "• **Seasonal Pricing:** Dynamic rates based on travel month. Includes private sanitized AC vehicle, heritage hotel stays, daily breakfast, and approved guides."
+            ),
+            "options": [
+                "📋 Book Now",
+                "Golden Triangle 5N/6D",
+                "Udaipur & Jodhpur Circuit",
+                "Agra Same-Day Express",
+                "Chokhi Dhani Dinner Jaipur",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 13. Vehicle Fleet & Mountain Transport
+    if any(k in msg for k in ["cab", "taxi", "car", "tempo traveller", "innova", "ertiga", "driver", "transport", "vehicle", "rental"]):
+        return {
+            "reply": (
+                "**Dedicated Commercial Vehicle Fleet**:\n\n"
+                "• **Sedan (Dzire / Etios):** 2 to 4 guests, fuel-efficient & comfortable.\n"
+                "• **SUV (Ertiga / Innova Crysta):** 4 to 6 guests, superior hill stability & large luggage space.\n"
+                "• **Luxury Tempo Traveller:** 12, 17 & 26-seater with 2x1 pushback seats, AC, and audio.\n"
+                "• All vehicles have hill tourist permits, commercial insurance, and experienced mountain chauffeurs."
+            ),
+            "options": [
+                "Swift Dzire (2-4 pax)",
+                "Toyota Innova Crysta (4-6 pax)",
+                "12-Seater Luxury Tempo",
+                "17-Seater Tempo Traveller",
+                "Delhi / Haridwar Pickup",
+                "Check Vehicle Availability"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 14. Hotels & Meal Standards
+    if any(k in msg for k in ["hotel", "stay", "resort", "food", "meals", "breakfast", "dinner", "vegetarian", "satvik", "jain"]):
+        return {
+            "reply": (
+                "**Accommodation & Dining Standards**:\n\n"
+                "• **Hotels:** Verified 3-Star Deluxe & 4-Star Luxury properties with power backup, clean bedding, and running hot water.\n"
+                "• **Meals (MAP Plan):** Wholesome hot breakfast and dinner included daily.\n"
+                "• **100% Pure Vegetarian:** Fresh hygienic food on all yatra routes; Jain/Satvik (no onion/garlic) readily arranged on request."
+            ),
+            "options": [
+                "3-Star Deluxe Hotels",
+                "4-Star Luxury Resorts",
+                "Jain / Satvik Food Request",
+                "Ground Floor Room Request",
+                "View Hotel Options"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 15. Booking & Query Form Process
+    if any(k in msg for k in ["book", "booking", "query form", "inquiry form", "fill form", "form", "how to book", "procedure", "process", "steps", "confirm", "reserve", "book now", "booking karna", "book karna", "बुकिंग"]):
+        return {
+            "reply": (
+                "**Ready to Book Your Tour! 🎉**\n\n"
+                "• Click **📋 Book Now** below to fill the booking form with your name, phone, email, travel date, and group size.\n"
+                "• Our senior reservations team will review your requirements within 2 hours and send your confirmed itinerary & quote on WhatsApp.\n"
+                "• No payment required at this stage — just fill your details!"
+            ),
+            "options": [
+                "📋 Book Now",
+                "Char Dham Yatra 2026",
+                "Kedarnath Helicopter Option",
+                "Do Dham (Kedar-Badri) 6D",
+                "Connect on WhatsApp"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 16. Price Quotations & Tariffs
+    if any(k in msg for k in ["price", "cost", "quote", "budget", "tariff", "charges", "how much", "rate", "rates", "kitna kharcha", "kya rate", "paise"]):
+        return {
+            "reply": (
+                "**Package Rates & Seasonal Pricing**:\n\n"
+                "• **Why No Fixed Rates:** Our tour package rates change across seasons (peak pilgrimage months, summer holiday peak, festival dates, and off-season), hotel categories, vehicle type, and number of travelers.\n"
+                "• **Customized Best Quote:** We provide competitive real-time rates customized specifically for your travel dates and group size.\n"
+                "• **All Packages Include:** Verified hotel stays, daily 100% pure veg breakfast & dinner, dedicated mountain vehicle, chauffeur allowances, and yatra registration support.\n\n"
+                "Please click **📋 Book Now** below to submit your travel dates, or connect on WhatsApp for an instant seasonal quote!"
+            ),
+            "options": [
+                "📋 Book Now",
+                "Connect on WhatsApp",
+                "Char Dham Yatra 2026",
+                "Kedarnath Helicopter Option",
+                "Do Dham (Kedar-Badri)",
+                "Call +91 9811485028"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 17. Senior Citizens & Family Care
+    if any(k in msg for k in ["senior citizen", "elderly", "parents", "old age", "children", "kids", "family care", "wheelchair"]):
+        return {
+            "reply": (
+                "**Senior Citizen & Family Care on Yatra**:\n\n"
+                "• **Paced Travel:** Relaxed driving pace without exhausting continuous hill drives.\n"
+                "• **Room Priority:** Guaranteed ground-floor or lift-accessible rooms pre-allocated.\n"
+                "• **Trek Assistance:** Pre-booked government Palkis (palanquins) or Helicopter shuttles for Kedarnath.\n"
+                "• **Safety:** Onboard emergency oxygen canisters, medical first-aid, and light Satvik food."
+            ),
+            "options": [
+                "Kedarnath Helicopter Option",
+                "Palki (Palanquin) Booking",
+                "Char Dham Senior Care",
+                "Do Dham 6D Relaxed Tour",
+                "Speak with Tour Specialist"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 18. Contact & Office Information
+    if any(k in msg for k in ["contact", "phone", "whatsapp", "email", "office", "address", "call", "location", "speak"]):
+        return {
+            "reply": (
+                "**Mankotia Holidays Contact Coordinates**:\n\n"
+                "• **Central Helpline:** +91 9811485028 / +91 8627068616\n"
+                f"• **24/7 WhatsApp:** +{AGENCY_WHATSAPP}\n"
+                f"• **Email:** {AGENCY_EMAIL}\n"
+                "• **Offices:** Delhi (Pitampura), Manali (Hadimba Rd), and Una (HP).\n"
+                "• **GSTIN:** 07AGQPM4637F1Z4 (Govt. Registered Operator)."
+            ),
+            "options": [
+                "Open WhatsApp Chat",
+                "Call +91 9811485028",
+                "Delhi Office Address",
+                "Manali Office Address",
+                "Send Email Inquiry"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 19. Cancellation & Refund Policy
+    if any(k in msg for k in ["cancellation", "cancel", "refund", "cancellation policy", "cancel policy", "cancellation charge", "cancel karna", "रिफंड", "कैंसिलेशन"]):
+        return {
+            "reply": (
+                "**Cancellation & Refund Policy**:\n\n"
+                "• **30+ days before travel:** 10% cancellation charge.\n"
+                "• **15-29 days:** 25% charge deducted.\n"
+                "• **7-14 days:** 50% charge deducted.\n"
+                "• **Less than 7 days / No-show:** 100% charge — no refund.\n"
+                "• **Helicopter bookings:** Non-refundable (IRCTC/operator policy).\n"
+                "• **Refund timeline:** 7-10 working days after cancellation approval.\n"
+                "• **Force Majeure:** Full credit note or free rescheduling offered."
+            ),
+            "options": [
+                "Terms & Conditions",
+                "Reschedule My Trip",
+                "Contact Support Team",
+                "📋 Book Now",
+                "View Packages"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 20. Terms & Conditions
+    if any(k in msg for k in ["terms", "conditions", "t&c", "tnc", "terms and conditions", "niyam", "sharten", "नियम", "शर्तें"]):
+        return {
+            "reply": (
+                "**Terms & Conditions (Key Points)**:\n\n"
+                "• Prices are **per person** on twin/double sharing unless stated otherwise.\n"
+                "• **NOT included:** Airfare, train tickets, personal expenses, tips, or adventure charges.\n"
+                "• Hotel check-in: 12:00 PM | Check-out: 10:00 AM (early/late subject to availability).\n"
+                "• Itinerary may be modified due to weather, safety, or government orders without prior notice.\n"
+                "• Mankotia Holidays is a tour organizer — not liable for delays due to road/weather conditions.\n"
+                "• Travel insurance is strongly recommended (not included).\n"
+                "• Disputes subject to jurisdiction of New Delhi courts."
+            ),
+            "options": [
+                "Cancellation Policy",
+                "What's Included in Packages",
+                "Hotel & Meal Standards",
+                "Contact Support Team",
+                "📋 Book Now"
+            ],
+            "allow_multiselect": True
+        }
+
+    # 21. General Formal Reception
+    return {
+        "reply": (
+            "**Namaste from Mankotia Holidays!**\n\n"
+            "I am **Yatra Mitra**, your travel assistant. I can help you with Char Dham Yatra, Kedarnath Helicopter passes, family tours in Uttarakhand/Himachal/Kashmir, and private cab bookings.\n\n"
+            "Please select any option below:"
+        ),
+        "options": [
+            "Char Dham Yatra 2026",
+            "Kedarnath Helicopter Shuttle",
+            "Do Dham (Kedarnath-Badrinath)",
+            "Uttarakhand Family Tours",
+            "Himachal & Manali Packages",
+            "Cancellation & Refund Policy",
+            "Terms & Conditions"
+        ],
+        "allow_multiselect": True
+    }
+
+
+def chat_travel_concierge(message: str, history: Optional[list] = None) -> dict:
+    """Answers traveler inquiries using Gemini with fallback to Mankotia Holidays Knowledge Base via Yatra Mitra."""
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
+
     if api_key:
+        # Candidate model failover list
+        CANDIDATE_MODELS = [
+            "gemini-2.5-flash",
+            "gemini-2.0-flash",
+            "gemini-1.5-flash",
+            "gemini-flash-lite-latest"
+        ]
+
+        # Prepare formatted conversation history
+        messages_for_gemini = []
+        if history and isinstance(history, list):
+            for item in history[-8:]:  # Maintain context from recent turns
+                role = "user" if item.get("role") in ["user", "human"] else "model"
+                parts = item.get("parts", [])
+                if isinstance(parts, list):
+                    text_val = " ".join([str(p) for p in parts if p]).strip()
+                else:
+                    text_val = str(parts).strip()
+                if text_val:
+                    messages_for_gemini.append({"role": role, "parts": [{"text": text_val}]})
+
+        # Append current user inquiry
+        messages_for_gemini.append({"role": "user", "parts": [{"text": message.strip()}]})
+
+        # Attempt generation via google.genai Client
         try:
             from google import genai
-            client = genai.Client(api_key=api_key, http_options={'base_url': 'https://generativelanguage.googleapis.com'})
-            prompt = f"System: You are 'Aria', AI Travel Concierge for {AGENCY_NAME} (+{AGENCY_WHATSAPP}, {AGENCY_PHONE}). Be polite and helpful.\nUser Query: {message}"
-            response = client.models.generate_content(model='gemini-flash-lite-latest', contents=prompt)
-            return response.text.strip()
+            from google.genai import types
+
+            client = genai.Client(
+                api_key=api_key,
+                http_options={'base_url': 'https://generativelanguage.googleapis.com'}
+            )
+
+            for model_name in CANDIDATE_MODELS:
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=messages_for_gemini,
+                        config=types.GenerateContentConfig(
+                            system_instruction=CONCIERGE_SYSTEM_PROMPT,
+                            temperature=0.7,
+                            max_output_tokens=1024,
+                        )
+                    )
+                    if response and response.text and response.text.strip():
+                        return extract_reply_and_options(response.text.strip())
+                except Exception as model_err:
+                    print(f"Concierge Gemini model {model_name} attempt: {model_err}")
+                    continue
+
+        except Exception as client_err:
+            print(f"Concierge Gemini client init failed: {client_err}")
+
+        # Secondary fallback: try google.generativeai if available
+        try:
+            import google.generativeai as genai_legacy
+            genai_legacy.configure(api_key=api_key)
+
+            for model_name in ["gemini-1.5-flash", "gemini-pro"]:
+                try:
+                    model = genai_legacy.GenerativeModel(
+                        model_name=model_name,
+                        system_instruction=CONCIERGE_SYSTEM_PROMPT
+                    )
+                    prompt_combined = f"{message.strip()}"
+                    resp = model.generate_content(prompt_combined)
+                    if resp and resp.text and resp.text.strip():
+                        return extract_reply_and_options(resp.text.strip())
+                except Exception:
+                    continue
         except Exception:
             pass
 
-    msg = message.lower()
-    for keywords, reply_text in CONCIERGE_TOPICS:
-        if any(kw in msg for kw in keywords):
-            return reply_text
+    # Seamless fallback to the comprehensive, genuine & formal Mankotia Holidays Knowledge Base
+    return get_formal_concierge_response(message, history)
 
-    return f"🙏 Namaste! I'm Aria, your AI Travel Concierge at **{AGENCY_NAME}**. We specialize in Sacred Char Dham Yatra, Mathura-Vrindavan Dham, Golden Triangle, Uttarakhand, Himachal, Kashmir, Rajasthan, Goa, and Kerala! How may I assist your travel plans today? Call **{AGENCY_PHONE}** or WhatsApp (+{AGENCY_WHATSAPP})."

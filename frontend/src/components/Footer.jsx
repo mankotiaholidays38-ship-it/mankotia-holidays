@@ -482,12 +482,15 @@ export default function Footer({ onOpenInquiry, onOpenAdmin, onOpenPolicy }) {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/919816461616?text=Hi%20Mankotia%20Holidays!%20I%20would%20like%20to%20inquire%20about%20Char%20Dham%20/%20Uttarakhand%20packages."
+        id="floating-whatsapp-btn"
+        href="https://wa.me/919811485028?text=Hi%20Mankotia%20Holidays!%20I%20would%20like%20to%20inquire%20about%20Char%20Dham%20/%20Uttarakhand%20packages."
         target="_blank"
+        rel="noopener noreferrer"
         className="floating-whatsapp"
-        title="Chat on WhatsApp"
+        title="Chat on WhatsApp (+91 9811485028)"
+        aria-label="Chat with Mankotia Holidays on WhatsApp"
       >
-        <MessageCircle size={28} />
+        <MessageCircle size={30} />
       </a>
     </footer>
   );

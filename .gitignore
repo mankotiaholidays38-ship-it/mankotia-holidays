@@ -33,5 +33,6 @@ frontend/node_modules/
 
 # Scratch directory
 scratch/
-
-
+*.log
+*error*.txt
+.agents/

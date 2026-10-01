@@ -6,7 +6,15 @@ import requests
 from typing import Optional, Dict
 from dotenv import load_dotenv
 
-from app.utils.data_store import AGENCY_NAME, AGENCY_PHONE, AGENCY_WHATSAPP, PACKAGES
+from app.utils.data_store import (
+    AGENCY_NAME,
+    AGENCY_PHONE,
+    AGENCY_WHATSAPP,
+    AGENCY_EMAIL,
+    AGENCY_OFFICES,
+    AGENCY_PHONES,
+    PACKAGES
+)
 from app.utils.itinerary_templates import POPULAR_DESTINATIONS
 from app.services.gemini_service import generate_gemini_itinerary, generate_gemini_itinerary_stream
 from app.services.geocoding import geocode_location, is_configured
@@ -442,40 +450,16 @@ async def generate_ai_itinerary_stream(destination: str, days: int = 4, budget: 
         yield json.dumps(fallback_data)
 
 
-CONCIERGE_TOPICS = [
-    (["golden triangle", "delhi agra jaipur"], f"🏛️ **Golden Triangle Specials:** We offer Golden Triangle Classic (6D/5N) and Delhi-Mathura-Agra (4D/3N) covering Taj Mahal, Agra Fort, Qutub Minar, and Amber Fort. Connect on WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE} for custom price quotes!"),
-    (["agra", "taj mahal", "fatehpur sikri"], f"🕌 **Agra Taj Express:** Same Day Agra Taj Express & Mughal Marvels 2D/1N with Taj Mahal sunrise, Agra Fort, Mehtab Bagh, and approved guide. WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE}!"),
-    (["delhi", "akshardham", "qutub minar"], f"🏛️ **Delhi Capital Sightseeing:** Same Day Delhi Express and 2D/1N Capital Heritage covering Red Fort, Chandni Chowk rickshaw ride, Qutub Minar, and Akshardham. WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["mathura", "vrindavan", "banke bihari", "prem mandir"], f"🦚 **Sacred Mathura & Vrindavan:** Same Day Braj Darshan and 3D/2N Complete Braj Dham covering Krishna Janmasthan, Banke Bihari Ji, Prem Mandir Light Show, and Gokul. Call {AGENCY_PHONE}!"),
-    (["jaipur", "amber fort", "chokhi dhani"], f"👑 **Royal Jaipur Tours:** Same Day Jaipur, Weekend Heritage 2D/1N, and Grand Forts 3D/2N with Amber Fort Jeep ascent and Chokhi Dhani dinner. Call {AGENCY_PHONE}!"),
-    (["char dham", "chardham", "yamunotri", "gangotri"], f"🕉️ **Char Dham Yatra 2026:** All-inclusive 10N/11D package covering Yamunotri, Gangotri, Kedarnath, and Badrinath with pickup/drop from Haridwar/Dehradun. WhatsApp (+{AGENCY_WHATSAPP}) or call {AGENCY_PHONE} for dates and best quote!"),
-    (["do dham", "dodham", "kedar badri"], f"🙏 **Do Dham Yatra (Kedarnath & Badrinath Ji):** Popular 5N/6D spiritual circuit with optional Helicopter shuttle at Phata/Sirsi. Message on WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["helicopter", "heli", "flight to kedarnath"], f"🚁 **Kedarnath Helicopter Express:** Same-day / next-day heli-shuttle from Phata/Sirsi directly to Kedarnath Helipad with VIP priority darshan. Contact us at {AGENCY_PHONE} or WhatsApp (+{AGENCY_WHATSAPP}) to secure tickets."),
-    (["uttarakhand", "nainital", "mussoorie", "corbett", "auli"], f"🏔️ **Uttarakhand Specials:** Nainital Lakes, Corbett Safari, Mussoorie, Auli Skiing, and Chopta Trek. WhatsApp (+{AGENCY_WHATSAPP}) for family custom quotes!"),
-    (["himachal", "manali", "shimla"], f"🏔️ **Himachal Escapes:** Packages covering Manali, Solang Valley, Atal Tunnel, Rohtang Pass, and Shimla. Connect on WhatsApp (+{AGENCY_WHATSAPP})!"),
-    (["kashmir", "gulmarg", "pahalgam", "srinagar"], f"🌸 **Kashmir Heaven on Earth:** Airport transfers, Dal Lake houseboats, Gulmarg Gondola rides, and Pahalgam. Call {AGENCY_PHONE} or WhatsApp (+{AGENCY_WHATSAPP})."),
-    (["pickup", "drop", "map", "route"], f"🗺️ **Pickup & Drop Navigation:** Dedicated chauffeur transfers from your chosen airport, railway station, or hotel with real-time Google Maps route guidance!"),
-    (["phone", "call", "contact"], f"📞 Call our travel planners directly at **{AGENCY_PHONE}** for instant booking assistance!"),
-    (["whatsapp", "chat"], f"💬 We are available 24/7 on WhatsApp! Message us directly at **+{AGENCY_WHATSAPP}** for instant quotes."),
-    (["book", "price", "cost", "quote"], f"✨ Fill out our quick **Inquiry Form** on this page or message our team on WhatsApp at **+{AGENCY_WHATSAPP}** for an exact quote!")
-]
+# --- Executive AI Travel Concierge: Aria ---
+# Synchronized with root ai_service.py for concise answers and interactive multi-select options
+import sys
+_root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if _root_dir not in sys.path:
+    sys.path.insert(0, _root_dir)
 
-
-def chat_travel_concierge(message: str, history: Optional[list] = None) -> str:
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if api_key:
-        try:
-            from google import genai
-            client = genai.Client(api_key=api_key)
-            prompt = f"System: You are 'Aria', AI Travel Concierge for {AGENCY_NAME} (+{AGENCY_WHATSAPP}, {AGENCY_PHONE}). Be polite and helpful.\nUser Query: {message}"
-            response = client.models.generate_content(model='gemini-flash-lite-latest', contents=prompt)
-            return response.text.strip()
-        except Exception:
-            pass
-
-    msg = message.lower()
-    for keywords, reply_text in CONCIERGE_TOPICS:
-        if any(kw in msg for kw in keywords):
-            return reply_text
-
-    return f"🙏 Namaste! I'm Aria, your AI Travel Concierge at **{AGENCY_NAME}**. We specialize in Sacred Char Dham Yatra, Mathura-Vrindavan Dham, Golden Triangle, Uttarakhand, Himachal, Kashmir, Rajasthan, Goa, and Kerala! How may I assist your travel plans today? Call **{AGENCY_PHONE}** or WhatsApp (+{AGENCY_WHATSAPP})."
+from ai_service import (
+    CONCIERGE_SYSTEM_PROMPT,
+    extract_reply_and_options,
+    get_formal_concierge_response,
+    chat_travel_concierge,
+)

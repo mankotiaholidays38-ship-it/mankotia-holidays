@@ -482,28 +482,55 @@ select.form-control option, select.form-input option {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Floating WhatsApp & Concierge */
+/* Floating WhatsApp & Chatbot */
 .floating-whatsapp {
   position: fixed;
   bottom: 22px;
   left: 22px;
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: #25D366;
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-  z-index: 99;
+  font-size: 28px;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  z-index: 999;
   transition: all var(--transition-fast);
+  text-decoration: none;
 }
 
 .floating-whatsapp:hover {
   transform: scale(1.08) rotate(6deg);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.6);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.65);
+}
+
+.floating-chatbot-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2.5px solid #F59E0B;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 3px;
+  overflow: visible;
+}
+
+.floating-chatbot-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.65), 0 4px 12px rgba(0, 0, 0, 0.35);
+  border-color: #D97706;
 }
 
 .floating-concierge-btn {
@@ -520,7 +547,7 @@ select.form-control option, select.form-input option {
   font-weight: 700;
   font-size: 0.86rem;
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-  z-index: 99;
+  z-index: 999;
   cursor: pointer;
   border: none;
   transition: all var(--transition-fast);
@@ -529,6 +556,27 @@ select.form-control option, select.form-input option {
 .floating-concierge-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139, 92, 246, 0.6);
+}
+
+.chatbot-pill-label {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0F172A;
+  color: #F8FAFC;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.2px;
 }
 
 /* Hero Stats Bar - Single Line on Desktop, 2x2 on Mobile */
@@ -553,15 +601,27 @@ select.form-control option, select.form-input option {
   .floating-whatsapp {
     bottom: 14px;
     left: 14px;
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+    z-index: 999;
+  }
+  .floating-chatbot-btn {
+    bottom: 14px;
+    right: 14px;
+    width: 50px;
+    height: 50px;
+    z-index: 999;
+  }
+  .chatbot-pill-label {
+    display: none;
   }
   .floating-concierge-btn {
     bottom: 14px;
     right: 14px;
     padding: 8px 12px;
     font-size: 0.78rem;
+    z-index: 999;
   }
 }
 
@@ -645,17 +705,19 @@ select.form-control option, select.form-input option {
   .floating-whatsapp {
     bottom: 16px !important;
     left: 12px !important;
-    width: 46px !important;
-    height: 46px !important;
-    font-size: 22px !important;
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 24px !important;
     z-index: 999 !important;
   }
 
+  .floating-chatbot-btn,
   .floating-concierge-btn {
     bottom: 16px !important;
     right: 12px !important;
-    padding: 8px 12px !important;
-    font-size: 0.78rem !important;
+    width: 50px !important;
+    height: 50px !important;
+    padding: 2px !important;
     z-index: 999 !important;
   }
 }

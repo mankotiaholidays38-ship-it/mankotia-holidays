@@ -673,8 +673,15 @@ async def generate_itinerary_stream_endpoint(req: ItineraryRequest):
 @app.post("/api/chat-concierge")
 def chat_concierge_endpoint(req: ChatRequest):
     try:
-        reply = ai_service.chat_travel_concierge(req.message, req.history)
-        return {"success": True, "reply": reply}
+        res = ai_service.chat_travel_concierge(req.message, req.history)
+        if isinstance(res, dict):
+            return {
+                "success": True,
+                "reply": res.get("reply", ""),
+                "options": res.get("options", []),
+                "allow_multiselect": res.get("allow_multiselect", True)
+            }
+        return {"success": True, "reply": str(res), "options": [], "allow_multiselect": False}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Concierge response failed: {str(e)}")
 

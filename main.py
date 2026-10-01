@@ -199,6 +199,22 @@ class ChatRequest(BaseModel):
     history: Optional[List[dict]] = None
 
 
+class ChatBookingRequest(BaseModel):
+    name: str = Field(..., min_length=2, description="Full name")
+    phone: str = Field(..., description="Indian mobile number")
+    email: str = Field(..., min_length=3, description="Email address")
+    destination: str = Field(default="General Inquiry", min_length=2)
+    travel_date: str = Field(..., min_length=4)
+    num_travelers: int = Field(default=2, ge=1, le=500)
+    message: Optional[str] = ""
+    source: Optional[str] = "Chatbot Booking Form"
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, value: str) -> str:
+        return InquiryRequest.validate_indian_mobile(value)
+
+
 class AdminLoginRequest(BaseModel):
     password: str
 
@@ -854,10 +870,67 @@ async def generate_itinerary_stream_endpoint(req: ItineraryRequest):
 @app.post("/api/chat-concierge")
 def chat_concierge_endpoint(req: ChatRequest):
     try:
-        reply = ai_service.chat_travel_concierge(req.message, req.history)
-        return {"success": True, "reply": reply}
+        res = ai_service.chat_travel_concierge(req.message, req.history)
+        if isinstance(res, dict):
+            return {
+                "success": True,
+                "reply": res.get("reply", ""),
+                "options": res.get("options", []),
+                "allow_multiselect": res.get("allow_multiselect", True)
+            }
+        return {"success": True, "reply": str(res), "options": [], "allow_multiselect": False}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Concierge response failed: {str(e)}")
+
+
+@app.post("/api/chatbot-book")
+def chatbot_booking_endpoint(inquiry: ChatBookingRequest):
+    """Handles booking form submissions submitted from within the AI chatbot."""
+    try:
+        lead_id = f"CHAT-{datetime.now().strftime('%Y%m%d%H%M%S')}-{inquiry.phone[-4:]}"
+        # Save to Excel as a lead
+        try:
+            excel_manager.add_lead_to_excel(
+                name=inquiry.name,
+                phone=inquiry.phone,
+                email=inquiry.email,
+                destination=inquiry.destination,
+                travel_date=inquiry.travel_date,
+                pickup="To be confirmed",
+                drop="To be confirmed",
+                days=5,
+                number_of_persons=inquiry.num_travelers,
+                children=0,
+                child_ages="",
+                vehicle_category="To be confirmed",
+                rooms_required=max(1, inquiry.num_travelers // 2),
+                meal_plan="Breakfast Only (CP)",
+                hotel_category="3 Star",
+                travelers=f"{inquiry.num_travelers} persons",
+                budget="Standard",
+                notes=inquiry.message or "",
+                source=inquiry.source or "Chatbot Booking Form"
+            )
+        except Exception as lead_err:
+            print(f"Chatbot booking lead save error (non-fatal): {lead_err}")
+
+        wa_msg = (
+            f"Namaste! I am {inquiry.name}. I would like to book a trip to "
+            f"{inquiry.destination} for {inquiry.num_travelers} traveler(s) "
+            f"around {inquiry.travel_date}. "
+            f"Contact: {inquiry.phone} | {inquiry.email}. "
+            f"Message: {inquiry.message or 'Please share the package details and quote.'}"
+        )
+        return {
+            "success": True,
+            "lead_id": lead_id,
+            "message": "Booking request received! Our team will contact you within 2 hours.",
+            "whatsapp_redirect_url": f"https://wa.me/{AGENCY_WHATSAPP}?text={urllib.parse.quote(wa_msg)}",
+            "call_link": f"tel:{AGENCY_PHONE}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chatbot booking failed: {str(e)}")
+
 
 
 @app.get("/api/autocorrect-location")
